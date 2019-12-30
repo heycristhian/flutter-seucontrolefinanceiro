@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'about.dart';
-
 class PageAbout extends StatefulWidget {
   @override
   _PageAboutState createState() => _PageAboutState();
@@ -12,11 +10,10 @@ class _PageAboutState extends State<PageAbout> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My About Page"),
+        title: Text("test"),
       ),
       body: Center(
-        child: Text("My about page",
-        style: TextStyle(fontSize: 40.0)),
+        child: Text("Page About!!!", style: TextStyle(fontSize: 50.0),),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:dz_finance/ui/about.dart';
+import 'package:dz_finance/ui/insertMoney.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -7,6 +9,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> novaLista = ["1", "2", "3"];
+
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
         border: Border.all(width: 1, color: Color.fromRGBO(0, 0, 0, .125)),
@@ -28,73 +32,101 @@ class _HomeState extends State<Home> {
         elevation: 10.0,
         child: Container(
           height: 180,
-          color: Color.fromRGBO(17, 199, 111, 1),
+          color: Theme.of(context).primaryColor,
           padding: EdgeInsets.all(0),
         ));
   }
 
-  Widget myMainCard() {
+  Widget myDashboard() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(30, 80, 30, 30),
+      padding: const EdgeInsets.only(top: 80),
       child: Container(
         height: 200,
-        decoration: myBoxDecoration(),
-        child: Column(
+        child: PageView(
+          controller: PageController(viewportFraction: 0.8),
+          scrollDirection: Axis.horizontal,
+          pageSnapping: true,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                      child: RawMaterialButton(
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.attach_money,
-                          color: Color.fromRGBO(17, 199, 111, 1),
-                          size: 19.0,
-                        ),
-                        shape: CircleBorder(),
-                        elevation: 3.0,
-                        fillColor: Colors.white,
-                        padding: const EdgeInsets.all(1.0),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                      child: Center(
-                        child: Text(
-                          "Saldo disponível",
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Color.fromRGBO(18, 18, 18, 1)),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              color: Colors.white,
+              width: 100,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                  child: Text(
-                    'R\$ 2.350,87',
-                    style: TextStyle(
-                        color: Color.fromRGBO(17, 199, 111, 1), fontSize: 40.0),
-                  ),
-                )
-              ],
-            )
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              color: Colors.white,
+              width: 100,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              color: Colors.white,
+              width: 100,
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _body() {
+    return SingleChildScrollView(
+      child: Container(
+        color: Color.fromRGBO(248, 248, 255, 1),
+        //color: Colors.red,
+        child: Column(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                myAppBar(),
+                myDashboard(),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Text("Transações",
+                style: TextStyle(color: Colors.black, fontSize: 20)),
+            SizedBox(
+              height: 20,
+            ),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+            _historico(),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _historico() {
+    return Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            title: Text("Compras"),
+            subtitle: Text("Supermercado"),
+            trailing: Text(
+              "R\$ -1.120,00",
+              style: TextStyle(
+                  color: Colors.redAccent, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -103,7 +135,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: Drawer(
-          child: ListView(
+          child: Column(
             children: <Widget>[
               UserAccountsDrawerHeader(
                 accountName: Text("Cristhian Dias"),
@@ -121,29 +153,36 @@ class _HomeState extends State<Home> {
                         image: NetworkImage(
                             "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"))),
               ),
+              SizedBox(height: 10),
               ListTile(
                 title: Text("Página Inicial"),
-                trailing: Icon(Icons.home,
-                color: Colors.blueAccent,),
+                trailing: Icon(
+                  Icons.home,
+                  color: Colors.blueAccent,
+                ),
               ),
               Divider(),
               ListTile(
                 title: Text("Sobre"),
-                trailing: Icon(Icons.description,
-                color: Colors.orangeAccent,),
+                trailing: Icon(
+                  Icons.description,
+                  color: Colors.orangeAccent,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) => PageAbout()));
                 },
               ),
               Divider(),
               ListTile(
                 title: Text("Sair"),
-                trailing: Icon(Icons.close,
-                color: Colors.redAccent,),
+                trailing: Icon(
+                  Icons.close,
+                  color: Colors.redAccent,
+                ),
                 onTap: () => Navigator.of(context).pop(),
               ),
             ],
@@ -152,11 +191,16 @@ class _HomeState extends State<Home> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add, color: Colors.white),
-          onPressed: () {},
-          backgroundColor: Color.fromRGBO(17, 199, 111, 1),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => InsertMoney()));
+          },
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         bottomNavigationBar: BottomAppBar(
-          color: Color.fromRGBO(17, 199, 111, 1),
+          color: Theme.of(context).primaryColor,
           shape: CircularNotchedRectangle(),
           notchMargin: 4.0,
           child: Row(
@@ -171,19 +215,6 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        body: Container(
-          color: Color.fromRGBO(248, 248, 255, 1),
-          child: ListView(
-            padding: EdgeInsets.all(0),
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  myAppBar(),
-                  myMainCard(),
-                ],
-              ),
-            ],
-          ),
-        ));
+        body: _body());
   }
 }
