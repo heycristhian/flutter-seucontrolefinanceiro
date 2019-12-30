@@ -123,12 +123,14 @@ class _HomeState extends State<Home> {
               ),
               ListTile(
                 title: Text("Página Inicial"),
-                trailing: Icon(Icons.home),
+                trailing: Icon(Icons.home,
+                color: Colors.blueAccent,),
               ),
               Divider(),
               ListTile(
                 title: Text("Sobre"),
-                trailing: Icon(Icons.description),
+                trailing: Icon(Icons.description,
+                color: Colors.orangeAccent,),
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.push(
@@ -140,7 +142,8 @@ class _HomeState extends State<Home> {
               Divider(),
               ListTile(
                 title: Text("Sair"),
-                trailing: Icon(Icons.close),
+                trailing: Icon(Icons.close,
+                color: Colors.redAccent,),
                 onTap: () => Navigator.of(context).pop(),
               ),
             ],
