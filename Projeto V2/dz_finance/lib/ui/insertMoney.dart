@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:date_format/date_format.dart';
 import 'package:dz_finance/ui/componentes.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class InsertMoney extends StatefulWidget {
 }
 
 class _InsertMoneyState extends State<InsertMoney> {
-  static const menuCategoria = <String>[
+  var menuCategoria = [
     'Alimentação',
     'Bar/Restaurante',
     'Educação',
@@ -16,9 +17,23 @@ class _InsertMoneyState extends State<InsertMoney> {
     'Supermercado'
   ];
 
-  Icon icon = Icon(Icons.mood, size: 50, color: Colors.white);
+  var categoriaSelecionada = 'Alimentação';
+
+  Icon icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
   Color color1 = Color.fromRGBO(17, 199, 111, 1);
   Color color2 = Colors.greenAccent;
+
+  String retornaData() {
+    var date = formatDate(
+            DateTime(
+                DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            [dd, '/', mm, '/', yyyy]) +
+        ' - ' +
+        DateTime.now().hour.toString() +
+        ':' +
+        DateTime.now().minute.toString();
+    return date;
+  }
 
   Widget _containerRendaDespesa(Icon icon, Color color1, Color color2) {
     return Container(
@@ -37,26 +52,84 @@ class _InsertMoneyState extends State<InsertMoney> {
                       end: Alignment.bottomRight,
                       stops: [0.4, 1],
                       colors: [color1, color2])),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 50.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white),
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: icon,
-                      //labelText: "Teste",
-                      border: InputBorder.none,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 50.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          prefixIcon: icon,
+                          border: InputBorder.none,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 70, right: 30),
+                    child: Divider(
+                      color: Colors.white,
+                      height: 10,
+                    ),
+                  )
+                ],
               ),
             ),
           ),
+          SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: DropdownButton<String>(
+              value: categoriaSelecionada,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 1,
+                color: Colors.grey,
+              ),
+              isExpanded: true,
+              items: menuCategoria.map((String dropdownStringItem) {
+                return DropdownMenuItem(
+                  value: dropdownStringItem,
+                  child: Text(dropdownStringItem),
+                );
+              }).toList(),
+              onChanged: (String newValue) {
+                setState(() {
+                  this.categoriaSelecionada = newValue;
+                });
+              },
+            ),
+          ),
+          SizedBox(height: 20),
+          ListTile(
+            leading: const Icon(Icons.description),
+            title: TextField(
+              decoration: InputDecoration(
+                hintText: "Descrição...",
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          ListTile(
+            leading: const Icon(Icons.today),
+            title: const Text('Data'),
+            subtitle: Text(retornaData()),
+          )
         ],
       ),
     );
@@ -66,6 +139,7 @@ class _InsertMoneyState extends State<InsertMoney> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        backgroundColor: Colors.white,
         bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.white,
           color: color1,
@@ -79,12 +153,11 @@ class _InsertMoneyState extends State<InsertMoney> {
           ],
           onTap: (index) {
             setState(() {
+              icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
               if (index == 0) {
-                icon = Icon(Icons.mood, size: 50, color: Colors.white);
                 color1 = Color.fromRGBO(17, 199, 111, 1);
                 color2 = Colors.greenAccent;
               } else {
-                icon = Icon(Icons.error, size: 50, color: Colors.white);
                 color1 = Colors.red;
                 color2 = Colors.redAccent;
               }

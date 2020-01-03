@@ -1,4 +1,3 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 class PageAbout extends StatefulWidget {
@@ -7,21 +6,39 @@ class PageAbout extends StatefulWidget {
 }
 
 class _PageAboutState extends State<PageAbout> {
+  
+  String dropdownValue = 'One';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.blueAccent,
-        items: <Widget>[
-          Icon(Icons.add, size: 30),
-          Icon(Icons.remove, size: 30),
-          //Icon(Icons.compare_arrows, size: 30),
-        ],
-        onTap: (index) {
-          //Handle button tap
-        },
+      appBar: AppBar(
+        title: Text("Teste"),
       ),
-      body: Container(color: Colors.blueAccent),
+      body: DropdownButton<String>(
+          value: dropdownValue,
+          icon: Icon(Icons.arrow_downward),
+          iconSize: 24,
+          elevation: 16,
+          style: TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 2,
+            color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String newValue) {
+            setState(() {
+      dropdownValue = newValue;
+            });
+          },
+          isExpanded: true,
+          items: <String>['One', 'Two', 'Free', 'Four']
+      .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+            );
+          }).toList(),
+        ),
     );
   }
 }
