@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:date_format/date_format.dart';
-import 'package:dz_finance/ui/componentes.dart';
+import 'package:dz_finance/ui/insertMoney/componentes.dart';
 import 'package:flutter/material.dart';
 
 class InsertMoney extends StatefulWidget {
@@ -10,18 +10,19 @@ class InsertMoney extends StatefulWidget {
 
 class _InsertMoneyState extends State<InsertMoney> {
   var menuCategoria = [
-    'Alimentação',
-    'Bar/Restaurante',
-    'Educação',
-    'Lazer',
-    'Supermercado'
+    'Salário',
+    'Empréstimo',
+    'Outros',
   ];
 
-  var categoriaSelecionada = 'Alimentação';
+  var categoriaSelecionada = 'Salário';
 
   Icon icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
   Color color1 = Color.fromRGBO(17, 199, 111, 1);
   Color color2 = Colors.greenAccent;
+  String _despesaOuReceita = 'Receita';
+
+  bool _isSwitched = false;
 
   String retornaData() {
     var date = formatDate(
@@ -123,13 +124,37 @@ class _InsertMoneyState extends State<InsertMoney> {
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 17.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(Icons.calendar_today),
+                ),
+                Expanded(
+                  child: ListTile(
+                    title: Text("$_despesaOuReceita Mensal"),
+                    subtitle: Text("Você pode modificar futuramente"),
+                  ),
+                ),
+                Switch(
+                  onChanged: (val) => setState(() => _isSwitched = val),
+                  value: _isSwitched,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           ListTile(
             leading: const Icon(Icons.today),
             title: const Text('Data'),
             subtitle: Text(retornaData()),
-          )
+          ),
         ],
       ),
     );
@@ -157,9 +182,25 @@ class _InsertMoneyState extends State<InsertMoney> {
               if (index == 0) {
                 color1 = Color.fromRGBO(17, 199, 111, 1);
                 color2 = Colors.greenAccent;
+                categoriaSelecionada = 'Salário';
+                _despesaOuReceita = 'Receita';
+                menuCategoria = [
+                  'Salário',
+                  'Empréstimo',
+                  'Outros',
+                ];
               } else {
                 color1 = Colors.red;
                 color2 = Colors.redAccent;
+                _despesaOuReceita = 'Despesa';
+                categoriaSelecionada = 'Alimentação';
+                menuCategoria = [
+                  'Alimentação',
+                  'Bar/Restaurante',
+                  'Educação',
+                  'Lazer',
+                  'Supermercado'
+                ];
               }
             });
           },

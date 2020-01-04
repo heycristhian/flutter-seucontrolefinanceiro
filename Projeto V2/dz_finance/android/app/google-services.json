@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "951199870956",
+    "firebase_url": "https://dzfinance-239d2.firebaseio.com",
+    "project_id": "dzfinance-239d2",
+    "storage_bucket": "dzfinance-239d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951199870956:android:00729c99e28e0a2e555ac9",
+        "android_client_info": {
+          "package_name": "com.heycristhian.dz_finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951199870956-5m36ser24j2eamgg717go5s5j7741v3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8w2QfQFNmMgAyQiigR4WMxHjgtIyDP5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951199870956-5m36ser24j2eamgg717go5s5j7741v3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
