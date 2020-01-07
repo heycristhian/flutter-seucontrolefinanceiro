@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "24320584662",
+    "firebase_url": "https://finance-dda4e.firebaseio.com",
+    "project_id": "finance-dda4e",
+    "storage_bucket": "finance-dda4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24320584662:android:91ace5a20775d2e7e01277",
+        "android_client_info": {
+          "package_name": "com.heycristhiandzfinance.dz_finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24320584662-7og0qbbrl26ilrk2g3g4d1spp6mkgeoe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heycristhiandzfinance.dz_finance",
+            "certificate_hash": "2eaa07eedf2bb4365e678313e270a2b9491a9833"
+          }
+        },
+        {
+          "client_id": "24320584662-4vu0sqlai1fqo3oct6ginc5vd9mjmdbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4m1Be_NnLV-YwnEs2TRNkruLASM_XhNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24320584662-4vu0sqlai1fqo3oct6ginc5vd9mjmdbd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

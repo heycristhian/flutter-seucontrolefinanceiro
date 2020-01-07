@@ -1,6 +1,5 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PageAbout extends StatefulWidget {
   @override
@@ -8,37 +7,47 @@ class PageAbout extends StatefulWidget {
 }
 
 class _PageAboutState extends State<PageAbout> {
+  
   @override
   Widget build(BuildContext context) {
-    // var content = StreamBuilder(
-    //   stream: Firestore.instance.collection('usuarios').snapshots(),
-    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-    //     if (!snapshot.hasData) return const Text('Carregando...');
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.greenAccent,
+        onPressed: () {
+          // Firestore.instance
+          // .collection("despesa_receita")
+          // .add({
+          //   "valor" : 79.90,
+          //   "categoria" : "Academia",
+          //   "descricao" : "Academia x-ploud",
+          //   "despesa_mensal" : true,
+          //   "data" : DateTime.now()
+          // });
 
-    //     return ListView.builder(
-    //       itemCount: snapshot.data.documents.length,
-    //       itemBuilder: (BuildContext context, int index) {
-    //         DocumentSnapshot doc = snapshot.data.documents[index];
-
-    //         return ListTile(
-    //           leading: Icon(Icons.backup),
-    //           title: Text(doc['nome']),
-    //           trailing: GestureDetector(
-    //             onTap: () {
-
-    //             },
-    //             child: Icon(Icons.delete),
-    //           ),
-    //         );
-    //       },
-
-    //     );
-    //   }
-    // );
-
-
-    return Container(
-      color: Colors.red,
+          Firestore.instance
+          .collection("teste")
+          .document("001")
+          .setData({
+            "nome" : "Matheus Assmann",
+            "idade" :true
+          });
+        },
+      ),
+      appBar: AppBar(
+        title: Text("Test"),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              children: <Widget>[
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
