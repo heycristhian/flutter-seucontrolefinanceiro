@@ -29,4 +29,22 @@ public class UserService {
         return insert;
     }
 
+    public void delete(String id) {
+        findById(id);
+        userRepository.deleteById(id);
+    }
+
+    public User update(User newUser) {
+        User currentUser = findById(newUser.getId());
+        updateData(currentUser, newUser);
+        return userRepository.save(currentUser);
+    }
+
+    private void updateData(User currentUser, User newUser) {
+        currentUser.setFullName(newUser.getFullName());
+        currentUser.setUser(newUser.getUser());
+        currentUser.setPassword(newUser.getPassword());
+        currentUser.setCpf(newUser.getCpf());
+    }
+
 }

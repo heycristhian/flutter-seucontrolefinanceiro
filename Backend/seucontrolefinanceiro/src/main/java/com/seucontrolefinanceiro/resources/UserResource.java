@@ -5,6 +5,7 @@ import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.UserForm;
 import com.seucontrolefinanceiro.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,21 @@ public class UserResource {
     public ResponseEntity<UserDTO> insert(@RequestBody @Validated UserForm userForm, UriComponentsBuilder uriBuilder) {
         User user = userForm.converter();
         user = userService.insert(user);
-
         URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<UserDTO> update(@RequestBody @Validated UserForm userForm, UriComponentsBuilder uriBuilder) {
+        User user = userForm.converter();
+        user = userService.update(user);
+        URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.noContent().build();
     }
 }
