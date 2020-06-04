@@ -15,15 +15,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> find(String query) {
-        if(query == null) {
-            return userRepository.findAll();
-        }
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
     public User findById(String id) {
         Optional<User> obj = userRepository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!")); }
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!"));
+    }
+
+    public User insert(User user) {
+        User insert = userRepository.insert(user);
+        return insert;
+    }
 
 }

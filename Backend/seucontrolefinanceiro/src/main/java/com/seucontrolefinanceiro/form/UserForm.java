@@ -1,15 +1,19 @@
 package com.seucontrolefinanceiro.form;
 
 import com.seucontrolefinanceiro.domain.User;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserForm {
-
     private final String id;
+    @NonNull
     private final String fullName;
+    @NonNull
     private final String user;
+    @NonNull
     private final String password;
+    @NonNull
     private final String cpf;
 
     public User converter() {

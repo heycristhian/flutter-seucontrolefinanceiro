@@ -6,6 +6,7 @@ import com.seucontrolefinanceiro.form.UserForm;
 import com.seucontrolefinanceiro.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -13,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("scf-service/user")
+@RequestMapping("scf-service/users")
 public class UserResource {
 
     @Autowired
@@ -21,7 +22,7 @@ public class UserResource {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> find(String query) {
-        List<User> users = userService.find(query);
+        List<User> users = userService.findAll();
         return ResponseEntity.ok().body(UserDTO.converter((users)));
     }
 
@@ -31,9 +32,12 @@ public class UserResource {
         return ResponseEntity.ok().body(new UserDTO(user));
     }
 
-
     @PostMapping
-    public ResponseEntity<Void> insert(@RequestBody UserForm userForm, UriComponentsBuilder uriBuilder) {
-        return null;
+    public ResponseEntity<UserDTO> insert(@RequestBody @Validated UserForm userForm, UriComponentsBuilder uriBuilder) {
+        User user = userForm.converter();
+        user = userService.insert(user);
+
+        URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(uri).body(new UserDTO(user));
     }
 }
