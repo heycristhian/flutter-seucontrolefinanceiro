@@ -1,18 +1,9 @@
 package com.seucontrolefinanceiro.repository;
 
-import com.seucontrolefinanceiro.model.User;
+import com.seucontrolefinanceiro.domain.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public class UserRepository {
-
-    List<User> findByName(String query) {
-        System.out.println("findByName it's work in the UserRepository");
-        List<User> users = null;
-        return users;
-    }
-
-    public void save(User user) {
-        System.out.println("save it's work in the UserRepository");
-    }
+@Repository
+public interface UserRepository extends MongoRepository<User, String> {
 }

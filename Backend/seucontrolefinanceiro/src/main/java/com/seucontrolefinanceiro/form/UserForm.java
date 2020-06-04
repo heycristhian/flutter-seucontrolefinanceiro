@@ -1,13 +1,12 @@
-package com.seucontrolefinanceiro.controller.form;
+package com.seucontrolefinanceiro.form;
 
-import com.seucontrolefinanceiro.model.User;
-import lombok.Getter;
+import com.seucontrolefinanceiro.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserForm {
 
-    private final long id;
+    private final String id;
     private final String fullName;
     private final String user;
     private final String password;
