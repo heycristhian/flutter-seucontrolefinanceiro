@@ -1,5 +1,6 @@
 package com.seucontrolefinanceiro;
 
+import com.seucontrolefinanceiro.form.BillForm;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

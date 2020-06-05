@@ -10,37 +10,44 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements IService<User>{
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
+
+    @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return repository.findAll();
     }
 
+    @Override
     public User findById(String id) {
-        Optional<User> obj = userRepository.findById(id);
+        Optional<User> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!"));
     }
 
+    @Override
     public User insert(User user) {
-        User insert = userRepository.insert(user);
+        User insert = repository.insert(user);
         return insert;
     }
 
+    @Override
     public void delete(String id) {
         findById(id);
-        userRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
+    @Override
     public User update(User newUser) {
         User currentUser = findById(newUser.getId());
         updateData(currentUser, newUser);
-        return userRepository.save(currentUser);
+        return repository.save(currentUser);
     }
 
-    private void updateData(User currentUser, User newUser) {
+    @Override
+    public void updateData(User currentUser, User newUser) {
         currentUser.setFullName(newUser.getFullName());
         currentUser.setUser(newUser.getUser());
         currentUser.setPassword(newUser.getPassword());

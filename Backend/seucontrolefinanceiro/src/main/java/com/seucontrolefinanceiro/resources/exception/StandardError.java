@@ -1,6 +1,5 @@
 package com.seucontrolefinanceiro.resources.exception;
 
-
 import lombok.*;
 
 @Builder

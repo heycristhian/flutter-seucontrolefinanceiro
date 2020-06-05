@@ -1,5 +1,6 @@
 package com.seucontrolefinanceiro.resources;
 
+import com.seucontrolefinanceiro.domain.Bill;
 import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.UserForm;
@@ -15,42 +16,53 @@ import java.util.List;
 
 @RestController
 @RequestMapping("scf-service/users")
-public class UserResource {
+public class UserResource implements IResource<UserDTO, UserForm> {
 
     @Autowired
-    private UserService userService;
+    private UserService service;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<UserDTO>> find(String query) {
-        List<User> users = userService.findAll();
+        List<User> users = service.findAll();
         return ResponseEntity.ok().body(UserDTO.converter((users)));
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable String id) {
-        User user = userService.findById(id);
+        User user = service.findById(id);
         return ResponseEntity.ok().body(new UserDTO(user));
     }
 
+    @Override
     @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody @Validated UserForm userForm, UriComponentsBuilder uriBuilder) {
-        User user = userForm.converter();
-        user = userService.insert(user);
+    public ResponseEntity<UserDTO> insert(@RequestBody @Validated UserForm form, UriComponentsBuilder uriBuilder) {
+        User user = form.converter();
+        user = service.insert(user);
         URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        userService.delete(id);
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping
-    public ResponseEntity<UserDTO> update(@RequestBody @Validated UserForm userForm, UriComponentsBuilder uriBuilder) {
-        User user = userForm.converter();
-        user = userService.update(user);
+    public ResponseEntity<UserDTO> update(@RequestBody @Validated UserForm form, UriComponentsBuilder uriBuilder) {
+        User user = form.converter();
+        user = service.update(user);
         URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/bills")
+    public ResponseEntity<List<Bill>> findBills(@PathVariable String id) {
+        User user = service.findById(id);
+        return ResponseEntity.ok().body(user.getBills());
     }
 }

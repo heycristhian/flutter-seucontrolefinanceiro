@@ -1,23 +1,26 @@
 package com.seucontrolefinanceiro.domain;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Document
-@Builder
 @Getter
+@Setter
+@Builder
+@Document
 @EqualsAndHashCode(of = {"id"})
+@ToString(of = {"billDescription"})
 public class Bill {
+    @Id
     private String id;
     private String billDescription;
     private BigDecimal amount;
-    private boolean everyMonth = false;
-    private boolean sameAmount = false;
+    private boolean everyMonth;
+    private boolean sameAmount;
     private LocalDate payDAy;
     private BillType billType;
+    private PaymentCategory paymentCategory;
 }

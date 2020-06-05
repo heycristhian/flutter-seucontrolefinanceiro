@@ -1,0 +1,60 @@
+package com.seucontrolefinanceiro.services;
+
+import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
+import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class PaymentCategoryService implements IService<PaymentCategory> {
+
+    @Autowired
+    private PaymentCategoryRepository repository;
+
+    @Override
+    public List<PaymentCategory> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public PaymentCategory findById(String id) {
+        Optional<PaymentCategory> obj = repository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!"));
+    }
+
+    public List<PaymentCategory> findByDescription(String query) {
+         return repository.findByDescription(query);
+    }
+
+    @Override
+    public PaymentCategory insert(PaymentCategory paymentCategory) {
+        PaymentCategory insert = repository.insert(paymentCategory);
+        return insert;
+    }
+
+    @Override
+    public void delete(String id) {
+        findById(id);
+        repository.deleteById(id);
+    }
+
+    @Override
+    public PaymentCategory update(PaymentCategory newObj) {
+        PaymentCategory currentObj = findById(newObj.getId());
+        updateData(currentObj, newObj);
+        return repository.save(currentObj);
+    }
+
+    @Override
+    public void updateData(PaymentCategory currentObj, PaymentCategory newObj) {
+        currentObj = PaymentCategory.builder()
+                .description(newObj.getDescription())
+                .mutable(newObj.isMutable())
+                .billType(newObj.getBillType())
+                .build();
+    }
+}
