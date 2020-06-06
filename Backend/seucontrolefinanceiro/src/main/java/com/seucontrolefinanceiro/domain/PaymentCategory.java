@@ -8,13 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Builder
 @Document()
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"description", "billType"})
+@ToString(of = {"description", "billType"})
 public class PaymentCategory {
 
     @Id
     private String id;
     @NonNull
     private String description;
-    private boolean mutable = true;
+    private boolean mutable;
     private BillType billType;
 }

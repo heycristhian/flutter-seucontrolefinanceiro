@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface PaymentCategoryRepository extends MongoRepository<PaymentCategory, String> {
 
-    List<PaymentCategory> findByDescription(String query);
-
+    List<PaymentCategory> findByDescriptionContainingIgnoreCase(String description);
 }

@@ -23,4 +23,8 @@ public class Bill {
     private LocalDate payDAy;
     private BillType billType;
     private PaymentCategory paymentCategory;
+    private boolean paid;
+    private String father;
+    private String userId;
+
 }

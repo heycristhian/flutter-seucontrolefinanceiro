@@ -7,6 +7,7 @@ import com.seucontrolefinanceiro.form.PaymentCategoryForm;
 import com.seucontrolefinanceiro.services.PaymentCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +37,7 @@ public class PaymentCategoryResource implements IResource<PaymentCategoryDTO, Pa
 
     @Override
     @PostMapping
-    public ResponseEntity<PaymentCategoryDTO> insert(PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<PaymentCategoryDTO> insert(@RequestBody @Validated PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
         PaymentCategory paymentCategory = form.converter();
         paymentCategory = service.insert(paymentCategory);
         URI uri = uriBuilder.path("scf-service/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
@@ -46,13 +47,18 @@ public class PaymentCategoryResource implements IResource<PaymentCategoryDTO, Pa
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            service.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Override
     @PutMapping
-    public ResponseEntity<UserDTO> update(PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserDTO> update(@RequestBody @Validated PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
         PaymentCategory paymentCategory = form.converter();
         paymentCategory = service.update(paymentCategory);
         URI uri = uriBuilder.path("scf-service/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();

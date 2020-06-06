@@ -26,10 +26,6 @@ public class PaymentCategoryService implements IService<PaymentCategory> {
         return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!"));
     }
 
-    public List<PaymentCategory> findByDescription(String query) {
-         return repository.findByDescription(query);
-    }
-
     @Override
     public PaymentCategory insert(PaymentCategory paymentCategory) {
         PaymentCategory insert = repository.insert(paymentCategory);
@@ -56,5 +52,9 @@ public class PaymentCategoryService implements IService<PaymentCategory> {
                 .mutable(newObj.isMutable())
                 .billType(newObj.getBillType())
                 .build();
+    }
+
+    public List<PaymentCategory> findByDescriptionContainingIgnoreCase(String description) {
+        return repository.findByDescriptionContainingIgnoreCase(description);
     }
 }

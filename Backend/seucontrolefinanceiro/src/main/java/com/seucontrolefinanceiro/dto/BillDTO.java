@@ -1,6 +1,7 @@
 package com.seucontrolefinanceiro.dto;
 
 import com.seucontrolefinanceiro.domain.Bill;
+import com.seucontrolefinanceiro.domain.User;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -16,6 +17,8 @@ public class BillDTO {
     private final LocalDate payDAy;
     private final String billType;
     private final String paymentCategory;
+    private final boolean paid;
+    private final String userId;
 
     public BillDTO(Bill bill) {
         this.id = bill.getId();
@@ -24,6 +27,8 @@ public class BillDTO {
         this.payDAy = bill.getPayDAy();
         this.billType = bill.getBillType().getDescription();
         this.paymentCategory = bill.getPaymentCategory().getDescription();
+        this.paid = bill.isPaid();
+        this.userId = bill.getUserId();
     }
 
     public static List<BillDTO> converter(List<Bill> bills) {

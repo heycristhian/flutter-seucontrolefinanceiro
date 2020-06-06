@@ -24,6 +24,7 @@ public class UserResource implements IResource<UserDTO, UserForm> {
     @Override
     @GetMapping
     public ResponseEntity<List<UserDTO>> find(String query) {
+        System.out.println(query);
         List<User> users = service.findAll();
         return ResponseEntity.ok().body(UserDTO.converter((users)));
     }
@@ -47,8 +48,13 @@ public class UserResource implements IResource<UserDTO, UserForm> {
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            service.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Override

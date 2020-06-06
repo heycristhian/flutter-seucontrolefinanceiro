@@ -7,6 +7,7 @@ import com.seucontrolefinanceiro.form.BillForm;
 import com.seucontrolefinanceiro.services.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +37,7 @@ public class BillResource implements IResource<BillDTO, BillForm> {
 
     @Override
     @PostMapping
-    public ResponseEntity<BillDTO> insert(@RequestBody BillForm form, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<BillDTO> insert(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
         bill = service.insert(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
@@ -46,13 +47,18 @@ public class BillResource implements IResource<BillDTO, BillForm> {
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(String id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            service.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Override
     @PutMapping()
-    public ResponseEntity<UserDTO> update(BillForm form, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserDTO> update(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
         bill = service.update(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();

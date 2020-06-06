@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Document()
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"fullName", "user"})
 @ToString(of = {"fullName", "bills"})
 @AllArgsConstructor(staticName = "of")
 public class User {

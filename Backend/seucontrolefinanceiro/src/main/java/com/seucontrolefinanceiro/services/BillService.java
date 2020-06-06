@@ -1,8 +1,11 @@
 package com.seucontrolefinanceiro.services;
 
 import com.seucontrolefinanceiro.domain.Bill;
+import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.repository.BillRepository;
+import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
+import com.seucontrolefinanceiro.services.util.BillEveryMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,12 @@ public class BillService implements IService<Bill> {
 
     @Autowired
     private BillRepository repository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Bill> findAll() {
@@ -28,7 +37,19 @@ public class BillService implements IService<Bill> {
 
     @Override
     public Bill insert(Bill bill) {
+        BillEveryMonth everyMonth = new BillEveryMonth();
         Bill insert = repository.insert(bill);
+        List<Bill> bills = everyMonth.checkEveryMonth(bill, insert.getId());
+
+        User user = userService.findById(insert.getUserId());
+        user.addToListBill(insert);
+        userRepository.save(user);
+
+        for(Bill b : bills) {
+            repository.insert(b);
+            user.addToListBill(b);
+            userRepository.save(user);
+        }
         return insert;
     }
 
@@ -55,6 +76,9 @@ public class BillService implements IService<Bill> {
                 .payDAy(newObj.getPayDAy())
                 .billType(newObj.getBillType())
                 .paymentCategory(newObj.getPaymentCategory())
+                .paid(newObj.isPaid())
+                .father(newObj.getFather())
+                .userId(newObj.getUserId())
                 .build();
     }
 }
