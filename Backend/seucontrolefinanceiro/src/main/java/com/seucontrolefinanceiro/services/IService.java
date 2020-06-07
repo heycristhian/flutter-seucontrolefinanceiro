@@ -13,5 +13,5 @@ public interface IService<T> {
     public T insert(T t);
     public void delete(String id);
     public T update(T newObj);
-    public void updateData(T currentObj, T newObj);
+    public T updateData(T newObj, String id);
 }

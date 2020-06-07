@@ -1,5 +1,6 @@
 package com.seucontrolefinanceiro.services;
 
+import com.seucontrolefinanceiro.domain.Bill;
 import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
@@ -42,16 +43,19 @@ public class UserService implements IService<User>{
     @Override
     public User update(User newUser) {
         User currentUser = findById(newUser.getId());
-        updateData(currentUser, newUser);
+        currentUser = updateData(newUser, currentUser.getId());
         return repository.save(currentUser);
     }
 
     @Override
-    public void updateData(User currentUser, User newUser) {
-        currentUser.setFullName(newUser.getFullName());
-        currentUser.setUser(newUser.getUser());
-        currentUser.setPassword(newUser.getPassword());
-        currentUser.setCpf(newUser.getCpf());
+    public User updateData(User newUser, String id) {
+        return User.builder()
+                .id(id)
+                .fullName(newUser.getFullName())
+                .user(newUser.getUser())
+                .password(newUser.getPassword())
+                .cpf(newUser.getCpf())
+                .build();
     }
 
 }

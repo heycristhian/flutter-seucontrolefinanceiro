@@ -24,7 +24,7 @@ public class Bill {
     private BillType billType;
     private PaymentCategory paymentCategory;
     private boolean paid;
-    private String father;
+    private String parent;
     private String userId;
 
 }

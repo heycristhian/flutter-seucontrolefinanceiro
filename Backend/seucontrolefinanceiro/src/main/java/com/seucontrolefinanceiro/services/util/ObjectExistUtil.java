@@ -1,9 +1,7 @@
 package com.seucontrolefinanceiro.services.util;
 
-import com.seucontrolefinanceiro.domain.Bill;
 import com.seucontrolefinanceiro.domain.PaymentCategory;
 import com.seucontrolefinanceiro.domain.User;
-import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;
 

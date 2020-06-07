@@ -41,13 +41,14 @@ public class PaymentCategoryService implements IService<PaymentCategory> {
     @Override
     public PaymentCategory update(PaymentCategory newObj) {
         PaymentCategory currentObj = findById(newObj.getId());
-        updateData(currentObj, newObj);
+        currentObj = updateData(newObj, currentObj.getId());
         return repository.save(currentObj);
     }
 
     @Override
-    public void updateData(PaymentCategory currentObj, PaymentCategory newObj) {
-        currentObj = PaymentCategory.builder()
+    public PaymentCategory updateData(PaymentCategory newObj, String id) {
+        return PaymentCategory.builder()
+                .id(id)
                 .description(newObj.getDescription())
                 .mutable(newObj.isMutable())
                 .billType(newObj.getBillType())

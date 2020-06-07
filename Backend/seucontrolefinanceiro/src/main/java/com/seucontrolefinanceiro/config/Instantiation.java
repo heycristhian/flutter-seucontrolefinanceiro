@@ -190,6 +190,7 @@ public class Instantiation implements CommandLineRunner {
 
 
         User adm = User.builder()
+                .id("5edc8081336c5266fcc81dd5")
                 .fullName("Administrador")
                 .user("admin")
                 .password("admin")
