@@ -1,38 +1,42 @@
 package com.seucontrolefinanceiro.config.security;
 
 
-import java.util.Date;
-
 import com.seucontrolefinanceiro.domain.User;
-import org.springframework.beans.factory.annotation.Value;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Service
 public class TokenService {
-
+/*
     @Value("${forum.jwt.expiration}")
     private String expiration;
 
     @Value("${forum.jwt.secret}")
-    private String secret;
+    private String secret;*/
+
+    private String secret = "mysecret";
 
     public String generateToken(Authentication authentication) {
-        User logged = (User) authentication.getPrincipal();
-        Date today = new Date();
-        Date dateExpiration = new Date(today.getTime() + Long.parseLong(expiration));
+        User loggedUser = (User) authentication.getPrincipal();
+        LocalDate expirationDate = LocalDate.now().plusDays(1);
 
         return Jwts.builder()
                 .setIssuer("API - Seu controle financeiro")
-                .setSubject(logged.getId().toString())
-                .setIssuedAt(today)
-                .setExpiration(dateExpiration)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .setIssuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .setSubject(loggedUser.getId())
+                .setExpiration(Date.from(expirationDate.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .signWith(
+                        SignatureAlgorithm.HS256,
+                        TextCodec.BASE64.decode("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=")
+                )
                 .compact();
+
     }
 }
