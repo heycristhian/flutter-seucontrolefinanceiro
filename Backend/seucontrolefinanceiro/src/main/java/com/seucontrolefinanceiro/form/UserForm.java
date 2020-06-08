@@ -10,7 +10,7 @@ public class UserForm {
     @NonNull
     private final String fullName;
     @NonNull
-    private final String user;
+    private final String email;
     @NonNull
     private final String password;
     @NonNull
@@ -22,7 +22,7 @@ public class UserForm {
         return User.builder()
                 .id(this.id)
                 .fullName(this.fullName)
-                .user(this.user)
+                .email(this.email)
                 .password(this.password)
                 .cpf(this.cpf)
                 .build();

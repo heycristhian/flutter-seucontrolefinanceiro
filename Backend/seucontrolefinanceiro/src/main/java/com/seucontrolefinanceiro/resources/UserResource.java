@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("scf-service/users")
@@ -23,8 +24,8 @@ public class UserResource implements IResource<UserDTO, UserForm> {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<UserDTO>> find(String query) {
-        System.out.println(query);
+    public ResponseEntity<List<UserDTO>> find(String user) {
+        System.out.println(user);
         List<User> users = service.findAll();
         return ResponseEntity.ok().body(UserDTO.converter((users)));
     }

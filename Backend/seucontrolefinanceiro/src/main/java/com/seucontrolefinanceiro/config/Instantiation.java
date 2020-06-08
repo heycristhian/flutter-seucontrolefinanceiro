@@ -12,6 +12,7 @@ import com.seucontrolefinanceiro.services.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -192,13 +193,13 @@ public class Instantiation implements CommandLineRunner {
         User adm = User.builder()
                 .id("5edc8081336c5266fcc81dd5")
                 .fullName("Administrador")
-                .user("admin")
-                .password("admin")
+                .email("admin@admin.com.br")
+                .password(new BCryptPasswordEncoder().encode("admin"))
                 .cpf("45073070828")
                 .build();
 
         boolean exist = userRepository.findAll().stream()
-                .filter(x -> x.getUser().equals(adm.getUser()))
+                .filter(x -> x.getEmail().equals(adm.getEmail()))
                 .findAny()
                 .stream()
                 .collect(Collectors.toList()).size() > 0;

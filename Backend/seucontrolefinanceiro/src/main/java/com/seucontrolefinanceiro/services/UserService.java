@@ -52,7 +52,7 @@ public class UserService implements IService<User>{
         return User.builder()
                 .id(id)
                 .fullName(newUser.getFullName())
-                .user(newUser.getUser())
+                .email(newUser.getEmail())
                 .password(newUser.getPassword())
                 .cpf(newUser.getCpf())
                 .build();
