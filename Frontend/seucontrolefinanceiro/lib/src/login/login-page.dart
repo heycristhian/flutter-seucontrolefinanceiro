@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seucontrolefinanceiro/app/pages/home/home_page.dart';
-import 'package:seucontrolefinanceiro/app/pages/login/utilities/constants.dart';
-import 'package:seucontrolefinanceiro/app/services/login_service.dart';
+import 'package:seucontrolefinanceiro/src/home/home-page.dart';
+import 'components/constants-components.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -116,16 +115,10 @@ class _LoginPageState extends State<LoginPage> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-        LoginService lg = LoginService();
-        Future<bool> checkLogin = lg.checkLogin('admin', 'admin');
-        if (checkLogin != null) {
           Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => HomePage()),
             );
-        } else {
-          print('Não foi possível logar');
-        }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(

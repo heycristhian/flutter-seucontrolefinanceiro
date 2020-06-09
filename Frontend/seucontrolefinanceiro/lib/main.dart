@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'app/pages/login/login_page.dart';
+import 'package:seucontrolefinanceiro/src/login/login-page.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Seu controle financeiro',
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-    );
-  }
+void main() {
+  runApp(MaterialApp(
+    title: "DZ-Finance",
+    theme: ThemeData(
+        primaryColor: Color.fromRGBO(17, 199, 111, 1),
+        primaryColorDark: Color.fromRGBO(18, 18, 18, 1)),
+    home: LoginPage(),
+  ));
 }
