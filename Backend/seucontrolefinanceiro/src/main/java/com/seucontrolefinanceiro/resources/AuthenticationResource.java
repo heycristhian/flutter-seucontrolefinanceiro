@@ -1,6 +1,7 @@
 package com.seucontrolefinanceiro.resources;
 
 import com.seucontrolefinanceiro.config.security.TokenService;
+import com.seucontrolefinanceiro.dto.TokenDTO;
 import com.seucontrolefinanceiro.form.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +21,18 @@ import javax.validation.Valid;
 public class AuthenticationResource {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<?> authenticate(@RequestBody @Valid LoginForm form) {
+    public ResponseEntity<TokenDTO> authenticate(@RequestBody @Valid LoginForm form) {
         UsernamePasswordAuthenticationToken dataLogin = form.converter();
-
         try {
             Authentication authenticate = authenticationManager.authenticate(dataLogin);
             String token = tokenService.generateToken(authenticate);
-            System.out.println(token);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }
