@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/home/components/appbar-component.dart';
 import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
 
 class BodyComponent {
   Widget body(BuildContext context) {
+    Future<double> valueTotal = BillController.getValueTotalMonth();
+
+    return FutureBuilder(
+        future: valueTotal,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          double value = snapshot.data;
+          return _singleChildScrollView(context, value);
+        });
+  }
+
+  Widget _singleChildScrollView(context, valueTotal) {
     return SingleChildScrollView(
       child: Container(
         child: Column(
@@ -11,7 +31,7 @@ class BodyComponent {
             Stack(
               children: <Widget>[
                 AppBarComponent().myAppBar(),
-                DashboardComponent().dashboard(context)
+                DashboardComponent().dashboard(context, valueTotal)
               ],
             ),
             SizedBox(
@@ -29,13 +49,6 @@ class BodyComponent {
             _ultimosLancamentos(),
             SizedBox(height: 20),
             _ultimosLancamentos(),
-            SizedBox(height: 20),
-            _ultimosLancamentos(),
-            SizedBox(height: 20),
-            _ultimosLancamentos(),
-            SizedBox(height: 20),
-            _ultimosLancamentos(),
-            SizedBox(height: 20),
           ],
         ),
       ),

@@ -33,6 +33,7 @@ dependencies:
   calendar_strip: ^1.0.4
   date_format: ^1.0.4
   flutter_spinkit: "^4.1.2"
+  shared_preferences: ^0.5.4
 
 dev_dependencies:
   flutter_test:

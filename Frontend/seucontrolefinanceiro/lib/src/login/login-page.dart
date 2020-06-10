@@ -271,9 +271,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _navigateHomePage(BuildContext context) {
-    /*
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomePage()));*/
       Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
   }

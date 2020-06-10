@@ -16,7 +16,6 @@ public class UserService implements IService<User>{
     @Autowired
     private UserRepository repository;
 
-
     @Override
     public List<User> findAll() {
         return repository.findAll();
@@ -26,6 +25,10 @@ public class UserService implements IService<User>{
     public User findById(String id) {
         Optional<User> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found!"));
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     @Override
