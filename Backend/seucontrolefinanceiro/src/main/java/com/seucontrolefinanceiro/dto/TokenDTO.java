@@ -6,10 +6,10 @@ import lombok.Getter;
 public class TokenDTO {
 
     private String token;
-    private String tipo;
+    private String type;
 
     public TokenDTO(String token, String bearer) {
         this.token = token;
-        this.tipo = bearer;
+        this.type = bearer;
     }
 }

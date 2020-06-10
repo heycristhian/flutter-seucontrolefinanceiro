@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:seucontrolefinanceiro/src/components/alert.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/login/login-controller.dart';
+import 'package:seucontrolefinanceiro/src/login/login-service.dart';
+import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'components/constants-components.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +15,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _rememberMe = false;
+  final _ctrlUser = TextEditingController();
+  final _ctrlPassword = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final LoginModel loginModel = LoginModel();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Widget _buildEmailTF() {
     return Column(
@@ -24,7 +34,8 @@ class _LoginPageState extends State<LoginPage> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            controller: _ctrlUser,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
@@ -59,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            controller: _ctrlPassword,
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
@@ -115,10 +127,7 @@ class _LoginPageState extends State<LoginPage> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
+          _clickButton(context);
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -170,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
@@ -201,31 +211,34 @@ class _LoginPageState extends State<LoginPage> {
                     horizontal: 40.0,
                     vertical: 120.0,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'SEU CONTROLE FINANCEIRO',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'OpenSans',
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.bold,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'SEU CONTROLE FINANCEIRO',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'OpenSans',
+                            fontSize: 40.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      _buildPasswordTF(),
-                      SizedBox(height: 15.0),
-                      _buildRememberMeCheckbox(),
-                      SizedBox(height: 20.0),
-                      _buildLoginBtn(),
-                      _buildSignupBtn(),
-                    ],
+                        SizedBox(height: 30.0),
+                        _buildEmailTF(),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        _buildPasswordTF(),
+                        SizedBox(height: 15.0),
+                        _buildRememberMeCheckbox(),
+                        SizedBox(height: 20.0),
+                        _buildLoginBtn(),
+                        _buildSignupBtn(),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -234,5 +247,34 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _clickButton(BuildContext context) async {
+    //to see what I will to make for this method
+    bool formOk = _formKey.currentState.validate();
+
+    loginModel.user = _ctrlUser.text;
+    loginModel.password = _ctrlPassword.text;
+
+    print(loginModel.user);
+    print(loginModel.password);
+
+    var auth = await LoginService.login(loginModel);
+
+    if (auth != null) {
+      _navigateHomePage(context);
+    } else {
+      _ctrlPassword.text = '';
+      _ctrlUser.text = '';
+      alert(context, 'USUÁRIO OU SENHA INVÁLIDOS');
+    }
+  }
+
+  _navigateHomePage(BuildContext context) {
+    /*
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomePage()));*/
+      Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
   }
 }
