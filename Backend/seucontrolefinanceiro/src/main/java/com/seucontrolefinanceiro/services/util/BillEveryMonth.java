@@ -8,23 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillEveryMonth {
-
+/*
     @Autowired
     private BillService billService;
 
-    public List<Bill> checkEveryMonth(Bill bill, List<Bill> allBills) {
+    public static List<Bill> checkEveryMonth(Bill bill, Integer index) {
         List<Bill> billsChild = new ArrayList<>();
-        Integer monthQuantity = 12;
-
-        if (bill.isEveryMonth()) {
-            for(Integer i = 1; i < monthQuantity; i++) {
-                billsChild.add(GenerateObject.insertData(bill, i));
+            if (bill.isEveryMonth()) {
+                for(int i = 1; i <= index; i++) {
+                    billsChild.add(GenerateObject.insertData(bill, i));
+                }
             }
-        } else {
-            return allBills;
-        }
         return billsChild;
     }
 
-
+*/
 }

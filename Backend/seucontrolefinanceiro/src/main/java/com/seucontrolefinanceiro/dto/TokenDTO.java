@@ -7,9 +7,11 @@ public class TokenDTO {
 
     private String token;
     private String type;
+    private String userId;
 
-    public TokenDTO(String token, String bearer) {
+    public TokenDTO(String token, String bearer, String userId) {
         this.token = token;
         this.type = bearer;
+        this.userId = userId;
     }
 }

@@ -5,7 +5,7 @@ class UserModel {
   String fullName;
   String email;
   String cpf;
-  List<Bill> bills;
+  List<BillModel> bills;
 
   UserModel({this.id, this.fullName, this.email, this.cpf, this.bills});
 
@@ -15,9 +15,9 @@ class UserModel {
     email = json['email'];
     cpf = json['cpf'];
     if (json['bills'] != null) {
-      bills = new List<Bill>();
+      bills = new List<BillModel>();
       json['bills'].forEach((v) {
-        bills.add(new Bill.fromJson(v));
+        bills.add(new BillModel.fromJson(v));
       });
     }
   }

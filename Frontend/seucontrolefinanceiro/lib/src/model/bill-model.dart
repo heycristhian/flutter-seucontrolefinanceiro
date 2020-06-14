@@ -1,10 +1,8 @@
-
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
 
-class Bill {
-  String id;
+class BillModel {
   String billDescription;
-  int amount;
+  String amount;
   bool everyMonth;
   bool sameAmount;
   String payDAy;
@@ -13,10 +11,10 @@ class Bill {
   bool paid;
   String parent;
   String userId;
+  String sClass;
 
-  Bill(
-      {this.id,
-      this.billDescription,
+  BillModel(
+      {this.billDescription,
       this.amount,
       this.everyMonth,
       this.sameAmount,
@@ -25,12 +23,14 @@ class Bill {
       this.paymentCategory,
       this.paid,
       this.parent,
-      this.userId});
+      this.userId,
+      this.sClass});
 
-  Bill.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  BillModel.fromJson(Map<String, dynamic> json) {
     billDescription = json['billDescription'];
-    amount = json['amount'];
+    var test = json['amount'];
+    print(test);
+    amount =  json['amount'].toString();
     everyMonth = json['everyMonth'];
     sameAmount = json['sameAmount'];
     payDAy = json['payDAy'];
@@ -41,11 +41,11 @@ class Bill {
     paid = json['paid'];
     parent = json['parent'];
     userId = json['userId'];
+    sClass = json['_class'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
     data['billDescription'] = this.billDescription;
     data['amount'] = this.amount;
     data['everyMonth'] = this.everyMonth;
@@ -58,6 +58,7 @@ class Bill {
     data['paid'] = this.paid;
     data['parent'] = this.parent;
     data['userId'] = this.userId;
+    data['_class'] = this.sClass;
     return data;
   }
 }

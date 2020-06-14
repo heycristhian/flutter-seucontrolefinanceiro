@@ -27,6 +27,7 @@ class LoginService {
       prefs.setString('token', mapResponse['token']);
       prefs.setString('type', mapResponse['type']);
       prefs.setString('user', loginModel.user);
+      prefs.setString('userId', mapResponse['userId']);
       return auth; 
     } on Exception {
       return null;

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seucontrolefinanceiro/src/bill/bill-service.dart';
-import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:seucontrolefinanceiro/src/transactions/transaction-page.dart';
 
 class DashboardComponent {

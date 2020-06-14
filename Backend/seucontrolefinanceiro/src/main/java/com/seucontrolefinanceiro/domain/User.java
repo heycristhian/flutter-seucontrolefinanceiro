@@ -1,5 +1,6 @@
 package com.seucontrolefinanceiro.domain;
 
+import com.seucontrolefinanceiro.repository.BillRepository;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -66,11 +67,12 @@ public class User implements UserDetails {
     }
 
     public void addToListBill(Bill bill) {
-        this.bills.stream().filter(x -> x.equals(bill))
-                .findAny()
-                .ifPresent(valor -> {
+        if (this.bills.size() > 0) {
+            this.bills.stream().filter(x -> x.getId().equals(bill.getId()))
+                    .findAny().ifPresent((value) -> {
                     return;
-                });
+            });
+        }
         this.bills.add(bill);
     }
 

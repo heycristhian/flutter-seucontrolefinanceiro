@@ -1,6 +1,7 @@
 package com.seucontrolefinanceiro.resources;
 
 import com.seucontrolefinanceiro.config.security.TokenService;
+import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.dto.TokenDTO;
 import com.seucontrolefinanceiro.form.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class AuthenticationResource {
         try {
             Authentication authenticate = authenticationManager.authenticate(dataLogin);
             String token = tokenService.generateToken(authenticate);
-            return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
+            User loggedUser = (User) authenticate.getPrincipal();
+            return ResponseEntity.ok(new TokenDTO(token, "Bearer", loggedUser.getId()));
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }

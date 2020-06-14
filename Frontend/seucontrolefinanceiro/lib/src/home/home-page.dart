@@ -83,7 +83,8 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.menu),
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {
+                },
               )
             ],
           ),

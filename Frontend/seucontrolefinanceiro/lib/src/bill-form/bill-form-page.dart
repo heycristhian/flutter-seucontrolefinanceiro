@@ -1,7 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:seucontrolefinanceiro/src/bill-form/components/float-button-component.dart';
+import 'package:intl/intl.dart';
+import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
 
 class BillFormPage extends StatefulWidget {
   @override
@@ -9,12 +12,26 @@ class BillFormPage extends StatefulWidget {
 }
 
 class _BillFormPageState extends State<BillFormPage> {
-  var menuCategoria = [
-    'Salário',
-    'Empréstimo',
-    'Outros',
-  ];
+  DateTime _date = DateTime.now();
+  final _ctrlMoney = TextEditingController();
+  final _ctrlDescription = TextEditingController();
 
+  Future<Null> selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _date,
+        firstDate: DateTime(DateTime.now().year),
+        lastDate: DateTime(2100));
+
+    if (picked != null && picked != _date) {
+      setState(() {
+        _date = picked;
+        print(_date.toString());
+      });
+    }
+  }
+
+  var paymentCategories = List<PaymentCategory>();
   var categoriaSelecionada = 'Salário';
 
   Icon icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
@@ -23,18 +40,7 @@ class _BillFormPageState extends State<BillFormPage> {
   String _despesaOuReceita = 'Receita';
 
   bool _isSwitched = false;
-
-  String retornaData() {
-    var date = formatDate(
-            DateTime(
-                DateTime.now().year, DateTime.now().month, DateTime.now().day),
-            [dd, '/', mm, '/', yyyy]) +
-        ' - ' +
-        DateTime.now().hour.toString() +
-        ':' +
-        DateTime.now().minute.toString();
-    return date;
-  }
+  bool _isSwitchedAmount = false;
 
   Widget _containerRendaDespesa(Icon icon, Color color1, Color color2) {
     return Container(
@@ -60,7 +66,8 @@ class _BillFormPageState extends State<BillFormPage> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
+                      child: TextFormField(
+                        controller: _ctrlMoney,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 50.0,
@@ -89,35 +96,9 @@ class _BillFormPageState extends State<BillFormPage> {
             height: 20,
           ),
           ListTile(
-            leading: const Icon(Icons.category),
-            title: DropdownButton<String>(
-              value: categoriaSelecionada,
-              icon: Icon(Icons.arrow_downward),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              isExpanded: true,
-              items: menuCategoria.map((String dropdownStringItem) {
-                return DropdownMenuItem(
-                  value: dropdownStringItem,
-                  child: Text(dropdownStringItem),
-                );
-              }).toList(),
-              onChanged: (String newValue) {
-                setState(() {
-                  this.categoriaSelecionada = newValue;
-                });
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          ListTile(
             leading: const Icon(Icons.description),
-            title: TextField(
+            title: TextFormField(
+              controller: _ctrlDescription,
               decoration: InputDecoration(
                 hintText: "Descrição...",
               ),
@@ -136,7 +117,7 @@ class _BillFormPageState extends State<BillFormPage> {
                 ),
                 Expanded(
                   child: ListTile(
-                    title: Text("$_despesaOuReceita Mensal"),
+                    title: Text("$_despesaOuReceita Mensal?"),
                     subtitle: Text("Você pode modificar futuramente"),
                   ),
                 ),
@@ -147,14 +128,25 @@ class _BillFormPageState extends State<BillFormPage> {
               ],
             ),
           ),
+          _methodSameAmount(),
           SizedBox(
-            height: 10,
+            height: 40,
           ),
           ListTile(
-            leading: const Icon(Icons.today),
-            title: const Text('Data'),
-            subtitle: Text(retornaData()),
-          ),
+              title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(DateFormat('dd/MM/yyy').format(_date)),
+              SizedBox(
+                width: 10,
+              ),
+              IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () {
+                    selectDate(context);
+                  })
+            ],
+          )),
         ],
       ),
     );
@@ -182,33 +174,87 @@ class _BillFormPageState extends State<BillFormPage> {
               if (index == 0) {
                 color1 = Color.fromRGBO(17, 199, 111, 1);
                 color2 = Colors.greenAccent;
-                categoriaSelecionada = 'Salário';
                 _despesaOuReceita = 'Receita';
-                menuCategoria = [
-                  'Salário',
-                  'Empréstimo',
-                  'Outros',
-                ];
               } else {
                 color1 = Colors.red;
                 color2 = Colors.redAccent;
                 _despesaOuReceita = 'Despesa';
-                categoriaSelecionada = 'Alimentação';
-                menuCategoria = [
-                  'Alimentação',
-                  'Bar/Restaurante',
-                  'Educação',
-                  'Lazer',
-                  'Supermercado'
-                ];
               }
             });
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatButtonComponent(),
+        floatingActionButton: Container(
+          child: InkWell(
+            onTap: () {
+              BillModel billModel = BillModel();
+              billModel.billDescription = _ctrlDescription.text;
+              billModel.payDAy = _date.toString();
+              billModel.everyMonth = _isSwitched;
+              billModel.amount = _ctrlMoney.text;
+              billModel.sameAmount = _isSwitchedAmount;
+              billModel.paid = false;
+              billModel.billType =
+                  (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
+
+              BillController.insertBill(billModel);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => HomePage()));
+            },
+            child: Container(
+              width: 100,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(width: 2, color: Colors.greenAccent)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Salvar",
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.greenAccent),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         body: _containerRendaDespesa(icon, color1, color2),
       ),
     );
+  }
+
+  _methodSameAmount() {
+    if (_isSwitched) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 17.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Icon(Icons.monetization_on),
+            ),
+            Expanded(
+              child: ListTile(
+                title: Text("Mesmo valor mensal?"),
+                subtitle: Text("Você pode modificar futuramente"),
+              ),
+            ),
+            Switch(
+              onChanged: (val) => setState(() => _isSwitchedAmount = val),
+              value: _isSwitchedAmount,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return SizedBox();
+    }
   }
 }

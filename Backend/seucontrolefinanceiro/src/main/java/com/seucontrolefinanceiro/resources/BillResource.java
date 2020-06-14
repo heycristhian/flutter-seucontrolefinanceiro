@@ -39,7 +39,7 @@ public class BillResource implements IResource<BillDTO, BillForm> {
     @PostMapping
     public ResponseEntity<BillDTO> insert(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
-        bill = service.insert(bill);
+        service.insert(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.created(uri).body(new BillDTO(bill));
     }
@@ -60,7 +60,7 @@ public class BillResource implements IResource<BillDTO, BillForm> {
     @PutMapping()
     public ResponseEntity<UserDTO> update(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
-        bill = service.update(bill);
+        service.update(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.noContent().build();
     }
