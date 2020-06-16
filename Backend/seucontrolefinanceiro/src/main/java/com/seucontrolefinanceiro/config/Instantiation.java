@@ -217,7 +217,9 @@ public class Instantiation implements CommandLineRunner {
                     .paymentCategory(bank)
                     .userId(adm.getId())
                     .build();
+            adm.addToListBill(bill);
             billService.insert(bill);
+            userRepository.save(adm);
         }
     }
 }

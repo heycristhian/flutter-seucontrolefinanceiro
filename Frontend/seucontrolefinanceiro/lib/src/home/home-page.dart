@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/home/components/body-component.dart';
+import 'package:seucontrolefinanceiro/src/login/login-page.dart';
+import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,15 +24,12 @@ class _HomePageState extends State<HomePage> {
                 currentAccountPicture: GestureDetector(
                   onTap: () => debugPrint("Avatar ok!"),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        ""),
+                    backgroundImage: NetworkImage(""),
                   ),
                 ),
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            ""))),
+                        fit: BoxFit.fill, image: NetworkImage(""))),
               ),
               SizedBox(height: 10),
               ListTile(
@@ -51,13 +50,18 @@ class _HomePageState extends State<HomePage> {
               ),
               Divider(),
               ListTile(
-                title: Text("Sair"),
-                trailing: Icon(
-                  Icons.close,
-                  color: Colors.redAccent,
-                ),
-                onTap: () => Navigator.of(context).pop(),
-              ),
+                  title: Text("Sair"),
+                  trailing: Icon(
+                    Icons.close,
+                    color: Colors.redAccent,
+                  ),
+                  onTap: () => {
+                        LoginService.resetPrefs(),
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => LoginPage()))
+                      }),
             ],
           ),
         ),
@@ -83,8 +87,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.menu),
                 color: Colors.white,
-                onPressed: () {
-                },
+                onPressed: () {},
               )
             ],
           ),

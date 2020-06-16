@@ -28,9 +28,17 @@ class LoginService {
       prefs.setString('type', mapResponse['type']);
       prefs.setString('user', loginModel.user);
       prefs.setString('userId', mapResponse['userId']);
-      return auth; 
+      return auth;
     } on Exception {
       return null;
     }
+  }
+
+  static resetPrefs() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', '');
+    prefs.setString('type', '');
+    prefs.setString('user', '');
+    prefs.setString('userId', '');
   }
 }

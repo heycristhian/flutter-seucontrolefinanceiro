@@ -2,28 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/home/components/appbar-component.dart';
 import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
+import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BodyComponent {
   Widget body(BuildContext context) {
-    Future<double> valueTotal = BillController.getValueTotalMonth();
+    Future<List<BillModel>> billsModel = BillController.getBillsByCurrentUser();
 
     return FutureBuilder(
-        future: valueTotal,
+        future: billsModel,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: CircularProgressIndicator());
           }
-
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-
-          double value = snapshot.data;
-          return _singleChildScrollView(context, value);
+          var bills = snapshot.data;
+          return _singleChildScrollView(context, bills);
         });
   }
 
-  Widget _singleChildScrollView(context, valueTotal) {
+  Widget _singleChildScrollView(context, bills) {
     return SingleChildScrollView(
       child: Container(
         child: Column(
@@ -31,7 +30,7 @@ class BodyComponent {
             Stack(
               children: <Widget>[
                 AppBarComponent().myAppBar(),
-                DashboardComponent().dashboard(context, valueTotal)
+                DashboardComponent().dashboard(context, bills)
               ],
             ),
             SizedBox(

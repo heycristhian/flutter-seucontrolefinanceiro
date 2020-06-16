@@ -43,21 +43,23 @@ public class BillService implements IService<Bill> {
 
     @Override
     public Bill insert(Bill bill) {
+        User user = userService.findById(bill.getUserId());
+        user.setBills(repository.findByUserId(bill.getUserId()).get());
+
         if (bill.isEveryMonth()) {
             List<Bill> bills = GenerateObject.generateBills(bill, billAmount);
             repository.insert(bill);
-            User user = userService.findById(bill.getUserId());
-            user.setBills(repository.findByUserId(bill.getUserId()).get());
-
+            user.addToListBill(bill);
             for (Bill b : bills) {
                 b.setParent(bill.getId());
                 repository.insert(b);
                 user.addToListBill(b);
             }
-            userRepository.save(user);
         } else {
             repository.insert(bill);
+            user.addToListBill(bill);
         }
+        userRepository.save(user);
         return bill;
     }
 
