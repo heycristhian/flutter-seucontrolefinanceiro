@@ -28,7 +28,7 @@ public class BillService implements IService<Bill> {
     @Autowired
     private UserRepository userRepository;
 
-    private Integer billAmount = 5;
+    private Integer billAmount = 11;
 
     @Override
     public List<Bill> findAll() {

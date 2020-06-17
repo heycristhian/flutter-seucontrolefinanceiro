@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:seucontrolefinanceiro/src/model/auth-model.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
+import 'package:seucontrolefinanceiro/src/model/user-model.dart';
+import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
@@ -22,12 +24,14 @@ class LoginService {
     print('Response status: ${response.statusCode}');
 
     try {
+      UserModel user = await UserControler.getUser();
       Map mapResponse = json.decode(response.body);
       final auth = AuthModel.fromJson(mapResponse);
       prefs.setString('token', mapResponse['token']);
       prefs.setString('type', mapResponse['type']);
       prefs.setString('user', loginModel.user);
       prefs.setString('userId', mapResponse['userId']);
+      prefs.setString('fullname', user.fullName);
       return auth;
     } on Exception {
       return null;

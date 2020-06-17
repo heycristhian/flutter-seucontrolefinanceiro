@@ -67,6 +67,7 @@ class _BillFormPageState extends State<BillFormPage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
+                        autofocus: true,
                         controller: _ctrlMoney,
                         textAlign: TextAlign.center,
                         style: TextStyle(
