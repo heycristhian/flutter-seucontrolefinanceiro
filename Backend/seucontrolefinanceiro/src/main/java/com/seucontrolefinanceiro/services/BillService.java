@@ -28,7 +28,7 @@ public class BillService implements IService<Bill> {
     @Autowired
     private UserRepository userRepository;
 
-    private Integer billAmount = 11;
+    private final Integer portion = 11;
 
     @Override
     public List<Bill> findAll() {
@@ -46,8 +46,10 @@ public class BillService implements IService<Bill> {
         User user = userService.findById(bill.getUserId());
         user.setBills(repository.findByUserId(bill.getUserId()).get());
 
+
         if (bill.isEveryMonth()) {
-            List<Bill> bills = GenerateObject.generateBills(bill, billAmount);
+            Integer index = bill.getPortion() == null ? portion : bill.getPortion();
+            List<Bill> bills = GenerateObject.generateBills(bill, index);
             repository.insert(bill);
             user.addToListBill(bill);
             for (Bill b : bills) {
@@ -82,7 +84,8 @@ public class BillService implements IService<Bill> {
         List<Bill> bills;
 
         if (newObjIsEveryMonth && !oldObjIsEveryMonth) {
-            bills = GenerateObject.generateBills(newObj, billAmount);
+            Integer index = newObj.getPortion() == null ? portion : newObj.getPortion();
+            bills = GenerateObject.generateBills(newObj, index);
 
             for (Bill b : bills) {
                 b.setParent(newObj.getId());
@@ -128,6 +131,7 @@ public class BillService implements IService<Bill> {
                 .paid(newObj.isPaid())
                 .parent(newObj.getParent())
                 .userId(newObj.getUserId())
+                .portion(newObj.getPortion())
                 .build();
     }
 

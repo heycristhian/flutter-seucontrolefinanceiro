@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
               floatingActionButton: FloatingActionButton(
                 child: const Icon(Icons.add, color: Colors.white),
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) => BillFormPage()));

@@ -12,6 +12,7 @@ class BillModel {
   String parent;
   String userId;
   String sClass;
+  int portion;
 
   BillModel(
       {this.billDescription,
@@ -24,7 +25,8 @@ class BillModel {
       this.paid,
       this.parent,
       this.userId,
-      this.sClass});
+      this.sClass,
+      this.portion});
 
   BillModel.fromJson(Map<String, dynamic> json) {
     billDescription = json['billDescription'];
@@ -42,6 +44,7 @@ class BillModel {
     parent = json['parent'];
     userId = json['userId'];
     sClass = json['_class'];
+    portion = json['portion'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +62,7 @@ class BillModel {
     data['parent'] = this.parent;
     data['userId'] = this.userId;
     data['_class'] = this.sClass;
+    data['portion'] = this.portion;
     return data;
   }
 }

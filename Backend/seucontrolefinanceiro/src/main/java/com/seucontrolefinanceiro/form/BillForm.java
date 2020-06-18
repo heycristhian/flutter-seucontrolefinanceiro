@@ -41,6 +41,7 @@ public class BillForm {
     private boolean paid;
     @NonNull
     private String userId;
+    private Integer portion;
 
     public Bill converter() {
         return Bill.builder()
@@ -54,6 +55,7 @@ public class BillForm {
                 .paymentCategory(this.getPaymentCategory())
                 .paid(this.isPaid())
                 .userId(this.getUserId())
+                .portion(this.getPortion())
                 .build();
     }
 }

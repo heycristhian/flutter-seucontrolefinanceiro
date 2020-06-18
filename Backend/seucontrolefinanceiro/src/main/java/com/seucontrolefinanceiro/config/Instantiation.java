@@ -66,7 +66,7 @@ public class Instantiation implements CommandLineRunner {
         paymentCategories.add(investment);
 
         PaymentCategory others = PaymentCategory.builder()
-                .description("Outras receitas")
+                .description("Outros")
                 .mutable(false)
                 .billType(BillType.RECEIVEMENT)
                 .build();
@@ -178,7 +178,7 @@ public class Instantiation implements CommandLineRunner {
         paymentCategories.add(trip);
 
         PaymentCategory othersPayment = PaymentCategory.builder()
-                .description("Viagem")
+                .description("Outros")
                 .mutable(false)
                 .billType(BillType.PAYMENT)
                 .build();

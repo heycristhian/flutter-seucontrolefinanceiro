@@ -1,6 +1,7 @@
 import 'package:seucontrolefinanceiro/src/bill/bill-service.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
+import 'package:seucontrolefinanceiro/src/payment-category/payment-category-controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BillController {
@@ -12,16 +13,20 @@ class BillController {
     return bills;
   }
 
-  static insertBill(BillModel billModel) async {
+  static insertBill(BillModel billModel, String currentCategory) async {
     var paymentCategory = PaymentCategory();
     var prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
     print(userId);
 
-    paymentCategory.description = 'Banco';
-    paymentCategory.mutable = true;
-    paymentCategory.billType = 'PAYMENT';
-
+      //paymentCategory = await PaymentCategoryController.getPaymentCategories()
+      //      .then((value) => value.where((element) => element.description.compareTo(currentCategory) == 0).toList()[0]) ?? null;
+        paymentCategory.description = currentCategory;
+        paymentCategory.billType = billModel.billType;  
+      
+    
+    paymentCategory.billType = (paymentCategory.billType == 'Recebimento') ? 'RECEIVEMENT': 'PAYMENT';
+    paymentCategory.mutable = false;
     billModel.paymentCategory = paymentCategory;
     billModel.userId = userId;
     billModel.payDAy = billModel.payDAy.substring(0, 10);

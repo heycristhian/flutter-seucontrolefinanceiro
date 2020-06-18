@@ -65,6 +65,7 @@ class BillService {
       },
       "paid": false,
       "userId": billModel.userId,
+       "portion": billModel.portion,
     };
 
     var _body = json.encode(params);
