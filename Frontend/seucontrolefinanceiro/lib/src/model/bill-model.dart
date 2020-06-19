@@ -29,22 +29,26 @@ class BillModel {
       this.portion});
 
   BillModel.fromJson(Map<String, dynamic> json) {
-    billDescription = json['billDescription'];
-    var test = json['amount'];
-    print(test);
-    amount =  json['amount'].toString();
-    everyMonth = json['everyMonth'];
-    sameAmount = json['sameAmount'];
-    payDAy = json['payDAy'];
-    billType = json['billType'];
-    paymentCategory = json['paymentCategory'] != null
-        ? new PaymentCategory.fromJson(json['paymentCategory'])
-        : null;
-    paid = json['paid'];
-    parent = json['parent'];
-    userId = json['userId'];
-    sClass = json['_class'];
-    portion = json['portion'];
+    if (json != null) {
+      billDescription = json['billDescription'];
+      var test = json['amount'];
+      print(test);
+      amount = json['amount'].toString();
+      everyMonth = json['everyMonth'];
+      sameAmount = json['sameAmount'];
+      payDAy = json['payDAy'];
+      billType = json['billType'];
+      paymentCategory = json['paymentCategory'] != null
+          ? new PaymentCategory.fromJson(json['paymentCategory'])
+          : null;
+      paid = json['paid'];
+      parent = json['parent'];
+      userId = json['userId'];
+      sClass = json['_class'];
+      portion = json['portion'];
+    } else {
+      print('Bill null');
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:bubble_timeline/timeline_item.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/home/components/app-bar-component.dart';
 import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
+import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:bubble_timeline/bubble_timeline.dart';
 
@@ -15,13 +15,23 @@ class BodyComponent {
         BillController.getBillsByCurrentUser();
 
     return FutureBuilder(
-        future: billsByCurrentUser,
+        future: billsByCurrentUser ?? null,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: CircularProgressIndicator());
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Loader.load()
+              ],
+            );
           }
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Loader.load()
+              ],
+            );
           }
           List<BillModel> bills = snapshot.data;
           return _singleChildScrollView(context, bills);

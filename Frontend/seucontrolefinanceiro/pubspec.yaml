@@ -39,7 +39,8 @@ dependencies:
   bubble_timeline: ^1.0.5
   timeline_tile: ^0.1.2
   flutter_progress_button: '^0.6.4'
-
+  progress_indicators: ^0.1.5
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:seucontrolefinanceiro/src/global/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +17,7 @@ class UserService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = 'http://192.168.0.148:8080/scf-service/users/' + userId;
+    var url = UrlGlobal.url() + '/scf-service/users/' + userId;
 
     var user = UserModel();
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:seucontrolefinanceiro/src/global/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = 'http://192.168.0.148:8080/scf-service/users/$user/bills';
+    var url = UrlGlobal.url() + '/scf-service/users/$user/bills';
     var response = await http.get(url, headers: header);
 
     if (response.statusCode == 200) {
@@ -49,7 +50,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = 'http://192.168.0.148:8080/scf-service/bills';
+    var url = UrlGlobal.url() + '/scf-service/bills';
 
     Map params = {
       "billDescription": billModel.billDescription,

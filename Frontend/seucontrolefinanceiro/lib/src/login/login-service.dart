@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:seucontrolefinanceiro/src/global/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/auth-model.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
@@ -9,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
   static Future<AuthModel> login(LoginModel loginModel) async {
-    var url = 'http://192.168.0.148:8080/auth';
+    var url =
+        UrlGlobal.url() + '/auth';
 
     var prefs = await SharedPreferences.getInstance();
     var header = {"Content-Type": "application/json"};
@@ -32,6 +34,8 @@ class LoginService {
       prefs.setString('user', loginModel.user);
       prefs.setString('userId', mapResponse['userId']);
       prefs.setString('fullname', user.fullName);
+      auth.fullName = prefs.getString('fullname');
+      auth.email = prefs.getString('email');
       return auth;
     } on Exception {
       return null;

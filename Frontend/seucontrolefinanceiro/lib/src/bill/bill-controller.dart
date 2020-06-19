@@ -1,7 +1,6 @@
 import 'package:seucontrolefinanceiro/src/bill/bill-service.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
-import 'package:seucontrolefinanceiro/src/payment-category/payment-category-controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BillController {
@@ -19,8 +18,6 @@ class BillController {
     String userId = prefs.getString('userId') ?? '';
     print(userId);
 
-      //paymentCategory = await PaymentCategoryController.getPaymentCategories()
-      //      .then((value) => value.where((element) => element.description.compareTo(currentCategory) == 0).toList()[0]) ?? null;
         paymentCategory.description = currentCategory;
         paymentCategory.billType = billModel.billType;  
       

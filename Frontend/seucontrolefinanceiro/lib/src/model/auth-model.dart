@@ -2,6 +2,8 @@ class AuthModel {
   String token;
   String type;
   String userId;
+  String fullName;
+  String email;
 
   AuthModel({this.token, this.type, this.userId});
 

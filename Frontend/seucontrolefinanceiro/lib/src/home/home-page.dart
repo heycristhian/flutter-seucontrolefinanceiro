@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
+import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
 import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
 import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
 
 class HomePage extends StatefulWidget {
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -21,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   final _profileImg =
       'https://pm1.narvii.com/6778/e6b5c24de706fe05cb42c6770a06f3b6becf2d93v2_hq.jpg';
 
+
   @override
   void initState() {
     super.initState();
@@ -28,16 +31,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   _loadUser() async {
-    UserModel user = await UserControler.getUser();
-    _streamControllerUser.add(user);
+    //_streamControllerUser.add(user);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: _streamControllerUser.stream,
+    Future<UserModel> user = UserControler.getUser();
+    return FutureBuilder(
+        future: user, 
         builder: (context, snapshot) {
           UserModel _user = snapshot.data;
+
+          if (snapshot.hasError) {
+            return Loader.load();
+          }
+          if (!snapshot.hasData) {
+            return Loader.load();
+          }
+
           return Scaffold(
               resizeToAvoidBottomPadding: false,
               key: _scaffoldKey,
@@ -46,8 +57,8 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     UserAccountsDrawerHeader(
-                      accountName: Text(_user.fullName ?? 'Null'),
-                      accountEmail: Text(_user.email ?? 'Null'),
+                      accountName: Text(_user.fullName),
+                      accountEmail: Text(_user.email),
                       currentAccountPicture: GestureDetector(
                         onTap: () => debugPrint("Avatar ok!"),
                         child: CircleAvatar(
@@ -98,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (BuildContext context) => BillFormPage()));
                 },
                 backgroundColor: Theme.of(context).primaryColor,

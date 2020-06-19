@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:seucontrolefinanceiro/src/global/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class PaymentCategoryService {
   static Future<List<PaymentCategory>> getPaymentCategories() async {
-    var url = 'http://192.168.0.148:8080/scf-service/payment-categories';
+    var url = UrlGlobal.url() + '/scf-service/payment-categories';
     var prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
     String tokenType = prefs.getString('type') ?? '';

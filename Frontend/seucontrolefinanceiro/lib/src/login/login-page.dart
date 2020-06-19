@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seucontrolefinanceiro/src/components/alert.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-controller.dart';
+import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
 import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'components/constants-components.dart';
@@ -250,15 +250,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _clickButton(BuildContext context) async {
-    //to see what I will to make for this method
-    bool formOk = _formKey.currentState.validate();
-
     loginModel.user = _ctrlUser.text;
     loginModel.password = _ctrlPassword.text;
 
     print(loginModel.user);
     print(loginModel.password);
 
+    Navigator.pushReplacement(context,
+        CupertinoPageRoute(builder: (BuildContext context) => LoaderPage(loginModel)));
+/*
     var auth = await LoginService.login(loginModel);
 
     if (auth != null) {
@@ -267,11 +267,15 @@ class _LoginPageState extends State<LoginPage> {
       _ctrlPassword.text = '';
       _ctrlUser.text = '';
       alert(context, 'USUÁRIO OU SENHA INVÁLIDOS');
-    }
+    }*/
   }
 
   _navigateHomePage(BuildContext context) {
-      Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    Navigator.pushReplacement(context,
+        CupertinoPageRoute(builder: (BuildContext context) => HomePage()));
+  }
+
+  _navigateLoader(BuildContext context) {
+    
   }
 }
