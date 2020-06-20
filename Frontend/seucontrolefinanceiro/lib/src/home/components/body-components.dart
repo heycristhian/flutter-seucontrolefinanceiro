@@ -117,15 +117,8 @@ class BodyComponent {
                 width: 60,
                 child: Container(
                     margin: EdgeInsets.only(right: 40),
-                    child: bill.billType.compareTo('PAYMENT') == 0 ? Icon(
-                      Icons.arrow_upward,
-                      size: 45,
-                      color: Colors.red,
-                    ): Icon(
-                      Icons.arrow_downward,
-                      size: 45,
-                      color: Colors.green,
-                    ))),
+                    child: Icon(IconCategory.iconCategory(
+                        bill.paymentCategory.description)))),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -137,7 +130,8 @@ class BodyComponent {
                 Text(
                   bill.paymentCategory.description +
                       ' - ' +
-                      DateFormat('dd/MM/yyyy').format(DateTime.parse(bill.payDAy)),
+                      DateFormat('dd/MM/yyyy')
+                          .format(DateTime.parse(bill.payDAy)),
                   style:
                       GoogleFonts.overpass(fontSize: 12, color: Colors.black87),
                 ),
@@ -145,8 +139,38 @@ class BodyComponent {
             ),
           ],
         ),
-        Text('R\$ ${bill.amount}', style: TextStyle(color: Colors.blueAccent[700])),
+        Row(
+          children: <Widget>[
+            Text('R\$ ${bill.amount}',
+                style: TextStyle(color: Colors.blueAccent[700])),
+            SizedBox(
+              width: 10,
+            ),
+           bill.billType.compareTo('PAYMENT') == 0 ? Icon(
+                      Icons.arrow_upward,
+                      size: 15,
+                      color: Colors.red,
+                    ): Icon(
+                      Icons.arrow_downward,
+                      size: 15,
+                      color: Colors.green,
+                    )
+          ],
+        ),
       ],
     );
   }
 }
+
+/*
+
+bill.billType.compareTo('PAYMENT') == 0 ? Icon(
+                      Icons.arrow_upward,
+                      size: 45,
+                      color: Colors.red,
+                    ): Icon(
+                      Icons.arrow_downward,
+                      size: 45,
+                      color: Colors.green,
+                    )
+                    */

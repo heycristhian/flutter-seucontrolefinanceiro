@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
@@ -66,7 +67,7 @@ class _BillListPageState extends State<BillListPage> {
     int itemCountListBillPayment = listBillPayment.length;
     int itemCountListBillReceivement = listBillReceivement.length;
     double balance = receivementAmount - paymentAmount;
-    
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -204,14 +205,8 @@ class _BillListPageState extends State<BillListPage> {
                   onPressed: () {},
                   child: billList(
                     _isReceivement
-                        ? listBillReceivement[index].billDescription
-                        : listBillPayment[index].billDescription,
-                    _isReceivement
-                        ? listBillReceivement[index].paymentCategory.description
-                        : listBillPayment[index].paymentCategory.description,
-                    _isReceivement
-                        ? listBillReceivement[index].amount
-                        : listBillPayment[index].amount,
+                        ? listBillReceivement[index]
+                        : listBillPayment[index],
                   ),
                 ),
                 Container(height: 1, color: Colors.black26),
@@ -244,7 +239,7 @@ class _BillListPageState extends State<BillListPage> {
     );
   }
 
-  Widget billList(String description, String paymenteCategory, String amount) {
+  Widget billList(BillModel bill) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -255,7 +250,7 @@ class _BillListPageState extends State<BillListPage> {
                 child: Container(
                     margin: EdgeInsets.only(right: 40),
                     child: Icon(
-                      IconCategory.iconCategory(paymenteCategory),
+                      IconCategory.iconCategory(bill.paymentCategory.description),
                       size: 45,
                       color: Colors.blueGrey,
                     ))),
@@ -263,12 +258,18 @@ class _BillListPageState extends State<BillListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  description,
-                  style:
-                      GoogleFonts.overpass(fontSize: 24, color: Colors.black87),
+                  bill.billDescription,
+                  style: GoogleFonts.overpass(
+                      fontSize: 24, color: Colors.deepOrange[400]),
                 ),
                 Text(
-                  paymenteCategory,
+                  bill.paymentCategory.description,
+                  style:
+                      GoogleFonts.overpass(fontSize: 12, color: Colors.grey[900]),
+                ),
+                Text(
+                  DateFormat('dd/MM/yyyy')
+                          .format(DateTime.parse(bill.payDAy)),
                   style:
                       GoogleFonts.overpass(fontSize: 12, color: Colors.black87),
                 ),
@@ -276,9 +277,9 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ],
         ),
-        Text('R\$ $amount',
+        Text('R\$ ${bill.amount}',
             style: TextStyle(
-                color: _isReceivement ? Colors.blueAccent : Colors.redAccent)),
+                color: _isReceivement ? Colors.green : Colors.blue[800])),
       ],
     );
   }

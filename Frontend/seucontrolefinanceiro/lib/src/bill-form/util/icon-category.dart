@@ -20,6 +20,7 @@ class IconCategory {
     if (text == 'Empréstimo') return Icons.money_off;
     if (text == 'Investimento') return Icons.trending_up;
     if (text == 'Salário') return Icons.monetization_on;
+    if (text == 'Lanchonetes') return Icons.fastfood;
     return Icons.reorder;
 
 
