@@ -26,6 +26,7 @@ class DashboardComponent {
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
         height: 200,
+        color: Colors.red,
         child: PageView(
           controller: PageController(viewportFraction: 1, initialPage: 0),
           scrollDirection: Axis.horizontal,
