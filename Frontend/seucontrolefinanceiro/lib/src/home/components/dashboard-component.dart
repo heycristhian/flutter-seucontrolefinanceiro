@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:seucontrolefinanceiro/src/bill-list/bill-list-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class DashboardComponent {
@@ -51,31 +53,17 @@ class DashboardComponent {
     _date = _date.add(Duration(days: 30));
 
     double valuePayment = 0;
-    double valueReceivement = 0;
-    bills
+    List<BillModel> newListBills = bills
         .where((element) =>
             DateTime.parse(element.payDAy).year == _date.year &&
             DateTime.parse(element.payDAy).month == _date.month &&
-            element.paid == false &&
-            element.billType.compareTo('PAYMENT') == 0)
-        .toList()
-        .forEach((element) {
+            element.paid == false).toList();
+
+    newListBills.where((element) => element.billType.compareTo('PAYMENT') == 0).forEach((element) {
       valuePayment += double.parse(element.amount);
     });
 
-    bills
-        .where((element) =>
-            DateTime.parse(element.payDAy).year == _date.year &&
-            DateTime.parse(element.payDAy).month == _date.month &&
-            element.paid == false &&
-            element.billType.compareTo('RECEIVEMENT') == 0)
-        .toList()
-        .forEach((element) {
-      valueReceivement += double.parse(element.amount);
-    });
-
-    double balance = valueReceivement - valuePayment;
-
+    String dateString = '${months[_date.month]} de ${_date.year}';
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0, right: 30.0, left: 30.0),
       child: Material(
@@ -95,7 +83,7 @@ class DashboardComponent {
                       color: _primaryColor,
                     ),
                     Text(
-                      '${months[_date.month]} de ${_date.year}',
+                      dateString,
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w500,
@@ -128,7 +116,13 @@ class DashboardComponent {
                 ),
                 InkWell(
                   splashColor: Colors.greenAccent,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (BuildContext context) =>
+                                BillListPage(newListBills, dateString)));
+                  },
                 ),
               ],
             )),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:seucontrolefinanceiro/src/global/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,22 @@ class BillService {
     };
 
     var url = UrlGlobal.url() + '/scf-service/users/$user/bills';
+
+    //AQUI
+
+    Response response =
+        await Dio().request(url.toString(), options: Options(headers: header));
+
+    List<BillModel> bills = List<BillModel>();
+
+    for (Map<String, dynamic> item in response.data) {
+      bills.add(BillModel.fromJson(item));
+    }
+
+    return bills;
+    //ATE AQUI
+
+    /*
     var response = await http.get(url, headers: header);
 
     if (response.statusCode == 200) {
@@ -37,7 +54,7 @@ class BillService {
       return bills;
     } else {
       throw Exception;
-    }
+    }*/
   }
 
   static Future<BillModel> insertBill(BillModel billModel) async {
@@ -66,7 +83,7 @@ class BillService {
       },
       "paid": false,
       "userId": billModel.userId,
-       "portion": billModel.portion,
+      "portion": billModel.portion,
     };
 
     var _body = json.encode(params);

@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seucontrolefinanceiro/src/components/alert.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'components/constants-components.dart';
 

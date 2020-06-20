@@ -68,7 +68,7 @@ class _BillFormPageState extends State<BillFormPage> {
   ];
 
   Widget _containerRendaDespesa(Icon icon, Color color1, Color color2) {
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -210,6 +210,7 @@ class _BillFormPageState extends State<BillFormPage> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
