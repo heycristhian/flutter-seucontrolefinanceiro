@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:bubble_timeline/timeline_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/home/components/app-bar-component.dart';
+import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+import 'package:bubble_timeline/bubble_timeline.dart';
 
 class BodyComponent {
   Widget body(BuildContext context) {
@@ -28,40 +32,82 @@ class BodyComponent {
               children: <Widget>[Loader.load()],
             );
           }
-
           List<BillModel> bills = snapshot.data;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              AppBarComponent().myAppBar(context),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
+          return Container(
+              color: Colors.white,
+              height: double.infinity,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 315,
+                    color: Colors.white,
+                    child: Column(
                       children: <Widget>[
-                        Container(
-                          color: Colors.white,
-                          height: 20,
+                        Stack(
+                          children: <Widget>[
+                            AppBarComponent().myAppBar(),
+                            DashboardComponent().dashboard(context, bills)
+                          ],
                         ),
-                        FlatButton(
-                          color: Colors.white,
-                          padding: EdgeInsets.all(24),
-                          onPressed: () {},
-                          child: billList('desc', 'desc', 'desc'),
+                        SizedBox(
+                          height: 15,
                         ),
-                        Container(height: 1, color: Colors.black26),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Divider(
+                            height: 20,
+                            color: Colors.blueGrey,
+                          ),
+                        )
                       ],
-                    );
-                  },
-                ),
-              )
-            ],
-          );
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        color: Colors.white,
+                        child: _timeLine(bills)),
+                  )
+                ],
+              ));
         });
   }
 
-  Widget billList(String description, String paymenteCategory, String amount) {
+  _timeLine(List<BillModel> bills) {
+    bills = bills.where((element) => element.paid == true).toList();
+    return Column(
+      children: <Widget>[
+        Text(
+          'Movimentos',
+          style: GoogleFonts.overpass(fontSize: 30, color: Colors.black87),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: bills.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    height: 20,
+                  ),
+                  FlatButton(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(24),
+                    onPressed: () {},
+                    child: billList(bills[index]),
+                  ),
+                  Container(height: 1, color: Colors.black26),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget billList(BillModel bill) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -71,21 +117,27 @@ class BodyComponent {
                 width: 60,
                 child: Container(
                     margin: EdgeInsets.only(right: 40),
-                    child: Icon(
-                      IconCategory.iconCategory(paymenteCategory),
+                    child: bill.billType.compareTo('PAYMENT') == 0 ? Icon(
+                      Icons.arrow_upward,
                       size: 45,
-                      color: Colors.blueGrey,
+                      color: Colors.red,
+                    ): Icon(
+                      Icons.arrow_downward,
+                      size: 45,
+                      color: Colors.green,
                     ))),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  description,
+                  bill.billDescription,
                   style:
                       GoogleFonts.overpass(fontSize: 24, color: Colors.black87),
                 ),
                 Text(
-                  paymenteCategory,
+                  bill.paymentCategory.description +
+                      ' - ' +
+                      DateFormat('dd/MM/yyyy').format(DateTime.parse(bill.payDAy)),
                   style:
                       GoogleFonts.overpass(fontSize: 12, color: Colors.black87),
                 ),
@@ -93,7 +145,7 @@ class BodyComponent {
             ),
           ],
         ),
-        Text('R\$ $amount', style: TextStyle(color: Colors.redAccent)),
+        Text('R\$ ${bill.amount}', style: TextStyle(color: Colors.blueAccent[700])),
       ],
     );
   }

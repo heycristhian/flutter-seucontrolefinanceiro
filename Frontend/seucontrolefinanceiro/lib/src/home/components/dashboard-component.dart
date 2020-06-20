@@ -26,7 +26,6 @@ class DashboardComponent {
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
         height: 200,
-        color: Colors.red,
         child: PageView(
           controller: PageController(viewportFraction: 1, initialPage: 0),
           scrollDirection: Axis.horizontal,
@@ -58,13 +57,17 @@ class DashboardComponent {
         .where((element) =>
             DateTime.parse(element.payDAy).year == _date.year &&
             DateTime.parse(element.payDAy).month == _date.month &&
-            element.paid == false).toList();
+            element.paid == false)
+        .toList();
 
-    newListBills.where((element) => element.billType.compareTo('PAYMENT') == 0).forEach((element) {
+    newListBills
+        .where((element) => element.billType.compareTo('PAYMENT') == 0)
+        .forEach((element) {
       valuePayment += double.parse(element.amount);
     });
 
     String dateString = '${months[_date.month]} de ${_date.year}';
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0, right: 30.0, left: 30.0),
       child: Material(
@@ -84,7 +87,7 @@ class DashboardComponent {
                       color: _primaryColor,
                     ),
                     Text(
-                      dateString,
+                      '${months[_date.month]} de ${_date.year}',
                       style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w500,

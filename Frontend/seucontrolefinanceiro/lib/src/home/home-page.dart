@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
-import 'package:seucontrolefinanceiro/src/home/components/app-bar-component.dart';
 import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
@@ -12,26 +11,34 @@ import 'package:seucontrolefinanceiro/src/model/user-model.dart';
 import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
 
 class HomePage extends StatefulWidget {
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  final _streamControllerUser = StreamController<UserModel>();
 
   final _profileImg =
       'https://pm1.narvii.com/6778/e6b5c24de706fe05cb42c6770a06f3b6becf2d93v2_hq.jpg';
 
+
   @override
   void initState() {
     super.initState();
+    _loadUser();
+  }
+
+  _loadUser() async {
+    //_streamControllerUser.add(user);
   }
 
   @override
   Widget build(BuildContext context) {
     Future<UserModel> user = UserControler.getUser();
     return FutureBuilder(
-        future: user,
+        future: user, 
         builder: (context, snapshot) {
           UserModel _user = snapshot.data;
 
@@ -125,8 +132,6 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-              ),
-              appBar: AppBar(
               ),
               body: BodyComponent().body(context));
         });
