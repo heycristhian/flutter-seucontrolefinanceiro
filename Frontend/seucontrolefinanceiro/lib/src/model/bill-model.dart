@@ -1,6 +1,7 @@
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
 
 class BillModel {
+  String id;
   String billDescription;
   String amount;
   bool everyMonth;
@@ -15,7 +16,8 @@ class BillModel {
   int portion;
 
   BillModel(
-      {this.billDescription,
+      {this.id,
+      this.billDescription,
       this.amount,
       this.everyMonth,
       this.sameAmount,
@@ -46,6 +48,7 @@ class BillModel {
       userId = json['userId'];
       sClass = json['_class'];
       portion = json['portion'];
+      id = json['id'];
     } else {
       print('Bill null');
     }
@@ -67,6 +70,7 @@ class BillModel {
     data['userId'] = this.userId;
     data['_class'] = this.sClass;
     data['portion'] = this.portion;
+    data['id'] = this.id;
     return data;
   }
 }

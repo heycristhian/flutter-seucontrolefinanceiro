@@ -5,6 +5,7 @@ import com.seucontrolefinanceiro.dto.BillDTO;
 import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.BillForm;
 import com.seucontrolefinanceiro.services.BillService;
+import com.seucontrolefinanceiro.services.PaymentCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,9 @@ public class BillResource implements IResource<BillDTO, BillForm> {
 
     @Autowired
     private BillService service;
+
+    @Autowired
+    private PaymentCategoryService paymentCategoryService;
 
     @Override
     @GetMapping
@@ -60,6 +64,7 @@ public class BillResource implements IResource<BillDTO, BillForm> {
     @PutMapping()
     public ResponseEntity<UserDTO> update(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
+        bill.setPaymentCategory(paymentCategoryService.findByDescriptionContainingIgnoreCase(bill.getPaymentCategory().getDescription()).get(0));
         service.update(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.noContent().build();

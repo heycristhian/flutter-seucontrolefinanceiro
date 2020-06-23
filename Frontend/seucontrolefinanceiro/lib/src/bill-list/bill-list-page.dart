@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
+import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillListPage extends StatefulWidget {
@@ -89,14 +90,16 @@ class _BillListPageState extends State<BillListPage> {
           .where((x) =>
               x.billType.compareTo('PAYMENT') == 0 &&
               DateTime.parse(x.payDAy).year == int.parse(year) &&
-              DateTime.parse(x.payDAy).month == int.parse(month))
+              DateTime.parse(x.payDAy).month == int.parse(month) &&
+              x.paid == false)
           .toList();
 
       listBillReceivement = bills
           .where((x) =>
               x.billType.compareTo('RECEIVEMENT') == 0 &&
               DateTime.parse(x.payDAy).year == int.parse(year) &&
-              DateTime.parse(x.payDAy).month == int.parse(month))
+              DateTime.parse(x.payDAy).month == int.parse(month) &&
+              x.paid == false)
           .toList();
 
       listBillPayment.forEach((element) {
@@ -198,7 +201,15 @@ class _BillListPageState extends State<BillListPage> {
           ),
         ),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back), onPressed: () {
+                Navigator.pop(context, true);
+               },
+            ),
           actions: <Widget>[
+            
+            
             IconButton(
               icon: Icon(
                 Icons.playlist_add_check,
@@ -212,7 +223,16 @@ class _BillListPageState extends State<BillListPage> {
                           content: Text(
                               'Você tem certeza que deseja pagar todas contas?'),
                           actions: <Widget>[
-                            FlatButton(onPressed: () {}, child: Text('Sim')),
+                            FlatButton(
+                                onPressed: () {
+                                  listBillPayment.forEach((x) {
+                                    x.paid = true;
+                                    BillController.updateBill(x);
+                                  });
+                                  _returnDataAtt(index);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Sim')),
                             FlatButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -272,49 +292,12 @@ class _BillListPageState extends State<BillListPage> {
           itemCount: itemCount,
           controller: PageController(viewportFraction: 1, initialPage: index),
           onPageChanged: (indexPage) {
-            setState(() {
-              if (indexPage > index) {
-                _date = _date.add(Duration(days: 30));
-              } else {
-                _date = _date.subtract(Duration(days: 30));
-              }
-
-              monthHeader = months[_date.month];
-              yearHeader = _date.year.toString();
-
-              index = indexPage;
-
-              receivementAmount = 0;
-              paymentAmount = 0;
-
-              listBillPayment = bills
-                  .where((x) =>
-                      x.billType.compareTo('PAYMENT') == 0 &&
-                      DateTime.parse(x.payDAy).year == _date.year &&
-                      DateTime.parse(x.payDAy).month == _date.month)
-                  .toList();
-
-              listBillReceivement = bills
-                  .where((x) =>
-                      x.billType.compareTo('RECEIVEMENT') == 0 &&
-                      DateTime.parse(x.payDAy).year == _date.year &&
-                      DateTime.parse(x.payDAy).month == _date.month)
-                  .toList();
-
-              listBillPayment.forEach((element) {
-                paymentAmount += double.parse(element.amount);
-              });
-
-              listBillReceivement.forEach((element) {
-                receivementAmount += double.parse(element.amount);
-              });
-
-              itemCountListBillPayment = listBillPayment.length;
-              itemCountListBillReceivement = listBillReceivement.length;
-              balance = receivementAmount - paymentAmount;
-
-              print(_date);
-            });
+            if (indexPage > index) {
+              _date = _date.add(Duration(days: 30));
+            } else {
+              _date = _date.subtract(Duration(days: 30));
+            }
+            _returnDataAtt(indexPage);
           },
           itemBuilder: (BuildContext context, int index) {
             return Column(
@@ -454,5 +437,45 @@ class _BillListPageState extends State<BillListPage> {
         ],
       ),
     );
+  }
+
+  _returnDataAtt(int indexPage) {
+    setState(() {
+      monthHeader = months[_date.month];
+      yearHeader = _date.year.toString();
+
+      index = indexPage;
+
+      receivementAmount = 0;
+      paymentAmount = 0;
+
+      listBillPayment = bills
+          .where((x) =>
+              x.billType.compareTo('PAYMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == _date.year &&
+              DateTime.parse(x.payDAy).month == _date.month &&
+              x.paid == false)
+          .toList();
+
+      listBillReceivement = bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == _date.year &&
+              DateTime.parse(x.payDAy).month == _date.month &&
+              x.paid == false)
+          .toList();
+
+      listBillPayment.forEach((element) {
+        paymentAmount += double.parse(element.amount);
+      });
+
+      listBillReceivement.forEach((element) {
+        receivementAmount += double.parse(element.amount);
+      });
+
+      itemCountListBillPayment = listBillPayment.length;
+      itemCountListBillReceivement = listBillReceivement.length;
+      balance = receivementAmount - paymentAmount;
+    });
   }
 }

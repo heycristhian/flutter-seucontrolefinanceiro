@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class BillController {
   static Future<List<BillModel>> getBillsByCurrentUser() async {
     List<BillModel> bills = await BillService.getBills();
-
     return bills;
   }
 
@@ -26,5 +25,15 @@ class BillController {
     billModel.payDAy = billModel.payDAy.substring(0, 10);
 
     BillService.insertBill(billModel);
+  }
+
+  static updateBill(BillModel billModel) async {
+    var prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId') ?? '';
+
+    billModel.userId = userId;
+    billModel.payDAy = billModel.payDAy.substring(0, 10);
+
+    BillService.updateBill(billModel);
   }
 }

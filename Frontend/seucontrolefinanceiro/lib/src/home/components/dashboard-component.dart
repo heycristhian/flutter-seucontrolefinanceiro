@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-list/bill-list-page.dart';
+import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class DashboardComponent {
@@ -8,6 +9,7 @@ class DashboardComponent {
   DateTime _date = DateTime.now().subtract(Duration(days: 30));
   Map months = Map<int, String>();
   Map listDateTime = Map<String, String>();
+  bool result = false;
 
   Widget dashboard(BuildContext context, List<BillModel> bills) {
     months.putIfAbsent(1, () => 'Janeiro');
@@ -24,11 +26,13 @@ class DashboardComponent {
     months.putIfAbsent(12, () => 'Dezembro');
 
     int itemCount = 0;
-    
+
     bills.forEach((element) {
-      listDateTime.putIfAbsent('${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}', () => 
-      '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
-      });
+      listDateTime.putIfAbsent(
+          '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}',
+          () =>
+              '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
+    });
 
     itemCount = listDateTime.length;
 
@@ -48,7 +52,7 @@ class DashboardComponent {
       ),
     );
   }
-  
+
   Widget _container(context, List<BillModel> bills, int index, int itemCount) {
     _date = _date.add(Duration(days: 30));
     double valuePayment = 0;
@@ -120,12 +124,19 @@ class DashboardComponent {
                 ),
                 InkWell(
                   splashColor: Colors.greenAccent,
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    var valid = await Navigator.push(
                         context,
                         CupertinoPageRoute(
-                            builder: (BuildContext context) =>
-                                BillListPage(bills, dateString, index, itemCount)));
+                            builder: (BuildContext context) => BillListPage(
+                                bills, dateString, index, itemCount)));
+
+                    if (valid) {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => HomePage()));
+                    }
                   },
                 ),
               ],

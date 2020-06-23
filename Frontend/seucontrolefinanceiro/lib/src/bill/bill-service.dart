@@ -93,4 +93,42 @@ class BillService {
 
     print('Status code inserBill: ${response.statusCode}');
   }
+
+  static Future<BillModel> updateBill(BillModel billModel) async {
+    var prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    String tokenType = prefs.getString('type') ?? '';
+
+    var header = {
+      "Content-Type": "application/json",
+      "Authorization": "$tokenType $token"
+    };
+
+    var url = UrlGlobal.url() + '/scf-service/bills';
+
+    Map params = {
+      "id": billModel.id,
+      "billDescription": billModel.billDescription,
+      "amount": billModel.amount,
+      "everyMonth": billModel.everyMonth,
+      "sameAmount": billModel.sameAmount,
+      "payDAy": billModel.payDAy,
+      "billType": billModel.billType,
+      "paymentCategory": {
+        "description": billModel.paymentCategory.description,
+        "mutable": true,
+        "billType": billModel.paymentCategory.billType
+      },
+      "paid": billModel.paid == null ? false : billModel.paid,
+      "userId": billModel.userId,
+      "portion": billModel.portion,
+    };
+
+    var _body = json.encode(params);
+    print('Json enviado (updateBill) $_body');
+
+    var response = await http.put(url, headers: header, body: _body);
+
+    print('Status code updateBill: ${response.statusCode}');
+  }
 }
