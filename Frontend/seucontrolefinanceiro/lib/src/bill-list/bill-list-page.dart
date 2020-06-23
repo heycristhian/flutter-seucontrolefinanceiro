@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
@@ -341,6 +342,37 @@ class _BillListPageState extends State<BillListPage> {
                           FlatButton(
                             color: Colors.white,
                             padding: EdgeInsets.all(24),
+                            onLongPress: () {
+                              print('dsadsad');
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                        title: Text('Edição'),
+                                        content: Text('Deseja editar?'),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            BillFormPage(_isReceivement
+                                  ? listBillReceivement[index]
+                                  : listBillPayment[index])));
+                                              },
+                                              child: Text('Sim')),
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Não')),
+                                        ],
+                                        elevation: 24.0,
+                                      ),
+                                  barrierDismissible: false);
+                            },
                             onPressed: () {},
                             child: billList(
                               _isReceivement

@@ -202,15 +202,3 @@ class BodyComponent {
   }
 }
 
-/*
-
-bill.billType.compareTo('PAYMENT') == 0 ? Icon(
-                      Icons.arrow_upward,
-                      size: 45,
-                      color: Colors.red,
-                    ): Icon(
-                      Icons.arrow_downward,
-                      size: 45,
-                      color: Colors.green,
-                    )
-                    */

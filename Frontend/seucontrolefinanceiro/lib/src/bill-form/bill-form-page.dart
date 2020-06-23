@@ -10,16 +10,27 @@ import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillFormPage extends StatefulWidget {
+  BillModel billModel;
+  BillFormPage(BillModel billModel) {
+    this.billModel = billModel;
+  }
+
   @override
-  _BillFormPageState createState() => _BillFormPageState();
+  _BillFormPageState createState() => _BillFormPageState(billModel);
 }
 
 class _BillFormPageState extends State<BillFormPage> {
   DateTime _date = DateTime.now();
-  final _ctrlMoney = TextEditingController();
-  final _ctrlDescription = TextEditingController();
-  final _ctrlPortion = TextEditingController();
+  var _ctrlMoney = TextEditingController();
+  var _ctrlDescription = TextEditingController();
+  var _ctrlPortion = TextEditingController();
   GlobalKey _bottomNavigationKey = GlobalKey();
+  BillModel billModel;
+  int indexPage = 1;
+
+  _BillFormPageState(BillModel billModel) {
+    this.billModel = billModel;
+  }
 
   Future<Null> selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -43,6 +54,7 @@ class _BillFormPageState extends State<BillFormPage> {
   Color color1 = Colors.red;
   Color color2 = Colors.redAccent;
   Color colorBtn = Colors.redAccent;
+  bool verify;
 
   String _despesaOuReceita = 'Despesa';
 
@@ -178,7 +190,13 @@ class _BillFormPageState extends State<BillFormPage> {
                   ),
                 ),
                 Switch(
-                  onChanged: (val) => setState(() => _isSwitched = val),
+                  //onChanged: (val) => setState(() => _isSwitched = val),
+                  onChanged: (bool val) {
+                    setState(() {
+                      print('val: ' + val.toString());
+                      _isSwitched = val;
+                    });
+                  },
                   value: _isSwitched,
                 ),
               ],
@@ -208,13 +226,26 @@ class _BillFormPageState extends State<BillFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (billModel != null) {
+      _ctrlMoney.text = billModel.amount;
+      _ctrlDescription.text = billModel.billDescription;
+      _ctrlPortion.text = billModel.portion.toString();
+      indexPage = billModel.billType == 'RECEIVEMENT' ? 0 : 1;
+      _attData(indexPage);
+      if (billModel.portion == null) {
+        billModel.portion = 0;
+      } else {
+        _isSwitched = true;
+      }
+      billModel.portion = billModel.portion == null ? 0 : billModel.portion;
+    }
     return Material(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
-          index: 1,
+          index: indexPage,
           backgroundColor: Colors.white,
           color: color1,
           items: <Widget>[
@@ -226,22 +257,9 @@ class _BillFormPageState extends State<BillFormPage> {
             Icon(Icons.remove, size: 30, color: Colors.white),
           ],
           onTap: (index) {
-            setState(() {
-              icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
-              if (index == 0) {
-                colorBtn = Color.fromRGBO(17, 199, 111, 1);
-                color1 = Color.fromRGBO(17, 199, 111, 1);
-                color2 = Colors.greenAccent;
-                _despesaOuReceita = 'Receita';
-                category = _returnSetPaymentOrReceivement(false);
-              } else {
-                color1 = Colors.red;
-                color2 = Colors.redAccent;
-                colorBtn = Colors.redAccent;
-                _despesaOuReceita = 'Despesa';
-                category = _returnSetPaymentOrReceivement(true);
-              }
-            });
+            billModel.billType =
+                billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
+            _attData(index);
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -365,9 +383,14 @@ class _BillFormPageState extends State<BillFormPage> {
         height: 40,
         color: Colors.blueGrey,
         onPressed: () async {
-          print('Controlador portion: ' + _ctrlPortion.text);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+          if (billModel == null) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()));
+          } else {
+            Navigator.pop(context);
+          }
         },
         defaultWidget: Text(
           'Cancelar',
@@ -407,5 +430,24 @@ class _BillFormPageState extends State<BillFormPage> {
     }
     currentCategory = set[0];
     return set;
+  }
+
+  _attData(int index) {
+    setState(() {
+      icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
+      if (index == 0) {
+        colorBtn = Color.fromRGBO(17, 199, 111, 1);
+        color1 = Color.fromRGBO(17, 199, 111, 1);
+        color2 = Colors.greenAccent;
+        _despesaOuReceita = 'Receita';
+        category = _returnSetPaymentOrReceivement(false);
+      } else {
+        color1 = Colors.red;
+        color2 = Colors.redAccent;
+        colorBtn = Colors.redAccent;
+        _despesaOuReceita = 'Despesa';
+        category = _returnSetPaymentOrReceivement(true);
+      }
+    });
   }
 }

@@ -7,6 +7,7 @@ import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
 import 'package:seucontrolefinanceiro/src/login/login-service.dart';
+import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
 import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
 
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
-                          builder: (BuildContext context) => BillFormPage()));
+                          builder: (BuildContext context) => BillFormPage(null)));
                 },
                 backgroundColor: Theme.of(context).primaryColor,
               ),
