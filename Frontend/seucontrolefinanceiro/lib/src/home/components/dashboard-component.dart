@@ -7,8 +7,9 @@ class DashboardComponent {
   Color _primaryColor = Color.fromRGBO(17, 199, 111, 1);
   DateTime _date = DateTime.now().subtract(Duration(days: 30));
   Map months = Map<int, String>();
+  Map listDateTime = Map<String, String>();
 
-  Widget dashboard(BuildContext context, bills) {
+  Widget dashboard(BuildContext context, List<BillModel> bills) {
     months.putIfAbsent(1, () => 'Janeiro');
     months.putIfAbsent(2, () => 'Fevereiro');
     months.putIfAbsent(3, () => 'Março');
@@ -22,37 +23,36 @@ class DashboardComponent {
     months.putIfAbsent(11, () => 'Novembro');
     months.putIfAbsent(12, () => 'Dezembro');
 
+    int itemCount = 0;
+    
+    bills.forEach((element) {
+      listDateTime.putIfAbsent('${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}', () => 
+      '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
+      });
+
+    itemCount = listDateTime.length;
+
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
         height: 200,
-        child: PageView(
+        child: PageView.builder(
+          itemCount: itemCount,
           controller: PageController(viewportFraction: 1, initialPage: 0),
           scrollDirection: Axis.horizontal,
           pageSnapping: true,
-          children: <Widget>[
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-            _container(context, bills),
-          ],
+          itemBuilder: (BuildContext context, int index) {
+            return _container(context, bills, index, itemCount);
+          },
         ),
       ),
     );
   }
-
-  Widget _container(context, List<BillModel> bills) {
+  
+  Widget _container(context, List<BillModel> bills, int index, int itemCount) {
     _date = _date.add(Duration(days: 30));
-
     double valuePayment = 0;
+
     List<BillModel> newListBills = bills
         .where((element) =>
             DateTime.parse(element.payDAy).year == _date.year &&
@@ -66,7 +66,7 @@ class DashboardComponent {
       valuePayment += double.parse(element.amount);
     });
 
-    String dateString = '${months[_date.month]} de ${_date.year}';
+    String dateString = '${_date.month} de ${_date.year}';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0, right: 30.0, left: 30.0),
@@ -125,7 +125,7 @@ class DashboardComponent {
                         context,
                         CupertinoPageRoute(
                             builder: (BuildContext context) =>
-                                BillListPage(newListBills, dateString)));
+                                BillListPage(bills, dateString, index, itemCount)));
                   },
                 ),
               ],

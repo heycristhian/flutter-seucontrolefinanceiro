@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bubble_timeline/timeline_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +9,6 @@ import 'package:seucontrolefinanceiro/src/home/components/app-bar-component.dart
 import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
-import 'package:bubble_timeline/bubble_timeline.dart';
 
 class BodyComponent {
   Widget body(BuildContext context) {
@@ -72,6 +70,46 @@ class BodyComponent {
               ));
         });
   }
+
+  /*
+
+  Container(
+              color: Colors.white,
+              height: double.infinity,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 315,
+                    color: Colors.white,
+                    child: Column(
+                      children: <Widget>[
+                        Stack(
+                          children: <Widget>[
+                            AppBarComponent().myAppBar(),
+                            DashboardComponent().dashboard(context, bills)
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Divider(
+                            height: 20,
+                            color: Colors.blueGrey,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        color: Colors.white,
+                        child: _timeLine(bills)),
+                  )
+                ],
+              ));*/
 
   _timeLine(List<BillModel> bills) {
     bills = bills.where((element) => element.paid == true).toList();
@@ -146,15 +184,17 @@ class BodyComponent {
             SizedBox(
               width: 10,
             ),
-           bill.billType.compareTo('PAYMENT') == 0 ? Icon(
-                      Icons.arrow_upward,
-                      size: 15,
-                      color: Colors.red,
-                    ): Icon(
-                      Icons.arrow_downward,
-                      size: 15,
-                      color: Colors.green,
-                    )
+            bill.billType.compareTo('PAYMENT') == 0
+                ? Icon(
+                    Icons.arrow_upward,
+                    size: 15,
+                    color: Colors.red,
+                  )
+                : Icon(
+                    Icons.arrow_downward,
+                    size: 15,
+                    color: Colors.green,
+                  )
           ],
         ),
       ],

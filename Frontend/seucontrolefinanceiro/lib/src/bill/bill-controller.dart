@@ -7,8 +7,6 @@ class BillController {
   static Future<List<BillModel>> getBillsByCurrentUser() async {
     List<BillModel> bills = await BillService.getBills();
 
-    print("Tamanho da lista de bills " + bills.length.toString());
-
     return bills;
   }
 
@@ -16,13 +14,12 @@ class BillController {
     var paymentCategory = PaymentCategory();
     var prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
-    print(userId);
 
-        paymentCategory.description = currentCategory;
-        paymentCategory.billType = billModel.billType;  
-      
-    
-    paymentCategory.billType = (paymentCategory.billType == 'Recebimento') ? 'RECEIVEMENT': 'PAYMENT';
+    paymentCategory.description = currentCategory;
+    paymentCategory.billType = billModel.billType;
+
+    paymentCategory.billType =
+        (paymentCategory.billType == 'Recebimento') ? 'RECEIVEMENT' : 'PAYMENT';
     paymentCategory.mutable = false;
     billModel.paymentCategory = paymentCategory;
     billModel.userId = userId;

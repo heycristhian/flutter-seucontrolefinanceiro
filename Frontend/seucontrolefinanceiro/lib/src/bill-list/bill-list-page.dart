@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -7,14 +8,19 @@ import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 class BillListPage extends StatefulWidget {
   List<BillModel> bills;
   String dateString;
+  int index;
+  int itemCount;
 
-  BillListPage(List<BillModel> bills, String dateString) {
+  BillListPage(List<BillModel> bills, String dateString, int index, itemCount) {
     this.bills = bills;
     this.dateString = dateString;
+    this.index = index;
+    this.itemCount = itemCount;
   }
 
   @override
-  _BillListPageState createState() => _BillListPageState(bills, dateString);
+  _BillListPageState createState() =>
+      _BillListPageState(bills, dateString, index, itemCount);
 }
 
 enum TripType { oneway, roundtrip, multicity }
@@ -28,45 +34,91 @@ class _BillListPageState extends State<BillListPage> {
   TripType _selectedTrip = TripType.oneway;
   List<BillModel> bills;
   String dateString;
+  int index;
+  Map months = Map<int, String>();
+  int itemCount;
 
-  _BillListPageState(List<BillModel> bills, String dateString) {
+  _BillListPageState(
+      List<BillModel> bills, String dateString, int index, int itemCount) {
     this.bills = bills;
     this.dateString = dateString;
+    this.index = index;
+    this.itemCount = itemCount;
   }
 
+  bool _isReceivement = false;
+  String monthHeader;
+  String yearHeader;
+  DateTime _date;
+  List<BillModel> listBillPayment;
+  List<BillModel> listBillReceivement;
+  int itemCountListBillPayment = 0;
+  int itemCountListBillReceivement = 0;
+
+  double balance = 0.0;
   double paymentAmount = 0;
   double receivementAmount = 0;
-  bool _isReceivement = false;
 
   @override
   Widget build(BuildContext context) {
-    paymentAmount = 0;
-    receivementAmount = 0;
+    receivementAmount = receivementAmount == null ? 0 : receivementAmount;
 
-    setState(() {
-      receivementAmount = receivementAmount == null ? 0 : receivementAmount;
-    });
+    months.putIfAbsent(1, () => 'Janeiro');
+    months.putIfAbsent(2, () => 'Fevereiro');
+    months.putIfAbsent(3, () => 'Março');
+    months.putIfAbsent(4, () => 'Abril');
+    months.putIfAbsent(5, () => 'Maio');
+    months.putIfAbsent(6, () => 'Junho');
+    months.putIfAbsent(7, () => 'Julho');
+    months.putIfAbsent(8, () => 'Agosto');
+    months.putIfAbsent(9, () => 'Setembro');
+    months.putIfAbsent(10, () => 'Outubro');
+    months.putIfAbsent(11, () => 'Novembro');
+    months.putIfAbsent(12, () => 'Dezembro');
 
     var month = dateString.split(" ")[0];
     var year = dateString.split(" ")[2];
 
-    List<BillModel> listBillPayment =
-        bills.where((x) => x.billType.compareTo('PAYMENT') == 0).toList();
+    print('month ' + month);
 
-    List<BillModel> listBillReceivement =
-        bills.where((x) => x.billType.compareTo('RECEIVEMENT') == 0).toList();
+    if (monthHeader == null) {
+      monthHeader = months[int.parse(month)];
+      yearHeader = year;
 
-    listBillPayment.forEach((element) {
-      paymentAmount += double.parse(element.amount);
-    });
+      listBillPayment = bills
+          .where((x) =>
+              x.billType.compareTo('PAYMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == int.parse(year) &&
+              DateTime.parse(x.payDAy).month == int.parse(month))
+          .toList();
 
-    listBillReceivement.forEach((element) {
-      receivementAmount += double.parse(element.amount);
-    });
+      listBillReceivement = bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == int.parse(year) &&
+              DateTime.parse(x.payDAy).month == int.parse(month))
+          .toList();
 
-    int itemCountListBillPayment = listBillPayment.length;
-    int itemCountListBillReceivement = listBillReceivement.length;
-    double balance = receivementAmount - paymentAmount;
+      listBillPayment.forEach((element) {
+        paymentAmount += double.parse(element.amount);
+      });
+
+      listBillReceivement.forEach((element) {
+        receivementAmount += double.parse(element.amount);
+      });
+
+      itemCountListBillPayment = listBillPayment.length;
+      itemCountListBillReceivement = listBillReceivement.length;
+      balance = receivementAmount - paymentAmount;
+    }
+
+    if (_date == null) {
+      try {
+        _date = DateTime.parse("$year-$month-15");
+      } on Exception {
+        _date = DateTime.parse("$year-0$month-15");
+      }
+    }
 
     return SafeArea(
       top: false,
@@ -146,6 +198,34 @@ class _BillListPageState extends State<BillListPage> {
           ),
         ),
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.playlist_add_check,
+                color: Colors.green,
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: Text('Pagar'),
+                          content: Text(
+                              'Você tem certeza que deseja pagar todas contas?'),
+                          actions: <Widget>[
+                            FlatButton(onPressed: () {}, child: Text('Sim')),
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Não')),
+                          ],
+                          elevation: 24.0,
+                        ),
+                    barrierDismissible: false);
+                print('teste');
+              },
+            )
+          ],
           elevation: 0,
           backgroundColor: Colors.white,
           title: RichText(
@@ -153,10 +233,10 @@ class _BillListPageState extends State<BillListPage> {
                 style: TextStyle(color: Colors.black, fontSize: 32),
                 children: [
                   TextSpan(
-                      text: month,
+                      text: monthHeader,
                       style: GoogleFonts.overpass(fontWeight: FontWeight.w200)),
                   TextSpan(
-                      text: year,
+                      text: yearHeader,
                       style: GoogleFonts.overpass(fontWeight: FontWeight.bold)),
                 ]),
           ),
@@ -188,28 +268,85 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ),
         ),
-        body: ListView.builder(
-          itemCount: _isReceivement
-              ? itemCountListBillReceivement
-              : itemCountListBillPayment,
+        body: PageView.builder(
+          itemCount: itemCount,
+          controller: PageController(viewportFraction: 1, initialPage: index),
+          onPageChanged: (indexPage) {
+            setState(() {
+              if (indexPage > index) {
+                _date = _date.add(Duration(days: 30));
+              } else {
+                _date = _date.subtract(Duration(days: 30));
+              }
+
+              monthHeader = months[_date.month];
+              yearHeader = _date.year.toString();
+
+              index = indexPage;
+
+              receivementAmount = 0;
+              paymentAmount = 0;
+
+              listBillPayment = bills
+                  .where((x) =>
+                      x.billType.compareTo('PAYMENT') == 0 &&
+                      DateTime.parse(x.payDAy).year == _date.year &&
+                      DateTime.parse(x.payDAy).month == _date.month)
+                  .toList();
+
+              listBillReceivement = bills
+                  .where((x) =>
+                      x.billType.compareTo('RECEIVEMENT') == 0 &&
+                      DateTime.parse(x.payDAy).year == _date.year &&
+                      DateTime.parse(x.payDAy).month == _date.month)
+                  .toList();
+
+              listBillPayment.forEach((element) {
+                paymentAmount += double.parse(element.amount);
+              });
+
+              listBillReceivement.forEach((element) {
+                receivementAmount += double.parse(element.amount);
+              });
+
+              itemCountListBillPayment = listBillPayment.length;
+              itemCountListBillReceivement = listBillReceivement.length;
+              balance = receivementAmount - paymentAmount;
+
+              print(_date);
+            });
+          },
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  height: 20,
-                ),
-                FlatButton(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(24),
-                  onPressed: () {},
-                  child: billList(
-                    _isReceivement
-                        ? listBillReceivement[index]
-                        : listBillPayment[index],
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _isReceivement
+                        ? itemCountListBillReceivement
+                        : itemCountListBillPayment,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            color: Colors.white,
+                            height: 20,
+                          ),
+                          FlatButton(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(24),
+                            onPressed: () {},
+                            child: billList(
+                              _isReceivement
+                                  ? listBillReceivement[index]
+                                  : listBillPayment[index],
+                            ),
+                          ),
+                          Container(height: 1, color: Colors.black26),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                Container(height: 1, color: Colors.black26),
               ],
             );
           },
@@ -250,7 +387,8 @@ class _BillListPageState extends State<BillListPage> {
                 child: Container(
                     margin: EdgeInsets.only(right: 40),
                     child: Icon(
-                      IconCategory.iconCategory(bill.paymentCategory.description),
+                      IconCategory.iconCategory(
+                          bill.paymentCategory.description),
                       size: 45,
                       color: Colors.blueGrey,
                     ))),
@@ -264,12 +402,11 @@ class _BillListPageState extends State<BillListPage> {
                 ),
                 Text(
                   bill.paymentCategory.description,
-                  style:
-                      GoogleFonts.overpass(fontSize: 12, color: Colors.grey[900]),
+                  style: GoogleFonts.overpass(
+                      fontSize: 12, color: Colors.grey[900]),
                 ),
                 Text(
-                  DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(bill.payDAy)),
+                  DateFormat('dd/MM/yyyy').format(DateTime.parse(bill.payDAy)),
                   style:
                       GoogleFonts.overpass(fontSize: 12, color: Colors.black87),
                 ),

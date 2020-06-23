@@ -80,8 +80,6 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.blueAccent,
                       ),
                       onTap: () {
-                        print('_name');
-                        print('_email');
                       },
                     ),
                     Divider(),
