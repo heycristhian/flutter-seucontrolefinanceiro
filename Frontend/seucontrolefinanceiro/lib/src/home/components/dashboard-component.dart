@@ -36,12 +36,14 @@ class DashboardComponent {
 
     itemCount = listDateTime.length;
 
+    print('itemcount: ' + itemCount.toString());
+
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
         height: 200,
         child: PageView.builder(
-          itemCount: itemCount,
+          itemCount: itemCount == 0 ? 1 : itemCount,
           controller: PageController(viewportFraction: 1, initialPage: 0),
           scrollDirection: Axis.horizontal,
           pageSnapping: true,

@@ -59,6 +59,7 @@ class _BillListPageState extends State<BillListPage> {
   double balance = 0.0;
   double paymentAmount = 0;
   double receivementAmount = 0;
+  double paymentAmountPaid = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -102,16 +103,32 @@ class _BillListPageState extends State<BillListPage> {
               x.paid == false)
           .toList();
 
+      bills
+          .where((x) =>
+              x.billType.compareTo('PAYMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == int.parse(year) &&
+              DateTime.parse(x.payDAy).month == int.parse(month) &&
+              x.paid == true)
+          .forEach((x) {
+        paymentAmountPaid += double.parse(x.amount);
+      });
+
+      bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == int.parse(year) &&
+              DateTime.parse(x.payDAy).month == int.parse(month))
+          .forEach((element) {
+        receivementAmount += double.parse(element.amount);
+      });
+
       listBillPayment.forEach((element) {
         paymentAmount += double.parse(element.amount);
       });
 
-      listBillReceivement.forEach((element) {
-        receivementAmount += double.parse(element.amount);
-      });
-
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
+      receivementAmount -= paymentAmountPaid;
       balance = receivementAmount - paymentAmount;
     }
 
@@ -203,13 +220,12 @@ class _BillListPageState extends State<BillListPage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back), onPressed: () {
-                Navigator.pop(context, true);
-               },
-            ),
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+          ),
           actions: <Widget>[
-            
-            
             IconButton(
               icon: Icon(
                 Icons.playlist_add_check,
@@ -225,10 +241,18 @@ class _BillListPageState extends State<BillListPage> {
                           actions: <Widget>[
                             FlatButton(
                                 onPressed: () {
-                                  listBillPayment.forEach((x) {
-                                    x.paid = true;
-                                    BillController.updateBill(x);
-                                  });
+                                  if (_isReceivement) {
+                                    listBillReceivement.forEach((x) {
+                                      x.paid = true;
+                                      BillController.updateBill(x);
+                                    });
+                                  } else {
+                                    listBillPayment.forEach((x) {
+                                      x.paid = true;
+                                      BillController.updateBill(x);
+                                    });
+                                  }
+
                                   _returnDataAtt(index);
                                   Navigator.of(context).pop();
                                 },
@@ -448,6 +472,7 @@ class _BillListPageState extends State<BillListPage> {
 
       receivementAmount = 0;
       paymentAmount = 0;
+      paymentAmountPaid = 0;
 
       listBillPayment = bills
           .where((x) =>
@@ -465,16 +490,32 @@ class _BillListPageState extends State<BillListPage> {
               x.paid == false)
           .toList();
 
+      bills
+          .where((x) =>
+              x.billType.compareTo('PAYMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == _date.year &&
+              DateTime.parse(x.payDAy).month == _date.month &&
+              x.paid == true)
+          .forEach((x) {
+        paymentAmountPaid += double.parse(x.amount);
+      });
+
       listBillPayment.forEach((element) {
         paymentAmount += double.parse(element.amount);
       });
 
-      listBillReceivement.forEach((element) {
+      bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              DateTime.parse(x.payDAy).year == _date.year &&
+              DateTime.parse(x.payDAy).month == _date.month)
+          .forEach((element) {
         receivementAmount += double.parse(element.amount);
       });
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
+      receivementAmount -= paymentAmountPaid;
       balance = receivementAmount - paymentAmount;
     });
   }
