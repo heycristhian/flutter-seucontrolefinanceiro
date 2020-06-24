@@ -27,10 +27,19 @@ class BillController {
     BillService.insertBill(billModel);
   }
 
-  static updateBill(BillModel billModel) async {
+  static updateBill(BillModel billModel, String currentCategory) async {
     var prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
 
+    var paymentCategory = PaymentCategory();
+    paymentCategory.description = currentCategory;
+    paymentCategory.billType = billModel.billType;
+
+    paymentCategory.billType =
+        (paymentCategory.billType == 'Recebimento') ? 'RECEIVEMENT' : 'PAYMENT';
+    paymentCategory.mutable = false;
+
+    billModel.paymentCategory = paymentCategory;
     billModel.userId = userId;
     billModel.payDAy = billModel.payDAy.substring(0, 10);
 

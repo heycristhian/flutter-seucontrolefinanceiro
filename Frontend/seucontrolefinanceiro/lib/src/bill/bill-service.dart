@@ -73,7 +73,6 @@ class BillService {
       "billDescription": billModel.billDescription,
       "amount": billModel.amount,
       "everyMonth": billModel.everyMonth,
-      "sameAmount": billModel.sameAmount,
       "payDAy": billModel.payDAy,
       "billType": billModel.billType,
       "paymentCategory": {
@@ -111,7 +110,6 @@ class BillService {
       "billDescription": billModel.billDescription,
       "amount": billModel.amount,
       "everyMonth": billModel.everyMonth,
-      "sameAmount": billModel.sameAmount,
       "payDAy": billModel.payDAy,
       "billType": billModel.billType,
       "paymentCategory": {
@@ -131,4 +129,6 @@ class BillService {
 
     print('Status code updateBill: ${response.statusCode}');
   }
+
+  
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillListPage extends StatefulWidget {
@@ -245,12 +248,14 @@ class _BillListPageState extends State<BillListPage> {
                                   if (_isReceivement) {
                                     listBillReceivement.forEach((x) {
                                       x.paid = true;
-                                      BillController.updateBill(x);
+                                      BillController.updateBill(
+                                          x, x.paymentCategory.description);
                                     });
                                   } else {
                                     listBillPayment.forEach((x) {
                                       x.paid = true;
-                                      BillController.updateBill(x);
+                                      BillController.updateBill(
+                                          x, x.paymentCategory.description);
                                     });
                                   }
 
@@ -351,16 +356,20 @@ class _BillListPageState extends State<BillListPage> {
                                         content: Text('Deseja editar?'),
                                         actions: <Widget>[
                                           FlatButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                Navigator.push(
+                                              onPressed: () async {
+                                                bool valid = await Navigator.push(
                                                     context,
                                                     CupertinoPageRoute(
                                                         builder: (BuildContext
                                                                 context) =>
                                                             BillFormPage(_isReceivement
-                                  ? listBillReceivement[index]
-                                  : listBillPayment[index])));
+                                                                ? listBillReceivement[
+                                                                    index]
+                                                                : listBillPayment[
+                                                                    index])));
+                                                Navigator.pop(context, true);
+
+                                                //if (valid) {}
                                               },
                                               child: Text('Sim')),
                                           FlatButton(

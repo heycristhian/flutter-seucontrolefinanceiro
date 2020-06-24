@@ -49,7 +49,6 @@ public class BillForm {
                 .billDescription(this.getBillDescription())
                 .amount(this.getAmount())
                 .everyMonth(this.isEveryMonth())
-                .sameAmount(this.isSameAmount())
                 .payDAy(this.getPayDAy())
                 .billType(this.getBillType())
                 .paymentCategory(this.getPaymentCategory())

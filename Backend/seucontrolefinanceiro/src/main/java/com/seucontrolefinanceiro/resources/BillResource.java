@@ -60,7 +60,6 @@ public class BillResource implements IResource<BillDTO, BillForm> {
         }
     }
 
-    @Override
     @PutMapping()
     public ResponseEntity<UserDTO> update(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();

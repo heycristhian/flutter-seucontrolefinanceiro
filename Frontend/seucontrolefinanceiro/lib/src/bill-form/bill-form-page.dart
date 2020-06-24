@@ -42,6 +42,7 @@ class _BillFormPageState extends State<BillFormPage> {
     if (picked != null && picked != _date) {
       setState(() {
         _date = picked;
+        billModel.payDAy = _date.toString().substring(0, 10);
         print(_date.toString());
       });
     }
@@ -59,7 +60,6 @@ class _BillFormPageState extends State<BillFormPage> {
   String _despesaOuReceita = 'Despesa';
 
   bool _isSwitched = false;
-  bool _isSwitchedAmount = false;
 
   List<String> category = [
     'Alimentação',
@@ -170,6 +170,7 @@ class _BillFormPageState extends State<BillFormPage> {
               onChanged: (String newValue) {
                 setState(() {
                   this.categoriaSelecionada = newValue;
+                  billModel.paymentCategory.description = newValue;
                   this.currentCategory = newValue;
                 });
               },
@@ -202,7 +203,6 @@ class _BillFormPageState extends State<BillFormPage> {
               ],
             ),
           ),
-          _methodSameAmount(),
           _methodPortion(),
           ListTile(
               title: Row(
@@ -231,6 +231,7 @@ class _BillFormPageState extends State<BillFormPage> {
       _ctrlDescription.text = billModel.billDescription;
       _ctrlPortion.text = billModel.portion.toString();
       indexPage = billModel.billType == 'RECEIVEMENT' ? 0 : 1;
+      _date = DateTime.parse(billModel.payDAy);
       _attData(indexPage);
       if (billModel.portion == null) {
         billModel.portion = 0;
@@ -238,6 +239,7 @@ class _BillFormPageState extends State<BillFormPage> {
         _isSwitched = true;
       }
       billModel.portion = billModel.portion == null ? 0 : billModel.portion;
+      currentCategory = billModel.paymentCategory.description;
     }
     return Material(
       child: Scaffold(
@@ -278,36 +280,8 @@ class _BillFormPageState extends State<BillFormPage> {
     );
   }
 
-  _methodSameAmount() {
-    if (_isSwitched) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 17.0),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: Icon(Icons.monetization_on),
-            ),
-            Expanded(
-              child: ListTile(
-                title: Text("Mesmo valor mensal?"),
-                subtitle: Text("Você pode modificar futuramente"),
-              ),
-            ),
-            Switch(
-              onChanged: (val) => setState(() => _isSwitchedAmount = val),
-              value: _isSwitchedAmount,
-            ),
-          ],
-        ),
-      );
-    } else {
-      return SizedBox();
-    }
-  }
-
   _methodPortion() {
-    if (_isSwitchedAmount) {
+    if (_isSwitched) {
       return ListTile(
         leading: const Icon(
           Icons.format_list_numbered,
@@ -342,30 +316,37 @@ class _BillFormPageState extends State<BillFormPage> {
           int score = await Future.delayed(
               const Duration(milliseconds: 1000), () => 42);
           // After [onPressed], it will trigger animation running backwards, from end to beginning
-          return () {
+          return () async {
             // Optional returns is returning a VoidCallback that will be called
             // after the animation is stopped at the beginning.
             // A best practice would be to do time-consuming task in [onPressed],
             // and do page navigation in the returned VoidCallback.
             // So that user won't missed out the reverse animation.
-            BillModel billModel = BillModel();
-            billModel.billDescription = _ctrlDescription.text;
-            billModel.payDAy = _date.toString();
-            billModel.everyMonth = _isSwitched;
-            billModel.amount = _ctrlMoney.text;
-            billModel.sameAmount = _isSwitchedAmount;
-            billModel.paid = false;
-            billModel.portion = (_ctrlPortion.text.isEmpty)
+            BillModel bill = BillModel();
+            bill.billDescription = _ctrlDescription.text;
+            bill.payDAy = _date.toString();
+            bill.everyMonth = _isSwitched;
+            bill.amount = _ctrlMoney.text;
+            bill.paid = false;
+            bill.portion = (_ctrlPortion.text.isEmpty)
                 ? null
                 : int.parse(_ctrlPortion.text);
-            billModel.billType =
+            bill.billType =
                 (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
 
-            BillController.insertBill(billModel, currentCategory);
-            Navigator.pushReplacement(
+            if (billModel == null) {
+              BillController.insertBill(bill, currentCategory);
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => HomePage()));
+            } else {
+              bill.id = billModel.id;
+              BillController.updateBill(bill, currentCategory);
+              Navigator.pop(context, true);
+            }
+
+            
           };
         },
         defaultWidget: Text(

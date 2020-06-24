@@ -19,7 +19,6 @@ public class Bill {
     private String billDescription;
     private BigDecimal amount;
     private boolean everyMonth;
-    private boolean sameAmount;
     private LocalDate payDAy;
     private BillType billType;
     private PaymentCategory paymentCategory;

@@ -3,6 +3,7 @@ package com.seucontrolefinanceiro.services.util;
 import com.seucontrolefinanceiro.domain.Bill;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +20,8 @@ public class GenerateObject {
     private static Bill insertData(Bill bill, Integer index) {
         return Bill.builder()
                 .billDescription(bill.getBillDescription())
-                .amount(bill.isSameAmount() ? bill.getAmount() : BigDecimal.valueOf(0))
+                .amount(bill.getAmount())
                 .everyMonth(bill.isEveryMonth())
-                .sameAmount(bill.isSameAmount())
                 .payDAy(bill.getPayDAy().plusMonths(index))
                 .billType(bill.getBillType())
                 .paymentCategory(bill.getPaymentCategory())
@@ -32,19 +32,16 @@ public class GenerateObject {
     }
 
     public static Bill cloneBill(Bill oldObj, Bill newObj) {
-
         oldObj.setBillDescription(newObj.getBillDescription());
-        oldObj.setAmount(newObj.isSameAmount() ? newObj.getAmount() : BigDecimal.valueOf(0));
+        oldObj.setAmount(newObj.getAmount());
         oldObj.setEveryMonth(newObj.isEveryMonth());
-        oldObj.setSameAmount(newObj.isSameAmount());
-        oldObj.setPayDAy(newObj.getPayDAy());
+        oldObj.setPayDAy(LocalDate.of(oldObj.getPayDAy().getYear(), oldObj.getPayDAy().getMonth(), newObj.getPayDAy().getDayOfMonth()));
         oldObj.setBillType(newObj.getBillType());
         oldObj.setPaymentCategory(newObj.getPaymentCategory());
         oldObj.setPaid(newObj.isPaid());
         oldObj.setParent(newObj.getParent());
         oldObj.setUserId(newObj.getUserId());
         oldObj.setPortion((newObj.getPortion()));
-
         return oldObj;
     }
 }

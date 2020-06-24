@@ -127,7 +127,7 @@ class DashboardComponent {
                 InkWell(
                   splashColor: Colors.greenAccent,
                   onTap: () async {
-                    var valid = await Navigator.push(
+                    bool valid = await Navigator.push(
                         context,
                         CupertinoPageRoute(
                             builder: (BuildContext context) => BillListPage(

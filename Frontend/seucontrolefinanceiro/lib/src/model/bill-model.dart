@@ -5,7 +5,6 @@ class BillModel {
   String billDescription;
   String amount;
   bool everyMonth;
-  bool sameAmount;
   String payDAy;
   String billType;
   PaymentCategory paymentCategory;
@@ -20,7 +19,6 @@ class BillModel {
       this.billDescription,
       this.amount,
       this.everyMonth,
-      this.sameAmount,
       this.payDAy,
       this.billType,
       this.paymentCategory,
@@ -37,7 +35,6 @@ class BillModel {
       print(test);
       amount = json['amount'].toString();
       everyMonth = json['everyMonth'];
-      sameAmount = json['sameAmount'];
       payDAy = json['payDAy'];
       billType = json['billType'];
       paymentCategory = json['paymentCategory'] != null
@@ -59,7 +56,6 @@ class BillModel {
     data['billDescription'] = this.billDescription;
     data['amount'] = this.amount;
     data['everyMonth'] = this.everyMonth;
-    data['sameAmount'] = this.sameAmount;
     data['payDAy'] = this.payDAy;
     data['billType'] = this.billType;
     if (this.paymentCategory != null) {

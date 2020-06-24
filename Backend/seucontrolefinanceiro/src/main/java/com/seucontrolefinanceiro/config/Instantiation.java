@@ -211,7 +211,6 @@ public class Instantiation implements CommandLineRunner {
                     .billDescription("NuBank")
                     .amount(BigDecimal.valueOf(150))
                     .everyMonth(false)
-                    .sameAmount(false)
                     .payDAy(LocalDate.of(2020, 6, 12))
                     .billType(BillType.PAYMENT)
                     .paymentCategory(bank)

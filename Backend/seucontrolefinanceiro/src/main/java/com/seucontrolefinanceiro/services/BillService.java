@@ -5,13 +5,10 @@ import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
-import com.seucontrolefinanceiro.services.util.BillEveryMonth;
 import com.seucontrolefinanceiro.services.util.GenerateObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +43,6 @@ public class BillService implements IService<Bill> {
         User user = userService.findById(bill.getUserId());
         user.setBills(repository.findByUserId(bill.getUserId()).get());
 
-
         if (bill.isEveryMonth()) {
             Integer index = bill.getPortion() == null ? portion : bill.getPortion();
             List<Bill> bills = GenerateObject.generateBills(bill, index);
@@ -61,6 +57,9 @@ public class BillService implements IService<Bill> {
             repository.insert(bill);
             user.addToListBill(bill);
         }
+        String parentId = bill.getParent() == null ? bill.getId() : bill.getParent();
+        bill.setParent(parentId);
+        repository.save(bill);
         userRepository.save(user);
         return bill;
     }
@@ -73,48 +72,55 @@ public class BillService implements IService<Bill> {
 
     @Override
     public Bill update(Bill newObj) {
-        Bill oldObj = findById(newObj.getId());
-        boolean oldObjIsEveryMonth = oldObj.isEveryMonth();
-        boolean newObjIsEveryMonth = newObj.isEveryMonth();
+        if (!newObj.isPaid()) {
+            Bill oldObj = findById(newObj.getId());
+            boolean oldObjIsEveryMonth = oldObj.isEveryMonth();
+            boolean newObjIsEveryMonth = newObj.isEveryMonth();
 
-        newObj.setParent((newObj.getParent() == null) ? newObj.getId() : newObj.getParent());
+            newObj.setParent((newObj.getParent() == null) ? newObj.getId() : newObj.getParent());
 
-        User user = userService.findById(newObj.getUserId());
-        user.setBills(repository.findByUserId(newObj.getUserId()).get());
-        List<Bill> bills;
+            User user = userService.findById(newObj.getUserId());
+            user.setBills(repository.findByUserId(newObj.getUserId()).get());
+            List<Bill> bills;
 
-        if (newObjIsEveryMonth && !oldObjIsEveryMonth) {
-            Integer index = newObj.getPortion() == null ? portion : newObj.getPortion();
-            bills = GenerateObject.generateBills(newObj, index);
+            if (newObjIsEveryMonth && !oldObjIsEveryMonth) {
+                Integer index = newObj.getPortion() == null ? portion : newObj.getPortion();
+                bills = GenerateObject.generateBills(newObj, index);
 
-            for (Bill b : bills) {
-                b.setParent(newObj.getId());
-                repository.insert(b);
-                user.addToListBill(b);
+                for (Bill b : bills) {
+                    b.setParent(newObj.getId());
+                    repository.insert(b);
+                    user.addToListBill(b);
+                }
+                userRepository.save(user);
+            } else if (oldObjIsEveryMonth && !newObjIsEveryMonth) {
+                repository.findByUserId(newObj.getUserId())
+                        .get().stream()
+                        .filter(x -> x.getParent().equals(newObj.getParent())
+                                && x.isPaid() == false)
+                        .collect(Collectors.toList())
+                        .forEach(x -> repository.delete(x));
+
+            } else if(newObj.isEveryMonth()){
+                String parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
+                bills = repository.findByUserId(newObj.getUserId())
+                        .get().stream()
+                        .filter(x -> x.getParent().equals(parentId)
+                                && x.isPaid() == false
+                                && !x.getId().equals(newObj.getId()))
+                        .collect(Collectors.toList());
+                int i = 0;
+                for (Bill b : bills) {
+                    ++i;
+                    b = GenerateObject.cloneBill(b, newObj);
+                    repository.save(b);
+                }
             }
-            userRepository.save(user);
-        } else if (oldObjIsEveryMonth && !newObjIsEveryMonth) {
-            repository.findByUserId(newObj.getUserId())
-                .get().stream()
-                .filter(x -> x.getParent().equals(newObj.getParent())
-                    && x.isPaid() == false)
-                .collect(Collectors.toList())
-                .forEach(x -> repository.delete(x));
-        } else if(newObj.isEveryMonth()){
-            bills = repository.findByUserId(newObj.getUserId())
-                    .get().stream()
-                    .filter(x -> x.getParent().equals(newObj.getParent())
-                        && x.isPaid() == false
-                    && !x.getId().equals(newObj.getId()))
-                    .collect(Collectors.toList());
-
-            for (Bill b : bills) {
-                b = GenerateObject.cloneBill(b, newObj);
-                repository.save(b);
-            }
+            repository.save(newObj);
+            return newObj;
+        } else {
+            return pay(newObj);
         }
-        repository.save(newObj);
-        return newObj;
     }
 
     @Override
@@ -124,7 +130,6 @@ public class BillService implements IService<Bill> {
                 .billDescription(newObj.getBillDescription())
                 .amount(newObj.getAmount())
                 .everyMonth(newObj.isEveryMonth())
-                .sameAmount(newObj.isSameAmount())
                 .payDAy(newObj.getPayDAy())
                 .billType(newObj.getBillType())
                 .paymentCategory(newObj.getPaymentCategory())
@@ -141,5 +146,11 @@ public class BillService implements IService<Bill> {
                         && !x.getId().equals(bill.getId())
                         && x.isPaid() == false)
                 .collect(Collectors.toList());
+    }
+
+    public Bill pay(Bill bill) {
+        bill.setPaid(true);
+        repository.save(bill);
+        return bill;
     }
 }
