@@ -257,8 +257,11 @@ class _BillFormPageState extends State<BillFormPage> {
             Icon(Icons.remove, size: 30, color: Colors.white),
           ],
           onTap: (index) {
-            billModel.billType =
+            if(billModel != null) {
+              billModel.billType =
                 billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
+            }
+            
             _attData(index);
           },
         ),
