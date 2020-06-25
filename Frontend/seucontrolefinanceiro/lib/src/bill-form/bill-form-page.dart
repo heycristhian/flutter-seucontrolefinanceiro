@@ -42,7 +42,9 @@ class _BillFormPageState extends State<BillFormPage> {
     if (picked != null && picked != _date) {
       setState(() {
         _date = picked;
+        if (billModel != null) {
         billModel.payDAy = _date.toString().substring(0, 10);
+        }
         print(_date.toString());
       });
     }
@@ -196,6 +198,10 @@ class _BillFormPageState extends State<BillFormPage> {
                     setState(() {
                       print('val: ' + val.toString());
                       _isSwitched = val;
+                      if (billModel != null) {
+                        billModel.everyMonth = _isSwitched;
+                        _ctrlPortion.text = '';
+                      }
                     });
                   },
                   value: _isSwitched,
@@ -229,16 +235,16 @@ class _BillFormPageState extends State<BillFormPage> {
     if (billModel != null) {
       _ctrlMoney.text = billModel.amount;
       _ctrlDescription.text = billModel.billDescription;
-      _ctrlPortion.text = billModel.portion.toString();
+      _ctrlPortion.text = billModel.portion == null ? '' : billModel.portion.toString();
       indexPage = billModel.billType == 'RECEIVEMENT' ? 0 : 1;
       _date = DateTime.parse(billModel.payDAy);
       _attData(indexPage);
       if (billModel.portion == null) {
-        billModel.portion = 0;
+        billModel.portion = null;
       } else {
-        _isSwitched = true;
+        _isSwitched = billModel.everyMonth;
       }
-      billModel.portion = billModel.portion == null ? 0 : billModel.portion;
+      billModel.portion = billModel.portion == null ? null : billModel.portion;
       currentCategory = billModel.paymentCategory.description;
     }
     return Material(
@@ -281,7 +287,9 @@ class _BillFormPageState extends State<BillFormPage> {
   }
 
   _methodPortion() {
-    if (_isSwitched) {
+    var portion = billModel == null ? 0 : billModel.portion;
+    portion = portion == null ? 0 : portion;
+    if (_isSwitched && portion < 1) {
       return ListTile(
         leading: const Icon(
           Icons.format_list_numbered,
@@ -328,6 +336,7 @@ class _BillFormPageState extends State<BillFormPage> {
             bill.everyMonth = _isSwitched;
             bill.amount = _ctrlMoney.text;
             bill.paid = false;
+            bill.parentId = billModel == null ? null : billModel.parentId;
             bill.portion = (_ctrlPortion.text.isEmpty)
                 ? null
                 : int.parse(_ctrlPortion.text);

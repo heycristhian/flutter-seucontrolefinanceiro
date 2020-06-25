@@ -344,33 +344,31 @@ class _BillListPageState extends State<BillListPage> {
                             color: Colors.white,
                             height: 20,
                           ),
-                          FlatButton(
-                            color: Colors.white,
-                            padding: EdgeInsets.all(24),
-                            onLongPress: () {
-                              print('dsadsad');
+                          GestureDetector(
+                            onDoubleTap: () {
+                              String msg;
+                              var model = BillModel();
+                              if (_isReceivement) {
+                                model = listBillReceivement[index];
+                                msg = 'Deseja receber somente a conta ${model.billDescription}?';
+                              } else {
+                                model = listBillPayment[index];
+                                msg = 'Deseja pagar somente a conta ${model.billDescription}?';
+                              }
                               showDialog(
                                   context: context,
                                   builder: (_) => AlertDialog(
-                                        title: Text('Edição'),
-                                        content: Text('Deseja editar?'),
+                                        backgroundColor:
+                                            Colors.greenAccent[100],
+                                        title: Text('Pagar'),
+                                        content: Text(
+                                            msg,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700)),
                                         actions: <Widget>[
                                           FlatButton(
-                                              onPressed: () async {
-                                                bool valid = await Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            BillFormPage(_isReceivement
-                                                                ? listBillReceivement[
-                                                                    index]
-                                                                : listBillPayment[
-                                                                    index])));
-                                                Navigator.pop(context, true);
-
-                                                //if (valid) {}
-                                              },
+                                              onPressed: () async {},
                                               child: Text('Sim')),
                                           FlatButton(
                                               onPressed: () {
@@ -382,11 +380,55 @@ class _BillListPageState extends State<BillListPage> {
                                       ),
                                   barrierDismissible: false);
                             },
-                            onPressed: () {},
-                            child: billList(
-                              _isReceivement
-                                  ? listBillReceivement[index]
-                                  : listBillPayment[index],
+                            child: FlatButton(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(24),
+                              onLongPress: () {
+                                print('dsadsad');
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          backgroundColor:
+                                              Colors.orangeAccent[100],
+                                          title: Text('Edição'),
+                                          content: Text('Deseja editar?',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w700)),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                                onPressed: () async {
+                                                  bool valid = await Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              BillFormPage(_isReceivement
+                                                                  ? listBillReceivement[
+                                                                      index]
+                                                                  : listBillPayment[
+                                                                      index])));
+                                                  Navigator.pop(context, true);
+
+                                                  //if (valid) {}
+                                                },
+                                                child: Text('Sim')),
+                                            FlatButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Não')),
+                                          ],
+                                          elevation: 24.0,
+                                        ),
+                                    barrierDismissible: false);
+                              },
+                              onPressed: () {},
+                              child: billList(
+                                _isReceivement
+                                    ? listBillReceivement[index]
+                                    : listBillPayment[index],
+                              ),
                             ),
                           ),
                           Container(height: 1, color: Colors.black26),

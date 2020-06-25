@@ -9,6 +9,7 @@ import com.seucontrolefinanceiro.services.util.GenerateObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,12 +77,13 @@ public class BillService implements IService<Bill> {
             Bill oldObj = findById(newObj.getId());
             boolean oldObjIsEveryMonth = oldObj.isEveryMonth();
             boolean newObjIsEveryMonth = newObj.isEveryMonth();
+            String parentId;
 
             newObj.setParent((newObj.getParent() == null) ? newObj.getId() : newObj.getParent());
 
             User user = userService.findById(newObj.getUserId());
             user.setBills(repository.findByUserId(newObj.getUserId()).get());
-            List<Bill> bills;
+            List<Bill> bills = new ArrayList<>();
 
             if (newObjIsEveryMonth && !oldObjIsEveryMonth) {
                 Integer index = newObj.getPortion() == null ? portion : newObj.getPortion();
@@ -94,21 +96,37 @@ public class BillService implements IService<Bill> {
                 }
                 userRepository.save(user);
             } else if (oldObjIsEveryMonth && !newObjIsEveryMonth) {
+                parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
+                /*
                 repository.findByUserId(newObj.getUserId())
                         .get().stream()
-                        .filter(x -> x.getParent().equals(newObj.getParent())
+                        .filter(x -> x.getParent().equals(parentId)
                                 && x.isPaid() == false)
                         .collect(Collectors.toList())
                         .forEach(x -> repository.delete(x));
+                 */
+
+                repository.findByUserId(newObj.getUserId()).get()
+                        .stream().filter(x ->
+                            x.isPaid() == false
+                            && x.getParent().compareTo(parentId) == 0)
+                        .collect(Collectors.toList()).forEach(x -> repository.delete(x));
+
+                newObj.setPortion(null);
 
             } else if(newObj.isEveryMonth()){
-                String parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
-                bills = repository.findByUserId(newObj.getUserId())
-                        .get().stream()
-                        .filter(x -> x.getParent().equals(parentId)
-                                && x.isPaid() == false
-                                && !x.getId().equals(newObj.getId()))
-                        .collect(Collectors.toList());
+                parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
+                try {
+                    bills = repository.findByUserId(newObj.getUserId())
+                            .get().stream()
+                            .filter(x -> x.getParent().equals(parentId)
+                                    && x.isPaid() == false
+                                    && !x.getId().equals(newObj.getId()))
+                            .collect(Collectors.toList());
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+
                 int i = 0;
                 for (Bill b : bills) {
                     ++i;

@@ -119,6 +119,7 @@ class BillService {
       },
       "paid": billModel.paid == null ? false : billModel.paid,
       "userId": billModel.userId,
+      "parentId": billModel.parentId,
       "portion": billModel.portion,
     };
 

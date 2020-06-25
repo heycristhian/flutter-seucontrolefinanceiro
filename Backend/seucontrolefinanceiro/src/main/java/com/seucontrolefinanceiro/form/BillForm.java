@@ -41,6 +41,7 @@ public class BillForm {
     private boolean paid;
     @NonNull
     private String userId;
+    private String parentId;
     private Integer portion;
 
     public Bill converter() {
@@ -55,6 +56,7 @@ public class BillForm {
                 .paid(this.isPaid())
                 .userId(this.getUserId())
                 .portion(this.getPortion())
+                .parent(this.getParentId())
                 .build();
     }
 }

@@ -9,7 +9,7 @@ class BillModel {
   String billType;
   PaymentCategory paymentCategory;
   bool paid;
-  String parent;
+  String parentId;
   String userId;
   String sClass;
   int portion;
@@ -23,7 +23,7 @@ class BillModel {
       this.billType,
       this.paymentCategory,
       this.paid,
-      this.parent,
+      this.parentId,
       this.userId,
       this.sClass,
       this.portion});
@@ -41,7 +41,7 @@ class BillModel {
           ? new PaymentCategory.fromJson(json['paymentCategory'])
           : null;
       paid = json['paid'];
-      parent = json['parent'];
+      parentId = json['parent'];
       userId = json['userId'];
       sClass = json['_class'];
       portion = json['portion'];
@@ -62,7 +62,7 @@ class BillModel {
       data['paymentCategory'] = this.paymentCategory.toJson();
     }
     data['paid'] = this.paid;
-    data['parent'] = this.parent;
+    data['parent'] = this.parentId;
     data['userId'] = this.userId;
     data['_class'] = this.sClass;
     data['portion'] = this.portion;
