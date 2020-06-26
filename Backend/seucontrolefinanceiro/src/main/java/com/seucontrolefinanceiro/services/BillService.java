@@ -97,14 +97,6 @@ public class BillService implements IService<Bill> {
                 userRepository.save(user);
             } else if (oldObjIsEveryMonth && !newObjIsEveryMonth) {
                 parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
-                /*
-                repository.findByUserId(newObj.getUserId())
-                        .get().stream()
-                        .filter(x -> x.getParent().equals(parentId)
-                                && x.isPaid() == false)
-                        .collect(Collectors.toList())
-                        .forEach(x -> repository.delete(x));
-                 */
 
                 repository.findByUserId(newObj.getUserId()).get()
                         .stream().filter(x ->
@@ -155,6 +147,7 @@ public class BillService implements IService<Bill> {
                 .parent(newObj.getParent())
                 .userId(newObj.getUserId())
                 .portion(newObj.getPortion())
+                .paidIn(newObj.getPaidIn())
                 .build();
     }
 

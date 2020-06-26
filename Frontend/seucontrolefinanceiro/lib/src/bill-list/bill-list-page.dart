@@ -350,10 +350,12 @@ class _BillListPageState extends State<BillListPage> {
                               var model = BillModel();
                               if (_isReceivement) {
                                 model = listBillReceivement[index];
-                                msg = 'Deseja receber somente a conta ${model.billDescription}?';
+                                msg =
+                                    'Deseja receber somente a conta ${model.billDescription}?';
                               } else {
                                 model = listBillPayment[index];
-                                msg = 'Deseja pagar somente a conta ${model.billDescription}?';
+                                msg =
+                                    'Deseja pagar somente a conta ${model.billDescription}?';
                               }
                               showDialog(
                                   context: context,
@@ -361,14 +363,23 @@ class _BillListPageState extends State<BillListPage> {
                                         backgroundColor:
                                             Colors.greenAccent[100],
                                         title: Text('Pagar'),
-                                        content: Text(
-                                            msg,
+                                        content: Text(msg,
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w700)),
                                         actions: <Widget>[
                                           FlatButton(
-                                              onPressed: () async {},
+                                              onPressed: () async {
+                                                model.paid = true;
+
+                                                BillController.updateBill(
+                                                    model,
+                                                    model.paymentCategory
+                                                        .description);
+
+                                                _returnDataAtt(index);
+                                                Navigator.of(context).pop();
+                                              },
                                               child: Text('Sim')),
                                           FlatButton(
                                               onPressed: () {
@@ -384,14 +395,15 @@ class _BillListPageState extends State<BillListPage> {
                               color: Colors.white,
                               padding: EdgeInsets.all(24),
                               onLongPress: () {
-                                print('dsadsad');
+                                BillModel model = _isReceivement ? listBillReceivement[index] : listBillPayment[index];
+                                var msg = 'Deseja editar a conta ${model.billDescription}';
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
                                           backgroundColor:
                                               Colors.orangeAccent[100],
                                           title: Text('Edição'),
-                                          content: Text('Deseja editar?',
+                                          content: Text(msg,
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.w700)),

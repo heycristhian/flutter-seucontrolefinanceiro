@@ -26,5 +26,6 @@ public class Bill {
     private String parent;
     private String userId;
     private Integer portion;
+    private LocalDate paidIn;
 
 }

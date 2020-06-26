@@ -43,7 +43,7 @@ class _BillFormPageState extends State<BillFormPage> {
       setState(() {
         _date = picked;
         if (billModel != null) {
-        billModel.payDAy = _date.toString().substring(0, 10);
+          billModel.payDAy = _date.toString().substring(0, 10);
         }
         print(_date.toString());
       });
@@ -171,9 +171,12 @@ class _BillFormPageState extends State<BillFormPage> {
               }).toList(),
               onChanged: (String newValue) {
                 setState(() {
-                  this.categoriaSelecionada = newValue;
-                  billModel.paymentCategory.description = newValue;
                   this.currentCategory = newValue;
+                  this.categoriaSelecionada = newValue;
+                  if (billModel != null) {
+                    billModel.paymentCategory.description = currentCategory;
+                  }
+                  inSetState();
                 });
               },
             ),
@@ -196,12 +199,8 @@ class _BillFormPageState extends State<BillFormPage> {
                   //onChanged: (val) => setState(() => _isSwitched = val),
                   onChanged: (bool val) {
                     setState(() {
-                      print('val: ' + val.toString());
                       _isSwitched = val;
-                      if (billModel != null) {
-                        billModel.everyMonth = _isSwitched;
-                        _ctrlPortion.text = '';
-                      }
+                      inSetState();
                     });
                   },
                   value: _isSwitched,
@@ -235,7 +234,8 @@ class _BillFormPageState extends State<BillFormPage> {
     if (billModel != null) {
       _ctrlMoney.text = billModel.amount;
       _ctrlDescription.text = billModel.billDescription;
-      _ctrlPortion.text = billModel.portion == null ? '' : billModel.portion.toString();
+      _ctrlPortion.text =
+          billModel.portion == null ? '' : billModel.portion.toString();
       indexPage = billModel.billType == 'RECEIVEMENT' ? 0 : 1;
       _date = DateTime.parse(billModel.payDAy);
       _attData(indexPage);
@@ -265,11 +265,11 @@ class _BillFormPageState extends State<BillFormPage> {
             Icon(Icons.remove, size: 30, color: Colors.white),
           ],
           onTap: (index) {
-            if(billModel != null) {
+            if (billModel != null) {
               billModel.billType =
-                billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
+                  billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
             }
-            
+
             _attData(index);
           },
         ),
@@ -346,16 +346,14 @@ class _BillFormPageState extends State<BillFormPage> {
             if (billModel == null) {
               BillController.insertBill(bill, currentCategory);
               Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => HomePage()));
             } else {
               bill.id = billModel.id;
               BillController.updateBill(bill, currentCategory);
               Navigator.pop(context, true);
             }
-
-            
           };
         },
         defaultWidget: Text(
@@ -442,5 +440,15 @@ class _BillFormPageState extends State<BillFormPage> {
         category = _returnSetPaymentOrReceivement(true);
       }
     });
+  }
+
+  inSetState() {
+    if (billModel != null) {
+      billModel.amount = _ctrlMoney.text;
+      billModel.billDescription = _ctrlDescription.text;
+      billModel.payDAy = _date.toString();
+      billModel.everyMonth = _isSwitched;
+      _ctrlPortion.text = '';
+    }
   }
 }

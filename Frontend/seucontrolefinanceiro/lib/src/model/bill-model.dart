@@ -13,6 +13,7 @@ class BillModel {
   String userId;
   String sClass;
   int portion;
+  String paidIn;
 
   BillModel(
       {this.id,
@@ -26,7 +27,8 @@ class BillModel {
       this.parentId,
       this.userId,
       this.sClass,
-      this.portion});
+      this.portion,
+      this.paidIn});
 
   BillModel.fromJson(Map<String, dynamic> json) {
     if (json != null) {
@@ -46,6 +48,7 @@ class BillModel {
       sClass = json['_class'];
       portion = json['portion'];
       id = json['id'];
+      paidIn = json['paidIn'];
     } else {
       print('Bill null');
     }
@@ -67,6 +70,7 @@ class BillModel {
     data['_class'] = this.sClass;
     data['portion'] = this.portion;
     data['id'] = this.id;
+    data['paidIn'] = this.paidIn;
     return data;
   }
 }

@@ -28,6 +28,7 @@ public class GenerateObject {
                 .paid(bill.isPaid())
                 .userId(bill.getUserId())
                 .portion(bill.getPortion())
+                .paidIn(bill.getPaidIn())
                 .build();
     }
 
@@ -42,6 +43,7 @@ public class GenerateObject {
         oldObj.setParent(newObj.getParent());
         oldObj.setUserId(newObj.getUserId());
         oldObj.setPortion((newObj.getPortion()));
+        oldObj.setPaidIn(newObj.getPaidIn());
         return oldObj;
     }
 }

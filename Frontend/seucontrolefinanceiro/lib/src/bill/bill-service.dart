@@ -121,6 +121,7 @@ class BillService {
       "userId": billModel.userId,
       "parentId": billModel.parentId,
       "portion": billModel.portion,
+      "paidIn": billModel.paidIn,
     };
 
     var _body = json.encode(params);

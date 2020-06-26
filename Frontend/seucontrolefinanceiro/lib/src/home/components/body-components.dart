@@ -113,6 +113,7 @@ class BodyComponent {
 
   _timeLine(List<BillModel> bills) {
     bills = bills.where((element) => element.paid == true).toList();
+    bills.sort((a, b) => b.paidIn.toString().compareTo(a.paidIn.toString()));
     return Column(
       children: <Widget>[
         Text(
@@ -169,7 +170,7 @@ class BodyComponent {
                   bill.paymentCategory.description +
                       ' - ' +
                       DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(bill.payDAy)),
+                          .format(DateTime.parse(bill.paidIn)),
                   style:
                       GoogleFonts.overpass(fontSize: 12, color: Colors.black87),
                 ),

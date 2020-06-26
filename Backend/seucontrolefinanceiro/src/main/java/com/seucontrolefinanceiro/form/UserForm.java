@@ -4,6 +4,8 @@ import com.seucontrolefinanceiro.domain.User;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+
 @RequiredArgsConstructor
 public class UserForm {
     private final String id;
@@ -15,8 +17,6 @@ public class UserForm {
     private final String password;
     @NonNull
     private final String cpf;
-
-
 
     public User converter() {
         return User.builder()

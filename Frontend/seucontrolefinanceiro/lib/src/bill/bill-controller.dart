@@ -31,6 +31,10 @@ class BillController {
     var prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
 
+    if (billModel.paid == true) {
+      billModel.paidIn = DateTime.now().toString().substring(0, 10);
+    }
+
     var paymentCategory = PaymentCategory();
     paymentCategory.description = currentCategory;
     paymentCategory.billType = billModel.billType;

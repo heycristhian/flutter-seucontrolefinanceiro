@@ -43,6 +43,7 @@ public class BillForm {
     private String userId;
     private String parentId;
     private Integer portion;
+    private LocalDate paidIn;
 
     public Bill converter() {
         return Bill.builder()
@@ -57,6 +58,7 @@ public class BillForm {
                 .userId(this.getUserId())
                 .portion(this.getPortion())
                 .parent(this.getParentId())
+                .paidIn(this.getPaidIn())
                 .build();
     }
 }

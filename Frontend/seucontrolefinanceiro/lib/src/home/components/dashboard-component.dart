@@ -27,7 +27,7 @@ class DashboardComponent {
 
     int itemCount = 0;
 
-    bills.forEach((element) {
+    bills.where((x) => x.paid == false).forEach((element) {
       listDateTime.putIfAbsent(
           '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}',
           () =>
@@ -133,11 +133,13 @@ class DashboardComponent {
                             builder: (BuildContext context) => BillListPage(
                                 bills, dateString, index, itemCount)));
 
-                    if (valid) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage()));
+                    if (valid != null) {
+                      if (valid) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => HomePage()));
+                      }
                     }
                   },
                 ),
@@ -148,5 +150,4 @@ class DashboardComponent {
       ),
     );
   }
-
 }
