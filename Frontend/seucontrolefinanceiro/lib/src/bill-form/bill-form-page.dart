@@ -245,45 +245,12 @@ class _BillFormPageState extends State<BillFormPage> {
         _isSwitched = billModel.everyMonth;
       }
       billModel.portion = billModel.portion == null ? null : billModel.portion;
-      currentCategory = billModel.paymentCategory.description;
-    }
-    return Material(
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        backgroundColor: Colors.white,
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: indexPage,
-          backgroundColor: Colors.white,
-          color: color1,
-          items: <Widget>[
-            Icon(
-              Icons.add,
-              size: 30,
-              color: Colors.white,
-            ),
-            Icon(Icons.remove, size: 30, color: Colors.white),
-          ],
-          onTap: (index) {
-            if (billModel != null) {
-              billModel.billType =
-                  billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
-            }
 
-            _attData(index);
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[btnCancel(context), btnSave(context)],
-          ),
-        ),
-        body: _containerRendaDespesa(icon, color1, color2),
-      ),
-    );
+      if (!category.contains(currentCategory)) {
+        currentCategory = billModel.paymentCategory.description;
+      }
+    }
+    return _material();
   }
 
   _methodPortion() {
@@ -449,6 +416,83 @@ class _BillFormPageState extends State<BillFormPage> {
       billModel.payDAy = _date.toString();
       billModel.everyMonth = _isSwitched;
       _ctrlPortion.text = '';
+    }
+  }
+
+  Widget _material() {
+    if (billModel == null) {
+      return Material(
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          backgroundColor: Colors.white,
+          bottomNavigationBar: CurvedNavigationBar(
+            key: _bottomNavigationKey,
+            index: indexPage,
+            backgroundColor: Colors.white,
+            color: color1,
+            items: <Widget>[
+              Icon(
+                Icons.add,
+                size: 30,
+                color: Colors.white,
+              ),
+              Icon(Icons.remove, size: 30, color: Colors.white),
+            ],
+            onTap: (index) {
+              if (billModel != null) {
+                billModel.billType =
+                    billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
+              }
+              _attData(index);
+            },
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[btnCancel(context), btnSave(context)],
+            ),
+          ),
+          body: _containerRendaDespesa(icon, color1, color2),
+        ),
+      );
+    } else {
+      Icon iconBottom = billModel.billType == 'PAYMENT'
+          ? Icon(Icons.remove, size: 30, color: Colors.white)
+          : Icon(
+              Icons.add,
+              size: 30,
+              color: Colors.white,
+            );
+      return Material(
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          backgroundColor: Colors.white,
+          bottomNavigationBar: CurvedNavigationBar(
+            key: _bottomNavigationKey,
+            index: 0,
+            backgroundColor: Colors.white,
+            color: color1,
+            items: <Widget>[
+              Icon(Icons.delete, color: Colors.white,),
+              iconBottom
+            ],
+            onTap: (index) {},
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[btnCancel(context), btnSave(context)],
+            ),
+          ),
+          body: _containerRendaDespesa(icon, color1, color2),
+        ),
+      );
     }
   }
 }
