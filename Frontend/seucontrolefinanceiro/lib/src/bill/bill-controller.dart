@@ -49,4 +49,8 @@ class BillController {
 
     BillService.updateBill(billModel);
   }
+
+  static deleteBill(String id) async {
+    BillService.deleteBill(id);
+  }
 }

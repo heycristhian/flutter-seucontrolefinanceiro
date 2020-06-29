@@ -221,9 +221,10 @@ class _BillFormPageState extends State<BillFormPage> {
                   icon: Icon(Icons.calendar_today),
                   onPressed: () {
                     selectDate(context);
-                  })
+                  }),
             ],
           )),
+          iconDelete()
         ],
       ),
     );
@@ -280,7 +281,7 @@ class _BillFormPageState extends State<BillFormPage> {
 
   btnSave(context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 0),
+      padding: const EdgeInsets.only(bottom: 10),
       child: ProgressButton(
         progressWidget: const CircularProgressIndicator(),
         width: 100,
@@ -393,6 +394,7 @@ class _BillFormPageState extends State<BillFormPage> {
   _attData(int index) {
     setState(() {
       icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
+      print('index: ' + index.toString());
       if (index == 0) {
         colorBtn = Color.fromRGBO(17, 199, 111, 1);
         color1 = Color.fromRGBO(17, 199, 111, 1);
@@ -443,7 +445,7 @@ class _BillFormPageState extends State<BillFormPage> {
                 billModel.billType =
                     billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
               }
-              _attData(index);
+              //_attData(index);
             },
           ),
           floatingActionButtonLocation:
@@ -475,11 +477,10 @@ class _BillFormPageState extends State<BillFormPage> {
             index: 0,
             backgroundColor: Colors.white,
             color: color1,
-            items: <Widget>[
-              Icon(Icons.delete, color: Colors.white,),
-              iconBottom
-            ],
-            onTap: (index) {},
+            items: <Widget>[iconBottom],
+            onTap: (index) {
+              _attData(index);
+            },
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -487,11 +488,77 @@ class _BillFormPageState extends State<BillFormPage> {
             padding: EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[btnCancel(context), btnSave(context)],
+              children: <Widget>[
+                //iconDelete(),
+                btnCancel(context),
+                btnSave(context)
+              ],
             ),
           ),
           body: _containerRendaDespesa(icon, color1, color2),
         ),
+      );
+    }
+  }
+
+  iconDelete() {
+    if (billModel != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50),
+        child: RaisedButton(
+          color: Colors.redAccent,
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                      title: Text('Apagar'),
+                      content:
+                          Text('Tem certeza que deseja apagar essa conta?'),
+                      actions: <Widget>[
+                        FlatButton(
+                            onPressed: () {
+                              BillController.deleteBill(billModel.id);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Sim',
+                              style: TextStyle(color: Colors.redAccent),
+                            )),
+                        FlatButton(
+                            onPressed: () {
+                              _attData(1);
+                              Navigator.of(context).pop();
+                              return;
+                            },
+                            child: Text('Não')),
+                      ],
+                      elevation: 24.0,
+                    ),
+                barrierDismissible: false);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Apagar',
+                style: TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 15,
+              )
+            ],
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(
+        height: 1,
       );
     }
   }

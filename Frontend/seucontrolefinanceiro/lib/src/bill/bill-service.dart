@@ -132,5 +132,19 @@ class BillService {
     print('Status code updateBill: ${response.statusCode}');
   }
 
-  
+  static Future<void> deleteBill(String id) async {
+    var prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    String tokenType = prefs.getString('type') ?? '';
+
+    var header = {
+      "Content-Type": "application/json",
+      "Authorization": "$tokenType $token"
+    };
+
+    var url = UrlGlobal.url() + '/scf-service/bills/' + id;
+
+    var response = await http.delete(url, headers: header);
+    print('Status code updateBill: ${response.statusCode}');
+  }
 }

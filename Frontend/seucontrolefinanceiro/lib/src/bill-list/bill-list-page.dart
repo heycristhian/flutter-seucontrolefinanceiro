@@ -272,7 +272,6 @@ class _BillListPageState extends State<BillListPage> {
                           elevation: 24.0,
                         ),
                     barrierDismissible: false);
-                print('teste');
               },
             )
           ],
@@ -395,8 +394,11 @@ class _BillListPageState extends State<BillListPage> {
                               color: Colors.white,
                               padding: EdgeInsets.all(24),
                               onLongPress: () {
-                                BillModel model = _isReceivement ? listBillReceivement[index] : listBillPayment[index];
-                                var msg = 'Deseja editar a conta ${model.billDescription}';
+                                BillModel model = _isReceivement
+                                    ? listBillReceivement[index]
+                                    : listBillPayment[index];
+                                var msg =
+                                    'Deseja editar a conta ${model.billDescription}';
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
