@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
+import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'components/constants-components.dart';
 
@@ -105,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value;
+                  LoginService.setRememberMe(_rememberMe);
                 });
               },
             ),
@@ -256,16 +258,6 @@ class _LoginPageState extends State<LoginPage> {
 
     Navigator.pushReplacement(context,
         CupertinoPageRoute(builder: (BuildContext context) => LoaderPage(loginModel)));
-/*
-    var auth = await LoginService.login(loginModel);
-
-    if (auth != null) {
-      _navigateHomePage(context);
-    } else {
-      _ctrlPassword.text = '';
-      _ctrlUser.text = '';
-      alert(context, 'USUÁRIO OU SENHA INVÁLIDOS');
-    }*/
   }
 
   _navigateHomePage(BuildContext context) {

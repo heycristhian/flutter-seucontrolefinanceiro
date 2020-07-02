@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:progress_indicators/progress_indicators.dart';
+import 'package:flutter/rendering.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
@@ -24,16 +24,6 @@ class _LoaderPageState extends State<LoaderPage> {
     this.loginModel = loginModel;
   }
 
-  /*
-  var auth = await LoginService.login(loginModel);
-
-    if (auth != null) {
-      _navigateHomePage(context);
-    } else {
-      _ctrlPassword.text = '';
-      _ctrlUser.text = '';
-      alert(context, 'USUÁRIO OU SENHA INVÁLIDOS');
-    }*/
   @override
   Widget build(BuildContext context) {
     print(Offset(0.0, -3).distanceSquared - Offset(0.0, 0.0).distanceSquared);
@@ -42,25 +32,23 @@ class _LoaderPageState extends State<LoaderPage> {
     return FutureBuilder(
         future: auth,
         builder: (context, snapshot) {
+          AuthModel authModel = AuthModel();
+          authModel = snapshot.data;
+
           print('AUTH ' + snapshot.data.toString());
-          if (!snapshot.hasData) {
+          
+          if(!snapshot.hasData) {
             return Loader.load();
-            /*
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute(
-                    builder: (BuildContext context) => LoginPage()));*/
-          } else if (snapshot.hasError) {
+          }
+          if (snapshot.hasError) {
             print('deu erro classe: loader-page');
             Loader.load();
+          } else if (snapshot.hasData && authModel.email == 'error') {
+            return LoginPage();
           } else {
             return HomePage();
-            /*
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute(
-                    builder: (BuildContext context) => HomePage()));*/
           }
+
         });
   }
 }

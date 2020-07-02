@@ -25,12 +25,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _loadUser();
   }
 
-  _loadUser() async {
-    //_streamControllerUser.add(user);
-  }
 
   @override
   Widget build(BuildContext context) {

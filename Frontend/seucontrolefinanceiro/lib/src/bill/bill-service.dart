@@ -32,29 +32,6 @@ class BillService {
     }
 
     return bills;
-    //ATE AQUI
-
-    /*
-    var response = await http.get(url, headers: header);
-
-    if (response.statusCode == 200) {
-      List listResponse = json.decode(response.body);
-
-      final bills = List<BillModel>();
-
-      try {
-        for (Map map in listResponse) {
-          BillModel b = BillModel.fromJson(map);
-          bills.add(b);
-        }
-      } on Exception {
-        print('Sem contas!');
-      }
-
-      return bills;
-    } else {
-      throw Exception;
-    }*/
   }
 
   static Future<BillModel> insertBill(BillModel billModel) async {

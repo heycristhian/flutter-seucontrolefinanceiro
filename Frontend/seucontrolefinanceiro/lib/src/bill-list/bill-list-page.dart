@@ -423,8 +423,6 @@ class _BillListPageState extends State<BillListPage> {
                                                                   : listBillPayment[
                                                                       index])));
                                                   Navigator.pop(context, true);
-
-                                                  //if (valid) {}
                                                 },
                                                 child: Text('Sim')),
                                             FlatButton(
