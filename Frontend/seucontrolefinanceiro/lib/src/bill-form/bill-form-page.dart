@@ -17,6 +17,8 @@ class BillFormPage extends StatefulWidget {
 
   @override
   _BillFormPageState createState() => _BillFormPageState(billModel);
+
+  
 }
 
 class _BillFormPageState extends State<BillFormPage> {
@@ -45,7 +47,6 @@ class _BillFormPageState extends State<BillFormPage> {
         if (billModel != null) {
           billModel.payDAy = _date.toString().substring(0, 10);
         }
-        print(_date.toString());
       });
     }
   }
@@ -113,10 +114,8 @@ class _BillFormPageState extends State<BillFormPage> {
                             fontSize: 50.0,
                             fontWeight: FontWeight.w700,
                             color: Colors.white),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
                         decoration: InputDecoration(
                           prefixIcon: icon,
                           border: InputBorder.none,
@@ -311,17 +310,7 @@ class _BillFormPageState extends State<BillFormPage> {
             bill.billType =
                 (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
 
-            if (billModel == null) {
-              BillController.insertBill(bill, currentCategory);
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => HomePage()));
-            } else {
-              bill.id = billModel.id;
-              BillController.updateBill(bill, currentCategory);
-              Navigator.pop(context, true);
-            }
+            _redirectPage(bill);
           };
         },
         defaultWidget: Text(
@@ -560,6 +549,18 @@ class _BillFormPageState extends State<BillFormPage> {
       return SizedBox(
         height: 1,
       );
+    }
+  }
+
+  void _redirectPage(BillModel bill) async {
+    if (billModel == null) {
+      BillController.insertBill(bill, currentCategory);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    } else {
+      bill.id = billModel.id;
+      BillController.updateBill(bill, currentCategory);
+      Navigator.pop(context);
     }
   }
 }

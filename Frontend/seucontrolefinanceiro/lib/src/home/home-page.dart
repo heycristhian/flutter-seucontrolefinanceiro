@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     Future<UserModel> user = UserControler.getUser();
@@ -51,20 +50,28 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     UserAccountsDrawerHeader(
-                      accountName: Text(_user.fullName),
-                      accountEmail: Text(_user.email),
+                      accountName: Text(
+                        _user.fullName,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      accountEmail: Text(_user.email,
+                          style: TextStyle(color: Colors.white)),
                       currentAccountPicture: GestureDetector(
                         onTap: () => debugPrint("Avatar ok!"),
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(_profileImg),
+                          radius: 30,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('assets/user.png'),
+                            radius: 35,
+                          ),
                         ),
                       ),
                       decoration: BoxDecoration(
-                        color: Colors
-                            .greenAccent, /*
+                          color: Colors.greenAccent,
                           image: DecorationImage(
-                              fit: BoxFit.fill, image: NetworkImage(''))*/
-                      ),
+                              fit: BoxFit.fill,
+                              image: AssetImage("assets/bg.jpg"))),
                     ),
                     SizedBox(height: 10),
                     ListTile(
@@ -101,7 +108,8 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
-                          builder: (BuildContext context) => BillFormPage(null)));
+                          builder: (BuildContext context) =>
+                              BillFormPage(null)));
                 },
                 backgroundColor: Theme.of(context).primaryColor,
               ),

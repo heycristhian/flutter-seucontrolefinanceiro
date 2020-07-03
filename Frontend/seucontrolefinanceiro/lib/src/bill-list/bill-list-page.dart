@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
-import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillListPage extends StatefulWidget {
@@ -49,6 +48,14 @@ class _BillListPageState extends State<BillListPage> {
     this.dateString = dateString;
     this.index = index;
     this.itemCount = itemCount;
+  }
+
+  
+
+  @override
+  void initState(){
+    super.initState();
+    _updateBills().then((value) => bills = value);
   }
 
   bool _isReceivement = false;
@@ -184,7 +191,7 @@ class _BillListPageState extends State<BillListPage> {
                                         fontSize: 18, color: Colors.grey),
                                   ),
                                   Text(
-                                    'R\$ $receivementAmount',
+                                    'R\$ ${receivementAmount.toStringAsFixed(2)}',
                                     style: GoogleFonts.overpass(
                                         fontSize: 25, color: Colors.green),
                                   )
@@ -208,7 +215,7 @@ class _BillListPageState extends State<BillListPage> {
                               fontSize: 18, color: Colors.blueGrey),
                         ),
                         Text(
-                          'R\$ $balance',
+                          'R\$ ${balance.toStringAsFixed(2)}',
                           style: GoogleFonts.overpass(
                               fontSize: 25,
                               color: balance >= 0
@@ -259,7 +266,7 @@ class _BillListPageState extends State<BillListPage> {
                                     });
                                   }
 
-                                  _returnDataAtt(index);
+                                  _updateData(index);
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('Sim')),
@@ -326,7 +333,7 @@ class _BillListPageState extends State<BillListPage> {
             } else {
               _date = _date.subtract(Duration(days: 30));
             }
-            _returnDataAtt(indexPage);
+            _updateData(indexPage);
           },
           itemBuilder: (BuildContext context, int index) {
             return Column(
@@ -376,7 +383,7 @@ class _BillListPageState extends State<BillListPage> {
                                                     model.paymentCategory
                                                         .description);
 
-                                                _returnDataAtt(index);
+                                                _updateData(index);
                                                 Navigator.of(context).pop();
                                               },
                                               child: Text('Sim')),
@@ -412,7 +419,7 @@ class _BillListPageState extends State<BillListPage> {
                                           actions: <Widget>[
                                             FlatButton(
                                                 onPressed: () async {
-                                                  bool valid = await Navigator.push(
+                                                  bool validation = await Navigator.push(
                                                       context,
                                                       CupertinoPageRoute(
                                                           builder: (BuildContext
@@ -468,7 +475,7 @@ class _BillListPageState extends State<BillListPage> {
               style: GoogleFonts.overpass(fontSize: 18, color: Colors.grey),
             ),
             Text(
-              'R\$ $paymentAmount',
+              'R\$ ${paymentAmount.toStringAsFixed(2)}',
               style:
                   GoogleFonts.overpass(fontSize: 25, color: Colors.blueAccent),
             )
@@ -558,7 +565,7 @@ class _BillListPageState extends State<BillListPage> {
     );
   }
 
-  _returnDataAtt(int indexPage) {
+  _updateData(int indexPage) {
     setState(() {
       monthHeader = months[_date.month];
       yearHeader = _date.year.toString();
@@ -613,5 +620,9 @@ class _BillListPageState extends State<BillListPage> {
       receivementAmount -= paymentAmountPaid;
       balance = receivementAmount - paymentAmount;
     });
+  }
+
+  Future<List<BillModel>> _updateBills() {
+    return BillController.getBillsByCurrentUser();
   }
 }
