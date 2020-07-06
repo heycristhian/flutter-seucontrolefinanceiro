@@ -27,5 +27,4 @@ public class Bill {
     private String userId;
     private Integer portion;
     private LocalDate paidIn;
-
 }

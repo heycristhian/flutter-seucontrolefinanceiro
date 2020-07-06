@@ -63,7 +63,6 @@ class BillService {
     };
 
     var _body = json.encode(params);
-    print('Json enviado (insertBill) $_body');
 
     var response = await http.post(url, headers: header, body: _body);
 
@@ -102,7 +101,6 @@ class BillService {
     };
 
     var _body = json.encode(params);
-    print('Json enviado (updateBill) $_body');
 
     var response = await http.put(url, headers: header, body: _body);
 

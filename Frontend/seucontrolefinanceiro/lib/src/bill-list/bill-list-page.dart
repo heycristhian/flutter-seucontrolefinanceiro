@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillListPage extends StatefulWidget {
@@ -50,12 +49,9 @@ class _BillListPageState extends State<BillListPage> {
     this.itemCount = itemCount;
   }
 
-  
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _updateBills().then((value) => bills = value);
   }
 
   bool _isReceivement = false;
@@ -92,35 +88,16 @@ class _BillListPageState extends State<BillListPage> {
     var month = dateString.split(" ")[0];
     var year = dateString.split(" ")[2];
 
-    print('month ' + month);
-
     if (monthHeader == null) {
       monthHeader = months[int.parse(month)];
       yearHeader = year;
 
-      listBillPayment = bills
-          .where((x) =>
-              x.billType.compareTo('PAYMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == int.parse(year) &&
-              DateTime.parse(x.payDAy).month == int.parse(month) &&
-              x.paid == false)
-          .toList();
+      listBillPayment = _returnBillsWithParams('PAYMENT', year, month, false);
 
-      listBillReceivement = bills
-          .where((x) =>
-              x.billType.compareTo('RECEIVEMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == int.parse(year) &&
-              DateTime.parse(x.payDAy).month == int.parse(month) &&
-              x.paid == false)
-          .toList();
+      listBillReceivement =
+          _returnBillsWithParams('RECEIVEMENT', year, month, false);
 
-      bills
-          .where((x) =>
-              x.billType.compareTo('PAYMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == int.parse(year) &&
-              DateTime.parse(x.payDAy).month == int.parse(month) &&
-              x.paid == true)
-          .forEach((x) {
+      _returnBillsWithParams('PAYMENT', year, month, true).forEach((x) {
         paymentAmountPaid += double.parse(x.amount);
       });
 
@@ -169,11 +146,8 @@ class _BillListPageState extends State<BillListPage> {
                           color: Colors.white,
                           padding: EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12),
-                          onPressed: () {
-                            print('_isReceivement => ' +
-                                _isReceivement.toString());
-                          },
-                          child: buildTravellersView(),
+                          onPressed: () {},
+                          child: buildView(),
                         ),
                         FlatButton(
                           color: Colors.white,
@@ -233,7 +207,11 @@ class _BillListPageState extends State<BillListPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context, true);
+              Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => HomePage()));
+              //Navigator.pop(context, true);
             },
           ),
           actions: <Widget>[
@@ -243,42 +221,7 @@ class _BillListPageState extends State<BillListPage> {
                 color: Colors.green,
               ),
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                          title: Text('Pagar'),
-                          content: Text(
-                              'Você tem certeza que deseja pagar todas contas?'),
-                          actions: <Widget>[
-                            FlatButton(
-                                onPressed: () {
-                                  if (_isReceivement) {
-                                    listBillReceivement.forEach((x) {
-                                      x.paid = true;
-                                      BillController.updateBill(
-                                          x, x.paymentCategory.description);
-                                    });
-                                  } else {
-                                    listBillPayment.forEach((x) {
-                                      x.paid = true;
-                                      BillController.updateBill(
-                                          x, x.paymentCategory.description);
-                                    });
-                                  }
-
-                                  _updateData(index);
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Sim')),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Não')),
-                          ],
-                          elevation: 24.0,
-                        ),
-                    barrierDismissible: false);
+                _dialogPayBill();
               },
             )
           ],
@@ -352,95 +295,13 @@ class _BillListPageState extends State<BillListPage> {
                           ),
                           GestureDetector(
                             onDoubleTap: () {
-                              String msg;
-                              var model = BillModel();
-                              if (_isReceivement) {
-                                model = listBillReceivement[index];
-                                msg =
-                                    'Deseja receber somente a conta ${model.billDescription}?';
-                              } else {
-                                model = listBillPayment[index];
-                                msg =
-                                    'Deseja pagar somente a conta ${model.billDescription}?';
-                              }
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                        backgroundColor:
-                                            Colors.greenAccent[100],
-                                        title: Text('Pagar'),
-                                        content: Text(msg,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w700)),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                              onPressed: () async {
-                                                model.paid = true;
-
-                                                BillController.updateBill(
-                                                    model,
-                                                    model.paymentCategory
-                                                        .description);
-
-                                                _updateData(index);
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('Sim')),
-                                          FlatButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text('Não')),
-                                        ],
-                                        elevation: 24.0,
-                                      ),
-                                  barrierDismissible: false);
+                              _dialogPayOneBill(index);
                             },
                             child: FlatButton(
                               color: Colors.white,
                               padding: EdgeInsets.all(24),
                               onLongPress: () {
-                                BillModel model = _isReceivement
-                                    ? listBillReceivement[index]
-                                    : listBillPayment[index];
-                                var msg =
-                                    'Deseja editar a conta ${model.billDescription}';
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                          backgroundColor:
-                                              Colors.orangeAccent[100],
-                                          title: Text('Edição'),
-                                          content: Text(msg,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w700)),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                                onPressed: () async {
-                                                  bool validation = await Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              BillFormPage(_isReceivement
-                                                                  ? listBillReceivement[
-                                                                      index]
-                                                                  : listBillPayment[
-                                                                      index])));
-                                                  Navigator.pop(context, true);
-                                                },
-                                                child: Text('Sim')),
-                                            FlatButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Não')),
-                                          ],
-                                          elevation: 24.0,
-                                        ),
-                                    barrierDismissible: false);
+                                _dialogUpdateBill(index);
                               },
                               onPressed: () {},
                               child: billList(
@@ -464,7 +325,7 @@ class _BillListPageState extends State<BillListPage> {
     );
   }
 
-  Widget buildTravellersView() {
+  Widget buildView() {
     return Row(
       children: <Widget>[
         Column(
@@ -576,28 +437,13 @@ class _BillListPageState extends State<BillListPage> {
       paymentAmount = 0;
       paymentAmountPaid = 0;
 
-      listBillPayment = bills
-          .where((x) =>
-              x.billType.compareTo('PAYMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == _date.year &&
-              DateTime.parse(x.payDAy).month == _date.month &&
-              x.paid == false)
-          .toList();
+      listBillPayment =
+          _returnBillsWithParams('PAYMENT', _date.year, _date.month, false);
 
-      listBillReceivement = bills
-          .where((x) =>
-              x.billType.compareTo('RECEIVEMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == _date.year &&
-              DateTime.parse(x.payDAy).month == _date.month &&
-              x.paid == false)
-          .toList();
+      listBillReceivement =
+          _returnBillsWithParams('RECEIVEMENT', _date.year, _date.month, false);
 
-      bills
-          .where((x) =>
-              x.billType.compareTo('PAYMENT') == 0 &&
-              DateTime.parse(x.payDAy).year == _date.year &&
-              DateTime.parse(x.payDAy).month == _date.month &&
-              x.paid == true)
+      _returnBillsWithParams('PAYMENT', _date.year, _date.month, true)
           .forEach((x) {
         paymentAmountPaid += double.parse(x.amount);
       });
@@ -622,7 +468,151 @@ class _BillListPageState extends State<BillListPage> {
     });
   }
 
-  Future<List<BillModel>> _updateBills() {
-    return BillController.getBillsByCurrentUser();
+  _returnBillsWithParams(String billType, var year, var month, bool paid) {
+    return bills
+        .where((x) =>
+            x.billType.compareTo(billType) == 0 &&
+            DateTime.parse(x.payDAy).year == int.parse(year.toString()) &&
+            DateTime.parse(x.payDAy).month == int.parse(month.toString()) &&
+            x.paid == paid)
+        .toList();
+  }
+
+  void _dialogPayBill() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text('Pagar'),
+              content: Text('Você tem certeza que deseja pagar todas contas?'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      if (_isReceivement) {
+                        listBillReceivement.forEach((x) {
+                          x.paid = true;
+                          BillController.updateBill(
+                              x, x.paymentCategory.description);
+                        });
+                      } else {
+                        listBillPayment.forEach((x) {
+                          x.paid = true;
+                          BillController.updateBill(
+                              x, x.paymentCategory.description);
+                        });
+                      }
+
+                      _updateData(index);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Sim')),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Não')),
+              ],
+              elevation: 24.0,
+            ),
+        barrierDismissible: false);
+  }
+
+  void _dialogUpdateBill(int index) {
+    BillModel model =
+        _isReceivement ? listBillReceivement[index] : listBillPayment[index];
+    var msg = 'Deseja editar a conta ${model.billDescription}';
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              backgroundColor: Colors.orangeAccent[100],
+              title: Text('Edição'),
+              content: Text(msg,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w700)),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (BuildContext context) => BillFormPage(
+                                  _isReceivement
+                                      ? listBillReceivement[index]
+                                      : listBillPayment[index])));
+                      Navigator.pop(context, true);
+                      _updateDataApi();
+                    },
+                    child: Text('Sim')),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Não')),
+              ],
+              elevation: 24.0,
+            ),
+        barrierDismissible: false);
+  }
+
+  void _dialogPayOneBill(int index) {
+    String msg;
+    var model = BillModel();
+    if (_isReceivement) {
+      model = listBillReceivement[index];
+      msg = 'Deseja receber somente a conta ${model.billDescription}?';
+    } else {
+      model = listBillPayment[index];
+      msg = 'Deseja pagar somente a conta ${model.billDescription}?';
+    }
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              backgroundColor: Colors.greenAccent[100],
+              title: Text('Pagar'),
+              content: Text(msg,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w700)),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () async {
+                      model.paid = true;
+
+                      BillController.updateBill(
+                          model, model.paymentCategory.description);
+
+                      _updateData(index);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Sim')),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Não')),
+              ],
+              elevation: 24.0,
+            ),
+        barrierDismissible: false);
+  }
+
+  _updateDataApi() async {
+    List<BillModel> listBill = List<BillModel>();
+    await Future.delayed(Duration(milliseconds: 100), () {});
+    await BillController.getBillsByCurrentUser().then((value) => value.forEach((x) {listBill.add(x);}));
+    bills = listBill;
+    _updateData(index);
+    _newIndex();
+  }
+
+  _newIndex() {
+     Map listDateTime = Map<String, String>();
+    bills.where((x) => x.paid == false).forEach((element) {
+      listDateTime.putIfAbsent(
+          '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}',
+          () =>
+              '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
+    });
+
+    itemCount = listDateTime.length;
   }
 }

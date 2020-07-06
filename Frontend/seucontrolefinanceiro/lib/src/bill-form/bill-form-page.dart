@@ -17,8 +17,6 @@ class BillFormPage extends StatefulWidget {
 
   @override
   _BillFormPageState createState() => _BillFormPageState(billModel);
-
-  
 }
 
 class _BillFormPageState extends State<BillFormPage> {
@@ -376,7 +374,11 @@ class _BillFormPageState extends State<BillFormPage> {
       set.add('Salário');
       set.add('Outros');
     }
-    currentCategory = set[0];
+    if (billModel != null) {
+      currentCategory = billModel.paymentCategory.description;
+    } else {
+      currentCategory = set[0];
+    }
     return set;
   }
 
@@ -434,7 +436,7 @@ class _BillFormPageState extends State<BillFormPage> {
                 billModel.billType =
                     billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
               }
-              //_attData(index);
+              _attData(index);
             },
           ),
           floatingActionButtonLocation:
@@ -554,12 +556,12 @@ class _BillFormPageState extends State<BillFormPage> {
 
   void _redirectPage(BillModel bill) async {
     if (billModel == null) {
-      BillController.insertBill(bill, currentCategory);
+      await BillController.insertBill(bill, currentCategory);
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } else {
       bill.id = billModel.id;
-      BillController.updateBill(bill, currentCategory);
+      await BillController.updateBill(bill, currentCategory);
       Navigator.pop(context);
     }
   }

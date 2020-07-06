@@ -26,7 +26,6 @@ class _LoaderPageState extends State<LoaderPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(Offset(0.0, -3).distanceSquared - Offset(0.0, 0.0).distanceSquared);
     print('Loader: ' + this.loginModel.user);
     Future<AuthModel> auth = LoginService.login(loginModel);
     return FutureBuilder(

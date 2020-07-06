@@ -20,7 +20,6 @@ class LoginService {
     Map params = {"email": loginModel.user, "password": loginModel.password};
 
     var _body = json.encode(params);
-    print('Json enviado $_body');
 
     var response = await http.post(url, headers: header, body: _body);
 

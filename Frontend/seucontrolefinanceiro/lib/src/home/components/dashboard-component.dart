@@ -36,8 +36,6 @@ class DashboardComponent {
 
     itemCount = listDateTime.length;
 
-    print('itemcount: ' + itemCount.toString());
-
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
@@ -127,7 +125,7 @@ class DashboardComponent {
                 InkWell(
                   splashColor: Colors.greenAccent,
                   onTap: () async {
-                    bool valid = await Navigator.push(
+                    bool valid = await Navigator.pushReplacement(
                         context,
                         CupertinoPageRoute(
                             builder: (BuildContext context) => BillListPage(

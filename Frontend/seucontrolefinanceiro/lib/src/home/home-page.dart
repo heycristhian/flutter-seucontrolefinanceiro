@@ -17,10 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  final _streamControllerUser = StreamController<UserModel>();
-
-  final _profileImg =
-      'https://pm1.narvii.com/6778/e6b5c24de706fe05cb42c6770a06f3b6becf2d93v2_hq.jpg';
 
   @override
   void initState() {
@@ -127,7 +123,6 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         _scaffoldKey.currentState.openDrawer();
                       },
-                      //tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
                     )
                   ],
                 ),
