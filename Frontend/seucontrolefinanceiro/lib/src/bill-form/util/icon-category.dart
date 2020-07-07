@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 class IconCategory { 
   static iconCategory(String text) {
 
-    if (text == 'Alimentação') return Icons.fastfood;
-    if (text == 'Banco') return Icons.business;
-    if (text == 'Compras') return Icons.shopping_cart;
-    if (text == 'Dívidas') return Icons.error;
-    if (text == 'Educação') return Icons.school;
-    if (text == 'Impostos') return Icons.attach_money;
-    if (text == 'Lazer') return Icons.brush;
-    if (text == 'Presentes') return Icons.card_giftcard;
-    if (text == 'Roupas') return Icons.face;
-    if (text == 'Saúde') return Icons.favorite;
-    if (text == 'Serviços') return Icons.local_laundry_service;
-    if (text == 'Supermercado') return Icons.store_mall_directory;
-    if (text == 'Viagem') return Icons.local_airport;
-    if (text == 'Transporte') return Icons.directions_car;
-    if (text == 'Empréstimo') return Icons.money_off;
-    if (text == 'Investimento') return Icons.trending_up;
-    if (text == 'Salário') return Icons.monetization_on;
-    if (text == 'Lanchonetes') return Icons.fastfood;
-    return Icons.reorder;
+    if (text == 'Alimentação') return Image.asset('assets/icons/fast-food.png');
+    if (text == 'Banco') return Image.asset('assets/icons/bank.png');
+    if (text == 'Compras') return Image.asset('assets/icons/buy.png');
+    if (text == 'Dívidas') return Image.asset('assets/icons/depts.png');
+    if (text == 'Educação') return Image.asset('assets/icons/education.png');
+    if (text == 'Impostos') return Image.asset('assets/icons/tax.png');
+    if (text == 'Lazer') return Image.asset('assets/icons/recreation.png');
+    if (text == 'Presentes') return Image.asset('assets/icons/gift.png');
+    if (text == 'Roupas') return Image.asset('assets/icons/clothes.png');
+    if (text == 'Saúde') return Image.asset('assets/icons/health.png');
+    if (text == 'Serviços') return Image.asset('assets/icons/service.png');
+    if (text == 'Supermercado') return Image.asset('assets/icons/supermarket.png');
+    if (text == 'Viagem') return Image.asset('assets/icons/travel.png');
+    if (text == 'Transporte') return Image.asset('assets/icons/transport.png');
+    if (text == 'Empréstimo') return Image.asset('assets/icons/loan.png');
+    if (text == 'Investimento') return Image.asset('assets/icons/investment.png');
+    if (text == 'Salário') return Image.asset('assets/icons/salary.png');
+    if (text == 'Lanchonetes') return Image.asset('assets/icons/snack-bar.png');
+    return Image.asset('assets/icons/others.png');
 
 
   }

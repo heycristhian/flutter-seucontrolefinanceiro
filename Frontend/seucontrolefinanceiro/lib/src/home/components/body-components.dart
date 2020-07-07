@@ -115,9 +115,13 @@ class BodyComponent {
             Container(
                 width: 60,
                 child: Container(
-                    margin: EdgeInsets.only(right: 40),
-                    child: Icon(IconCategory.iconCategory(
-                        bill.paymentCategory.description)))),
+                  padding: EdgeInsets.only(right: 10),
+                  height: 60,
+                  width: 60,
+                  child: Center(
+                      child: IconCategory.iconCategory(
+                          bill.paymentCategory.description)),
+                )),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -162,4 +166,3 @@ class BodyComponent {
     );
   }
 }
-

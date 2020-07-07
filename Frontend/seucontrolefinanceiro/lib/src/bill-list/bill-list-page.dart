@@ -353,15 +353,11 @@ class _BillListPageState extends State<BillListPage> {
         Row(
           children: <Widget>[
             Container(
-                width: 60,
-                child: Container(
-                    margin: EdgeInsets.only(right: 40),
-                    child: Icon(
-                      IconCategory.iconCategory(
-                          bill.paymentCategory.description),
-                      size: 45,
-                      color: Colors.blueGrey,
-                    ))),
+              padding: EdgeInsets.only(right: 10),
+              height: 60,
+              width: 60,
+              child: Center(child: IconCategory.iconCategory(bill.paymentCategory.description)),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -467,7 +463,7 @@ class _BillListPageState extends State<BillListPage> {
       balance = receivementAmount - paymentAmount;
     });
   }
-
+  
   _returnBillsWithParams(String billType, var year, var month, bool paid) {
     return bills
         .where((x) =>
@@ -597,7 +593,7 @@ class _BillListPageState extends State<BillListPage> {
 
   _updateDataApi() async {
     List<BillModel> listBill = List<BillModel>();
-    await Future.delayed(Duration(milliseconds: 100), () {});
+    await Future.delayed(Duration(milliseconds: 500), () {});
     await BillController.getBillsByCurrentUser().then((value) => value.forEach((x) {listBill.add(x);}));
     bills = listBill;
     _updateData(index);

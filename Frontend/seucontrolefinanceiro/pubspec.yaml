@@ -68,6 +68,25 @@ flutter:
   assets:
      - assets/user.png
      - assets/bg.jpg
+     - assets/icons/bank.png
+     - assets/icons/buy.png
+     - assets/icons/clothes.png
+     - assets/icons/depts.png
+     - assets/icons/education.png
+     - assets/icons/fast-food.png
+     - assets/icons/gift.png
+     - assets/icons/health.png
+     - assets/icons/investment.png
+     - assets/icons/loan.png
+     - assets/icons/recreation.png
+     - assets/icons/salary.png
+     - assets/icons/service.png
+     - assets/icons/snack-bar.png
+     - assets/icons/supermarket.png
+     - assets/icons/tax.png
+     - assets/icons/transport.png
+     - assets/icons/travel.png
+     - assets/icons/others.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
