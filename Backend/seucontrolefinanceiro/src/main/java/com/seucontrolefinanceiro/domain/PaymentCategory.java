@@ -16,6 +16,6 @@ public class PaymentCategory {
     private String id;
     @NonNull
     private String description;
-    private boolean mutable;
+    //private boolean mutable; tem que tirar
     private BillType billType;
 }
