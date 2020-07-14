@@ -50,7 +50,6 @@ public class PaymentCategoryService implements IService<PaymentCategory> {
         return PaymentCategory.builder()
                 .id(id)
                 .description(newObj.getDescription())
-                .mutable(newObj.isMutable())
                 .billType(newObj.getBillType())
                 .build();
     }

@@ -24,7 +24,6 @@ public class PaymentCategoryForm {
         return PaymentCategory.builder()
                 .id(this.id)
                 .description(this.description)
-                .mutable(true)
                 .billType(this.billType)
                 .build();
     }
