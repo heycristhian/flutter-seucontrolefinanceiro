@@ -9,42 +9,21 @@ class _TestState extends State<Test> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.red,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(
+        title: Text('AppBar', style: TextStyle(color: Colors.white),),
+      ),
+      body: Center(
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Texto 1',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Texto 2',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Texto 3',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  ),
-                ],
-              )
+              Text('text0', style: TextStyle(fontSize: 30),),
+              Text('text0', style: TextStyle(fontSize: 30),),
+              Text('text0', style: TextStyle(fontSize: 30),),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
