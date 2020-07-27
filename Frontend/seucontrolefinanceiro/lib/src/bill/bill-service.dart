@@ -20,8 +20,6 @@ class BillService {
 
     var url = UrlGlobal.url() + '/scf-service/users/$user/bills';
 
-    //AQUI
-
     Response response =
         await Dio().request(url.toString(), options: Options(headers: header));
 
@@ -30,7 +28,6 @@ class BillService {
     for (Map<String, dynamic> item in response.data) {
       bills.add(BillModel.fromJson(item));
     }
-
     return bills;
   }
 

@@ -162,14 +162,6 @@ class _LoginPageState extends State<LoginPage> {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            TextSpan(
-              text: 'Inscreva-se',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ],
         ),
       ),
