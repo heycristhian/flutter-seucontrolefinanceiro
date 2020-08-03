@@ -1,24 +1,54 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
 import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'components/constants-components.dart';
 
 class LoginPage extends StatefulWidget {
+  bool _aut;
+  LoginPage(bool aut) {
+    this._aut = aut;
+  }
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState(_aut);
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _rememberMe = false;
+  bool _aut;
   final _ctrlUser = TextEditingController();
   final _ctrlPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final LoginModel loginModel = LoginModel();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      if (!_aut) {
+        return AwesomeDialog(
+          context: context,
+          animType: AnimType.BOTTOMSLIDE,
+          dialogType: DialogType.ERROR,
+          body: Text(
+            'Os dados informados para acesso não batem com os nossos registros!',
+            style: TextStyle(),
+          ),
+          btnOkColor: Colors.red,
+          btnOkOnPress: () {},
+        )..show();
+      }
+    });
+  }
+
+  _LoginPageState(bool aut) {
+    this._aut = aut;
+  }
 
   Widget _buildEmailTF() {
     return Column(
@@ -127,7 +157,12 @@ class _LoginPageState extends State<LoginPage> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-          _clickButton(context);
+          if (_ctrlPassword.text.isEmpty || _ctrlUser.text.isEmpty) {
+            _displaySnackBar(
+                context, 'Campo de usuário e senha são obrigatórios!');
+          } else {
+            _clickButton(context);
+          }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -148,24 +183,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSignupBtn() {
-    return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Você não tem uma conta? ',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+  _displaySnackBar(BuildContext context, String msg) {
+    final snackBar = SnackBar(
+      content: Text(msg),
+      action: SnackBarAction(
+        label: 'Fechar',
+        onPressed: () {},
       ),
     );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -228,7 +254,6 @@ class _LoginPageState extends State<LoginPage> {
                         _buildRememberMeCheckbox(),
                         SizedBox(height: 20.0),
                         _buildLoginBtn(),
-                        _buildSignupBtn(),
                       ],
                     ),
                   ),
@@ -242,22 +267,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _clickButton(BuildContext context) async {
-    loginModel.user = _ctrlUser.text;
-    loginModel.password = _ctrlPassword.text;
+    loginModel.user = _ctrlUser.text.trim();
+    loginModel.password = _ctrlPassword.text.trim();
 
     print(loginModel.user);
     print(loginModel.password);
 
-    Navigator.pushReplacement(context,
-        CupertinoPageRoute(builder: (BuildContext context) => LoaderPage(loginModel)));
-  }
-
-  _navigateHomePage(BuildContext context) {
-    Navigator.pushReplacement(context,
-        CupertinoPageRoute(builder: (BuildContext context) => HomePage()));
-  }
-
-  _navigateLoader(BuildContext context) {
-    
+    Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute(
+            builder: (BuildContext context) => LoaderPage(loginModel)));
   }
 }

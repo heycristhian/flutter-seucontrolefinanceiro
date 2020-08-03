@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,7 @@ class _BillFormPageState extends State<BillFormPage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
   BillModel billModel;
   int indexPage = 1;
+  final _formKey = GlobalKey<FormState>();
 
   _BillFormPageState(BillModel billModel) {
     this.billModel = billModel;
@@ -97,38 +99,45 @@ class _BillFormPageState extends State<BillFormPage> {
                       end: Alignment.bottomRight,
                       stops: [0.4, 1],
                       colors: [color1, color2])),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextFormField(
-                        autofocus: false,
-                        controller: _ctrlMoney,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 50.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white),
-                        keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        decoration: InputDecoration(
-                          prefixIcon: icon,
-                          border: InputBorder.none,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) return '';
+                            return null;
+                          },
+                          autofocus: false,
+                          controller: _ctrlMoney,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 50.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
+                          decoration: InputDecoration(
+                            prefixIcon: icon,
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 70, right: 30),
-                    child: Divider(
-                      color: Colors.white,
-                      height: 10,
-                    ),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 70, right: 30),
+                      child: Divider(
+                        color: Colors.white,
+                        height: 10,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -184,7 +193,7 @@ class _BillFormPageState extends State<BillFormPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
-                  child: Icon(Icons.calendar_today, color: Colors.black),
+                  child: Icon(Icons.check_circle, color: Colors.black),
                 ),
                 Expanded(
                   child: ListTile(
@@ -206,21 +215,51 @@ class _BillFormPageState extends State<BillFormPage> {
             ),
           ),
           _methodPortion(),
-          ListTile(
-              title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(DateFormat('dd/MM/yyy').format(_date)),
-              SizedBox(
-                width: 10,
-              ),
-              IconButton(
-                  icon: Icon(Icons.calendar_today),
-                  onPressed: () {
-                    selectDate(context);
-                  }),
-            ],
-          )),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 17.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(Icons.calendar_today, color: Colors.black),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      selectDate(context);
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: ListTile(
+                      title: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(_despesaOuReceita == 'Receita'
+                                  ? 'Data do recebimento'
+                                  : 'Data do pagamento'),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(DateFormat('dd/MM/yyy').format(_date)),
+                          SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           iconDelete()
         ],
       ),
@@ -286,30 +325,37 @@ class _BillFormPageState extends State<BillFormPage> {
         color: colorBtn,
         //Color.fromRGBO(17, 199, 111, 1),
         onPressed: () async {
-          int score = await Future.delayed(
-              const Duration(milliseconds: 1000), () => 42);
-          // After [onPressed], it will trigger animation running backwards, from end to beginning
-          return () async {
-            // Optional returns is returning a VoidCallback that will be called
-            // after the animation is stopped at the beginning.
-            // A best practice would be to do time-consuming task in [onPressed],
-            // and do page navigation in the returned VoidCallback.
-            // So that user won't missed out the reverse animation.
-            BillModel bill = BillModel();
-            bill.billDescription = _ctrlDescription.text;
-            bill.payDAy = _date.toString();
-            bill.everyMonth = _isSwitched;
-            bill.amount = _ctrlMoney.text;
-            bill.paid = false;
-            bill.parentId = billModel == null ? null : billModel.parentId;
-            bill.portion = (_ctrlPortion.text.isEmpty)
-                ? null
-                : int.parse(_ctrlPortion.text);
-            bill.billType =
-                (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
-
-            _redirectPage(bill);
-          };
+          if (!_formKey.currentState.validate()) {
+            return AwesomeDialog(
+              context: context,
+              animType: AnimType.SCALE,
+              dialogType: DialogType.INFO,
+              body: Text(
+                'O campo de valor é obrigatório. Por gentileza preencha para salvar!',
+                style: TextStyle(),
+              ),
+              btnOkColor: Colors.blue,
+              btnOkOnPress: () {},
+            )..show();
+          } else {
+            int score = await Future.delayed(
+                const Duration(milliseconds: 1000), () => 42);
+            return () async {
+              BillModel bill = BillModel();
+              bill.billDescription = _ctrlDescription.text;
+              bill.payDAy = _date.toString();
+              bill.everyMonth = _isSwitched;
+              bill.amount = _ctrlMoney.text;
+              bill.paid = false;
+              bill.parentId = billModel == null ? null : billModel.parentId;
+              bill.portion = (_ctrlPortion.text.isEmpty)
+                  ? null
+                  : int.parse(_ctrlPortion.text);
+              bill.billType =
+                  (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
+              _redirectPage(bill);
+            };
+          }
         },
         defaultWidget: Text(
           'SALVAR',

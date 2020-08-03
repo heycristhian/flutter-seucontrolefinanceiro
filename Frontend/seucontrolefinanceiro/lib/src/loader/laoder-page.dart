@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
@@ -26,7 +25,6 @@ class _LoaderPageState extends State<LoaderPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('Loader: ' + this.loginModel.user);
     Future<AuthModel> auth = LoginService.login(loginModel);
     return FutureBuilder(
         future: auth,
@@ -35,19 +33,18 @@ class _LoaderPageState extends State<LoaderPage> {
           authModel = snapshot.data;
 
           print('AUTH ' + snapshot.data.toString());
-          
-          if(!snapshot.hasData) {
+
+          if (!snapshot.hasData) {
             return Loader.load();
           }
           if (snapshot.hasError) {
             print('deu erro classe: loader-page');
-            Loader.load();
+            return Loader.load();
           } else if (snapshot.hasData && authModel.email == 'error') {
-            return LoginPage();
+            return LoginPage(false);
           } else {
             return HomePage();
           }
-
         });
   }
 }

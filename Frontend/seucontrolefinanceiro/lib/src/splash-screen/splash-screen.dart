@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 builder: (BuildContext context) => LoaderPage(loginModel)));
       } else {
         Navigator.pushReplacement(context,
-            CupertinoPageRoute(builder: (BuildContext context) => LoginPage()));
+            CupertinoPageRoute(builder: (BuildContext context) => LoginPage(true)));
       }
     });
   }
