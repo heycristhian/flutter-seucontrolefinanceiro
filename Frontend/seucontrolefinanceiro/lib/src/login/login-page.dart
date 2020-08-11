@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
 import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
@@ -194,72 +195,77 @@ class _LoginPageState extends State<LoginPage> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
+  DateTime backButtonPressedTime;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.green[300],
-                      Colors.green[400],
-                      Colors.green[500],
-                      Colors.green[600]
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
-              ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 120.0,
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'SEU CONTROLE FINANCEIRO',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'OpenSans',
-                            fontSize: 40.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 30.0),
-                        _buildEmailTF(),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        _buildPasswordTF(),
-                        SizedBox(height: 15.0),
-                        _buildRememberMeCheckbox(),
-                        SizedBox(height: 20.0),
-                        _buildLoginBtn(),
+      body: WillPopScope(
+        onWillPop: onWillPop,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.green[300],
+                        Colors.green[400],
+                        Colors.green[500],
+                        Colors.green[600]
                       ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
                     ),
                   ),
                 ),
-              )
-            ],
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 120.0,
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'CONTROLE FINANCEIRO',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'OpenSans',
+                              fontSize: 40.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                          _buildEmailTF(),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          _buildPasswordTF(),
+                          SizedBox(height: 15.0),
+                          _buildRememberMeCheckbox(),
+                          SizedBox(height: 20.0),
+                          _buildLoginBtn(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -277,5 +283,23 @@ class _LoginPageState extends State<LoginPage> {
         context,
         CupertinoPageRoute(
             builder: (BuildContext context) => LoaderPage(loginModel)));
+  }
+
+  Future<bool> onWillPop() async {
+    DateTime currentTime = DateTime.now();
+
+    bool backButton = backButtonPressedTime == null ||
+        currentTime.difference(backButtonPressedTime) > Duration(seconds: 3);
+
+    if (backButton) {
+      backButtonPressedTime = currentTime;
+      Fluttertoast.showToast(
+          msg: 'Clique voltar mais uma vez para sair do app',
+          fontSize: 12,
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
+      return false;
+    }
+    return true;
   }
 }

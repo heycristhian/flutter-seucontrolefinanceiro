@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
@@ -21,9 +22,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-    });
+    setState(() {});
   }
+
+  DateTime backButtonPressedTime;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +131,26 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              body: BodyComponent().body(context));
+              body: WillPopScope(
+                  onWillPop: onWillPop, child: BodyComponent().body(context)));
         });
+  }
+
+  Future<bool> onWillPop() async {
+    DateTime currentTime = DateTime.now();
+
+    bool backButton = backButtonPressedTime == null ||
+        currentTime.difference(backButtonPressedTime) > Duration(seconds: 3);
+
+    if (backButton) {
+      backButtonPressedTime = currentTime;
+      Fluttertoast.showToast(
+          msg: 'Clique voltar mais uma vez para sair do app',
+          fontSize: 12,
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
+      return false;
+    }
+    return true;
   }
 }

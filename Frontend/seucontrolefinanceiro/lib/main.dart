@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/splash-screen/splash-screen.dart';
+import 'package:seucontrolefinanceiro/src/teste/test.dart';
 
 void main() {
   runApp(MaterialApp(

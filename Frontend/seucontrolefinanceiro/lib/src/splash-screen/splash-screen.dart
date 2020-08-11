@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   padding: EdgeInsets.all(16.0),
                   child: Center(
                     child: Text(
-                      "SEU CONTROLE FINANCEIRO",
+                      "CONTROLE FINANCEIRO",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 25.0,

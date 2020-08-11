@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/global/qtd-month.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
@@ -67,6 +69,8 @@ class _BillListPageState extends State<BillListPage> {
   double paymentAmount = 0;
   double receivementAmount = 0;
   double paymentAmountPaid = 0;
+
+  DateTime backButtonPressedTime;
 
   @override
   Widget build(BuildContext context) {
@@ -267,59 +271,62 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ),
         ),
-        body: PageView.builder(
-          itemCount: itemCount,
-          controller: PageController(viewportFraction: 1, initialPage: index),
-          onPageChanged: (indexPage) {
-            if (indexPage > index) {
-              _date = _date.add(Duration(days: 30));
-            } else {
-              _date = _date.subtract(Duration(days: 30));
-            }
-            _updateData(indexPage);
-          },
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _isReceivement
-                        ? itemCountListBillReceivement
-                        : itemCountListBillPayment,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: <Widget>[
-                          Container(
-                            color: Colors.white,
-                            height: 20,
-                          ),
-                          GestureDetector(
-                            onDoubleTap: () {
-                              _dialogPayOneBill(index);
-                            },
-                            child: FlatButton(
+        body: WillPopScope(
+                  onWillPop: onWillPop,
+                  child: PageView.builder(
+            itemCount: itemCount,
+            controller: PageController(viewportFraction: 1, initialPage: index),
+            onPageChanged: (indexPage) {
+              if (indexPage > index) {
+                _date = _date.add(Duration(days: 30));
+              } else {
+                _date = _date.subtract(Duration(days: 30));
+              }
+              _updateData(indexPage);
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _isReceivement
+                          ? itemCountListBillReceivement
+                          : itemCountListBillPayment,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: <Widget>[
+                            Container(
                               color: Colors.white,
-                              padding: EdgeInsets.all(24),
-                              onLongPress: () {
-                                _dialogUpdateBill(index);
+                              height: 20,
+                            ),
+                            GestureDetector(
+                              onDoubleTap: () {
+                                _dialogPayOneBill(index);
                               },
-                              onPressed: () {},
-                              child: billList(
-                                _isReceivement
-                                    ? listBillReceivement[index]
-                                    : listBillPayment[index],
+                              child: FlatButton(
+                                color: Colors.white,
+                                padding: EdgeInsets.all(24),
+                                onLongPress: () {
+                                  _dialogUpdateBill(index);
+                                },
+                                onPressed: () {},
+                                child: billList(
+                                  _isReceivement
+                                      ? listBillReceivement[index]
+                                      : listBillPayment[index],
+                                ),
                               ),
                             ),
-                          ),
-                          Container(height: 1, color: Colors.black26),
-                        ],
-                      );
-                    },
+                            Container(height: 1, color: Colors.black26),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -601,14 +608,29 @@ class _BillListPageState extends State<BillListPage> {
   }
 
   _newIndex() {
-     Map listDateTime = Map<String, String>();
-    bills.where((x) => x.paid == false).forEach((element) {
-      listDateTime.putIfAbsent(
-          '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}',
-          () =>
-              '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
-    });
+    List<BillModel> billNotPaid = bills.where((element) => element.paid == false).toList();
 
-    itemCount = listDateTime.length;
+    if (!billNotPaid.isEmpty) {
+      itemCount = QtdMonth.quantityMonths(billNotPaid[0].payDAy, billNotPaid[billNotPaid.length - 1].payDAy);
+    } else {
+      itemCount = 1;
+    }
+  }
+
+   Future<bool> onWillPop() async {
+    DateTime currentTime = DateTime.now();
+
+    bool backButton = backButtonPressedTime == null ||
+        currentTime.difference(backButtonPressedTime) > Duration(seconds: 3);
+
+    if (backButton) {
+      backButtonPressedTime = currentTime;
+      Fluttertoast.showToast(msg: 'Clique voltar mais uma vez para sair do app',
+      fontSize: 12,
+      backgroundColor: Colors.black,
+      textColor: Colors.white);
+      return false;
+    }
+    return true;
   }
 }

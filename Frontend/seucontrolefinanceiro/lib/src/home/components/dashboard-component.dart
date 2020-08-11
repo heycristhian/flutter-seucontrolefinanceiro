@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-list/bill-list-page.dart';
+import 'package:seucontrolefinanceiro/src/global/qtd-month.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
@@ -26,15 +29,17 @@ class DashboardComponent {
     months.putIfAbsent(12, () => 'Dezembro');
 
     int itemCount = 0;
+    List<BillModel> billNotPaid =
+        bills.where((element) => element.paid == false).toList();
 
-    bills.where((x) => x.paid == false).forEach((element) {
-      listDateTime.putIfAbsent(
-          '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}',
-          () =>
-              '${DateTime.parse(element.payDAy).month}-${DateTime.parse(element.payDAy).year}');
-    });
+    if (!billNotPaid.isEmpty) {
+      itemCount = QtdMonth.quantityMonths(
+          billNotPaid[0].payDAy, billNotPaid[bills.length - 1].payDAy);
+    } else {
+      itemCount = 1;
+    }
 
-    itemCount = listDateTime.length;
+    print('itemCount: ' + itemCount.toString());
 
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),

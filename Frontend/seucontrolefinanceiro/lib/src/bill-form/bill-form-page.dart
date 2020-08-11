@@ -5,6 +5,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_progress_button/flutter_progress_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
@@ -83,188 +84,193 @@ class _BillFormPageState extends State<BillFormPage> {
   ];
 
   Widget _containerRendaDespesa(Icon icon, Color color1, Color color2) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Material(
-            elevation: 8.0,
-            child: Container(
-              padding: EdgeInsets.all(0),
-              margin: EdgeInsets.all(0),
-              height: 200,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: [0.4, 1],
-                      colors: [color1, color2])),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) return '';
-                            return null;
-                          },
-                          autofocus: false,
-                          controller: _ctrlMoney,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 50.0,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
-                          decoration: InputDecoration(
-                            prefixIcon: icon,
-                            border: InputBorder.none,
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Material(
+              elevation: 8.0,
+              child: Container(
+                padding: EdgeInsets.all(0),
+                margin: EdgeInsets.all(0),
+                height: 200,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [0.4, 1],
+                        colors: [color1, color2])),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) return '';
+                              return null;
+                            },
+                            autofocus: false,
+                            controller: _ctrlMoney,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 50.0,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            decoration: InputDecoration(
+                              prefixIcon: icon,
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 70, right: 30),
-                      child: Divider(
-                        color: Colors.white,
-                        height: 10,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.description),
-            title: TextFormField(
-              controller: _ctrlDescription,
-              decoration: InputDecoration(
-                hintText: "Descrição...",
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          ListTile(
-            leading: const Icon(Icons.devices_other),
-            title: DropdownButton<String>(
-              value: currentCategory,
-              icon: Icon(Icons.arrow_downward),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              isExpanded: true,
-              items: category.map((String dropdownStringItem) {
-                return DropdownMenuItem(
-                  value: dropdownStringItem,
-                  child: Text(dropdownStringItem),
-                );
-              }).toList(),
-              onChanged: (String newValue) {
-                setState(() {
-                  this.currentCategory = newValue;
-                  this.categoriaSelecionada = newValue;
-                  if (billModel != null) {
-                    billModel.paymentCategory.description = currentCategory;
-                  }
-                  inSetState();
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17.0),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Icon(Icons.check_circle, color: Colors.black),
-                ),
-                Expanded(
-                  child: ListTile(
-                    title: Text("$_despesaOuReceita Mensal?"),
-                    subtitle: Text("Você pode modificar futuramente"),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 70, right: 30),
+                        child: Divider(
+                          color: Colors.white,
+                          height: 10,
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                Switch(
-                  //onChanged: (val) => setState(() => _isSwitched = val),
-                  onChanged: (bool val) {
-                    setState(() {
-                      _isSwitched = val;
-                      inSetState();
-                    });
-                  },
-                  value: _isSwitched,
-                ),
-              ],
+              ),
             ),
-          ),
-          _methodPortion(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17.0),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Icon(Icons.calendar_today, color: Colors.black),
+            SizedBox(
+              height: 20,
+            ),
+            ListTile(
+              leading: const Icon(Icons.description),
+              title: TextFormField(
+                controller: _ctrlDescription,
+                decoration: InputDecoration(
+                  hintText: "Descrição...",
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      selectDate(context);
-                      FocusScope.of(context).unfocus();
-                    },
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ListTile(
+              leading: const Icon(Icons.devices_other),
+              title: DropdownButton<String>(
+                value: currentCategory,
+                icon: Icon(Icons.arrow_downward),
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                isExpanded: true,
+                items: category.map((String dropdownStringItem) {
+                  return DropdownMenuItem(
+                    value: dropdownStringItem,
+                    child: Text(dropdownStringItem),
+                  );
+                }).toList(),
+                onChanged: (String newValue) {
+                  setState(() {
+                    this.currentCategory = newValue;
+                    this.categoriaSelecionada = newValue;
+                    if (billModel != null) {
+                      billModel.paymentCategory.description = currentCategory;
+                    }
+                    inSetState();
+                  });
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 17.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Icon(Icons.check_circle, color: Colors.black),
+                  ),
+                  Expanded(
                     child: ListTile(
-                      title: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(_despesaOuReceita == 'Receita'
-                                  ? 'Data do recebimento'
-                                  : 'Data do pagamento'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(DateFormat('dd/MM/yyy').format(_date)),
-                          SizedBox(
-                            width: 10,
-                          ),
-                        ],
+                      title: Text("$_despesaOuReceita Mensal?"),
+                      subtitle: Text("Você pode modificar futuramente"),
+                    ),
+                  ),
+                  Switch(
+                    //onChanged: (val) => setState(() => _isSwitched = val),
+                    onChanged: (bool val) {
+                      setState(() {
+                        _isSwitched = val;
+                        inSetState();
+                      });
+                    },
+                    value: _isSwitched,
+                  ),
+                ],
+              ),
+            ),
+            _methodPortion(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 17.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Icon(Icons.calendar_today, color: Colors.black),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        selectDate(context);
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: ListTile(
+                        title: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(_despesaOuReceita == 'Receita'
+                                    ? 'Data do recebimento'
+                                    : 'Data do pagamento'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        subtitle: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(DateFormat('dd/MM/yyy').format(_date)),
+                            SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          iconDelete()
-        ],
+            iconDelete()
+          ],
+        ),
       ),
     );
   }
+
+  DateTime backButtonPressedTime;
 
   @override
   Widget build(BuildContext context) {
@@ -610,5 +616,22 @@ class _BillFormPageState extends State<BillFormPage> {
       await BillController.updateBill(bill, currentCategory);
       Navigator.pop(context);
     }
+  }
+
+  Future<bool> onWillPop() async {
+    DateTime currentTime = DateTime.now();
+
+    bool backButton = backButtonPressedTime == null ||
+        currentTime.difference(backButtonPressedTime) > Duration(seconds: 3);
+
+    if (backButton) {
+      backButtonPressedTime = currentTime;
+      Fluttertoast.showToast(msg: 'Clique voltar mais uma vez para sair do app',
+      fontSize: 12,
+      backgroundColor: Colors.black,
+      textColor: Colors.white);
+      return false;
+    }
+    return true;
   }
 }
