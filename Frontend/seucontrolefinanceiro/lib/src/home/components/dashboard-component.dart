@@ -39,8 +39,6 @@ class DashboardComponent {
       itemCount = 1;
     }
 
-    print('itemCount: ' + itemCount.toString());
-
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),
       child: Container(
@@ -118,7 +116,7 @@ class DashboardComponent {
               children: <Widget>[
                 Center(
                   child: Text(
-                    'R\$ $valuePayment',
+                    'R\$ ${valuePayment.toStringAsFixed(2).replaceAll('.', ',')}',
                     style: TextStyle(
                         fontSize: 40.0,
                         fontWeight: FontWeight.w700,

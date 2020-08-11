@@ -169,7 +169,7 @@ class _BillListPageState extends State<BillListPage> {
                                         fontSize: 18, color: Colors.grey),
                                   ),
                                   Text(
-                                    'R\$ ${receivementAmount.toStringAsFixed(2)}',
+                                    'R\$ ${receivementAmount.toStringAsFixed(2).replaceAll('.', ',')}',
                                     style: GoogleFonts.overpass(
                                         fontSize: 25, color: Colors.green),
                                   )
@@ -193,7 +193,7 @@ class _BillListPageState extends State<BillListPage> {
                               fontSize: 18, color: Colors.blueGrey),
                         ),
                         Text(
-                          'R\$ ${balance.toStringAsFixed(2)}',
+                          'R\$ ${balance.toStringAsFixed(2).replaceAll('.', ',')}',
                           style: GoogleFonts.overpass(
                               fontSize: 25,
                               color: balance >= 0
@@ -343,7 +343,7 @@ class _BillListPageState extends State<BillListPage> {
               style: GoogleFonts.overpass(fontSize: 18, color: Colors.grey),
             ),
             Text(
-              'R\$ ${paymentAmount.toStringAsFixed(2)}',
+              'R\$ ${paymentAmount.toStringAsFixed(2).replaceAll('.', ',')}',
               style:
                   GoogleFonts.overpass(fontSize: 25, color: Colors.blueAccent),
             )
@@ -387,7 +387,7 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ],
         ),
-        Text('R\$ ${bill.amount}',
+        Text('R\$ ${double.parse(bill.amount).toStringAsFixed(2).replaceAll('.', ',')}',
             style: TextStyle(
                 color: _isReceivement ? Colors.green : Colors.blue[800])),
       ],
@@ -625,7 +625,7 @@ class _BillListPageState extends State<BillListPage> {
 
     if (backButton) {
       backButtonPressedTime = currentTime;
-      Fluttertoast.showToast(msg: 'Clique voltar mais uma vez para sair do app',
+      Fluttertoast.showToast(msg: 'Clique em voltar mais uma vez para sair do app',
       fontSize: 12,
       backgroundColor: Colors.black,
       textColor: Colors.white);
