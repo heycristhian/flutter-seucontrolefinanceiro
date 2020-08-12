@@ -351,7 +351,7 @@ class _BillFormPageState extends State<BillFormPage> {
               bill.billDescription = _ctrlDescription.text;
               bill.payDAy = _date.toString();
               bill.everyMonth = _isSwitched;
-              bill.amount = _ctrlMoney.text;
+              bill.amount = _ctrlMoney.text.replaceAll(',', '.');
               bill.paid = false;
               bill.parentId = billModel == null ? null : billModel.parentId;
               bill.portion = (_ctrlPortion.text.isEmpty)
@@ -609,13 +609,19 @@ class _BillFormPageState extends State<BillFormPage> {
   void _redirectPage(BillModel bill) async {
     if (billModel == null) {
       await BillController.insertBill(bill, currentCategory);
+      _delay();
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } else {
       bill.id = billModel.id;
       await BillController.updateBill(bill, currentCategory);
+      _delay();
       Navigator.pop(context);
     }
+  }
+
+  _delay() async {
+    return await Future.delayed(Duration(milliseconds: 500), () {});
   }
 
   Future<bool> onWillPop() async {
