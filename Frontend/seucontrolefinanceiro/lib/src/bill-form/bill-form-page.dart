@@ -263,7 +263,9 @@ class _BillFormPageState extends State<BillFormPage> {
                 ],
               ),
             ),
-            iconDelete()
+            iconDelete(),
+                  SizedBox(height: 250,)
+
           ],
         ),
       ),
