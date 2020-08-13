@@ -486,7 +486,7 @@ class _BillListPageState extends State<BillListPage> {
         context: context,
         builder: (_) => AlertDialog(
               title: Text('Pagar'),
-              content: Text('Você tem certeza que deseja pagar todas contas?'),
+              content: Text(!_isReceivement ? 'Você tem certeza que deseja pagar todas contas?' : 'Vocsê tem certeza que deseja receber todas contas?'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
