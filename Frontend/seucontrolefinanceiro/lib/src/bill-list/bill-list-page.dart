@@ -611,7 +611,7 @@ class _BillListPageState extends State<BillListPage> {
     List<BillModel> billNotPaid = bills.where((element) => element.paid == false).toList();
 
     if (!billNotPaid.isEmpty) {
-      itemCount = QtdMonth.quantityMonths(billNotPaid[0].payDAy, billNotPaid[billNotPaid.length - 1].payDAy);
+      itemCount = QtdMonth.quantityMonths(billNotPaid[billNotPaid.length - 1].payDAy);
     } else {
       itemCount = 1;
     }

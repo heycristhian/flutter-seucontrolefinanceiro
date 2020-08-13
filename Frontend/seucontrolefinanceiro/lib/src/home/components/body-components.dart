@@ -11,12 +11,20 @@ import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BodyComponent {
-  Widget body(BuildContext context) {
-    Future<List<BillModel>> billsByCurrentUser =
-        BillController.getBillsByCurrentUser();
 
-    return FutureBuilder(
-        future: billsByCurrentUser ?? null,
+  final _streamController = StreamController<List<BillModel>>();
+
+  _loadBills() async {
+    List<BillModel> billsByCurrentUser =
+        await BillController.getBillsByCurrentUser();
+    _streamController.add(billsByCurrentUser);
+  }
+
+  Widget body(BuildContext context) {
+    _loadBills();
+
+    return StreamBuilder(
+        stream: _streamController.stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Stack(

@@ -80,7 +80,9 @@ class _HomePageState extends State<HomePage> {
                         Icons.home,
                         color: Colors.blueAccent,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                     ),
                     Divider(),
                     ListTile(

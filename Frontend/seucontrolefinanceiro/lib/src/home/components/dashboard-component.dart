@@ -3,16 +3,30 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-list/bill-list-page.dart';
+import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/global/qtd-month.dart';
 import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
-class DashboardComponent {
+class DashboardComponent extends StatefulWidget{
   Color _primaryColor = Color.fromRGBO(17, 199, 111, 1);
   DateTime _date = DateTime.now().subtract(Duration(days: 30));
   Map months = Map<int, String>();
   Map listDateTime = Map<String, String>();
   bool result = false;
+  int itemCount = 0;
+
+   _updateDataApi(bills) async {
+    List<BillModel> listBill = List<BillModel>();
+    await Future.delayed(Duration(milliseconds: 500), () {});
+    await BillController.getBillsByCurrentUser().then((value) => value.forEach((x) {
+      if(x.paid == false) {
+        listBill.add(x);
+        itemCount++;
+      }
+    }));
+    bills = listBill;
+  }
 
   Widget dashboard(BuildContext context, List<BillModel> bills) {
     months.putIfAbsent(1, () => 'Janeiro');
@@ -28,16 +42,18 @@ class DashboardComponent {
     months.putIfAbsent(11, () => 'Novembro');
     months.putIfAbsent(12, () => 'Dezembro');
 
-    int itemCount = 0;
-    List<BillModel> billNotPaid =
+    _updateDataApi(bills);
+
+      List<BillModel> billNotPaid =
         bills.where((element) => element.paid == false).toList();
 
     if (!billNotPaid.isEmpty) {
-      itemCount = QtdMonth.quantityMonths(
-          billNotPaid[0].payDAy, billNotPaid[bills.length - 1].payDAy);
+      itemCount = QtdMonth.quantityMonths(billNotPaid[billNotPaid.length - 1].payDAy);
     } else {
       itemCount = 1;
     }
+    
+    print('itemCount: ' + itemCount.toString());
 
     return Padding(
       padding: const EdgeInsets.only(top: 80, right: 0),
@@ -150,5 +166,11 @@ class DashboardComponent {
         ),
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
   }
 }
