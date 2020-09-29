@@ -67,14 +67,15 @@ class _BillListPageState extends State<BillListPage> {
 
   double balance = 0.0;
   double paymentAmount = 0;
-  double receivementAmount = 0;
+  double receivementPaid = 0;
+  double receivement = 0;
   double paymentAmountPaid = 0;
 
   DateTime backButtonPressedTime;
 
   @override
   Widget build(BuildContext context) {
-    receivementAmount = receivementAmount == null ? 0 : receivementAmount;
+    receivementPaid = receivementPaid == null ? 0 : receivementPaid;
 
     months.putIfAbsent(1, () => 'Janeiro');
     months.putIfAbsent(2, () => 'Fevereiro');
@@ -108,10 +109,21 @@ class _BillListPageState extends State<BillListPage> {
       bills
           .where((x) =>
               x.billType.compareTo('RECEIVEMENT') == 0 &&
+              x.paid == true &&
               DateTime.parse(x.payDAy).year == int.parse(year) &&
               DateTime.parse(x.payDAy).month == int.parse(month))
           .forEach((element) {
-        receivementAmount += double.parse(element.amount);
+        receivementPaid += double.parse(element.amount);
+      });
+
+      bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              x.paid == false &&
+              DateTime.parse(x.payDAy).year == int.parse(year) &&
+              DateTime.parse(x.payDAy).month == int.parse(month))
+          .forEach((bill) {
+        receivement += double.parse(bill.amount);
       });
 
       listBillPayment.forEach((element) {
@@ -120,8 +132,8 @@ class _BillListPageState extends State<BillListPage> {
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
-      receivementAmount -= paymentAmountPaid;
-      balance = receivementAmount - paymentAmount;
+      print('balance: ' + balance.toString());
+      balance = (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
     }
 
     if (_date == null) {
@@ -166,12 +178,17 @@ class _BillListPageState extends State<BillListPage> {
                                   Text(
                                     'RECEBIMENTOS',
                                     style: GoogleFonts.overpass(
-                                        fontSize: 18, color: Colors.grey),
+                                        fontSize: 16, color: Colors.grey),
                                   ),
                                   Text(
-                                    'R\$ ${receivementAmount.toStringAsFixed(2).replaceAll('.', ',')}',
+                                    'R\$ ${receivement.toStringAsFixed(2).replaceAll('.', ',')}',
                                     style: GoogleFonts.overpass(
-                                        fontSize: 25, color: Colors.green),
+                                        fontSize: 14, color: Colors.redAccent),
+                                  ),
+                                  Text(
+                                    'R\$ ${receivementPaid.toStringAsFixed(2).replaceAll('.', ',')}',
+                                    style: GoogleFonts.overpass(
+                                        fontSize: 14, color: Colors.green),
                                   )
                                 ],
                               ),
@@ -190,12 +207,12 @@ class _BillListPageState extends State<BillListPage> {
                         Text(
                           'SALDO DO MÊS',
                           style: GoogleFonts.overpass(
-                              fontSize: 18, color: Colors.blueGrey),
+                              fontSize: 16, color: Colors.blueGrey),
                         ),
                         Text(
                           'R\$ ${balance.toStringAsFixed(2).replaceAll('.', ',')}',
                           style: GoogleFonts.overpass(
-                              fontSize: 25,
+                              fontSize: 18,
                               color: balance >= 0
                                   ? Colors.orangeAccent[400]
                                   : Colors.redAccent),
@@ -212,9 +229,9 @@ class _BillListPageState extends State<BillListPage> {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => HomePage()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => HomePage()));
               //Navigator.pop(context, true);
             },
           ),
@@ -272,8 +289,8 @@ class _BillListPageState extends State<BillListPage> {
           ),
         ),
         body: WillPopScope(
-                  onWillPop: onWillPop,
-                  child: PageView.builder(
+          onWillPop: onWillPop,
+          child: PageView.builder(
             itemCount: itemCount,
             controller: PageController(viewportFraction: 1, initialPage: index),
             onPageChanged: (indexPage) {
@@ -340,12 +357,17 @@ class _BillListPageState extends State<BillListPage> {
           children: <Widget>[
             Text(
               'PAGAMENTOS',
-              style: GoogleFonts.overpass(fontSize: 18, color: Colors.grey),
+              style: GoogleFonts.overpass(fontSize: 16, color: Colors.grey),
             ),
             Text(
               'R\$ ${paymentAmount.toStringAsFixed(2).replaceAll('.', ',')}',
               style:
-                  GoogleFonts.overpass(fontSize: 25, color: Colors.blueAccent),
+                  GoogleFonts.overpass(fontSize: 14, color: Colors.redAccent),
+            ),
+            Text(
+              'R\$ ${paymentAmountPaid.toStringAsFixed(2).replaceAll('.', ',')}',
+              style:
+                  GoogleFonts.overpass(fontSize: 14, color: Colors.blueAccent),
             )
           ],
         ),
@@ -363,7 +385,9 @@ class _BillListPageState extends State<BillListPage> {
               padding: EdgeInsets.only(right: 10),
               height: 60,
               width: 60,
-              child: Center(child: IconCategory.iconCategory(bill.paymentCategory.description)),
+              child: Center(
+                  child: IconCategory.iconCategory(
+                      bill.paymentCategory.description)),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -387,7 +411,8 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ],
         ),
-        Text('R\$ ${double.parse(bill.amount).toStringAsFixed(2).replaceAll('.', ',')}',
+        Text(
+            'R\$ ${double.parse(bill.amount).toStringAsFixed(2).replaceAll('.', ',')}',
             style: TextStyle(
                 color: _isReceivement ? Colors.green : Colors.blue[800])),
       ],
@@ -436,7 +461,8 @@ class _BillListPageState extends State<BillListPage> {
 
       index = indexPage;
 
-      receivementAmount = 0;
+      receivementPaid = 0;
+      receivement = 0;
       paymentAmount = 0;
       paymentAmountPaid = 0;
 
@@ -458,19 +484,29 @@ class _BillListPageState extends State<BillListPage> {
       bills
           .where((x) =>
               x.billType.compareTo('RECEIVEMENT') == 0 &&
+              x.paid == true &&
               DateTime.parse(x.payDAy).year == _date.year &&
               DateTime.parse(x.payDAy).month == _date.month)
           .forEach((element) {
-        receivementAmount += double.parse(element.amount);
+        receivementPaid += double.parse(element.amount);
+      });
+
+      bills
+          .where((x) =>
+              x.billType.compareTo('RECEIVEMENT') == 0 &&
+              x.paid == false &&
+              DateTime.parse(x.payDAy).year == _date.year &&
+              DateTime.parse(x.payDAy).month == _date.month)
+          .forEach((bill) {
+        receivement += double.parse(bill.amount);
       });
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
-      receivementAmount -= paymentAmountPaid;
-      balance = receivementAmount - paymentAmount;
+      balance = (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
     });
   }
-  
+
   _returnBillsWithParams(String billType, var year, var month, bool paid) {
     return bills
         .where((x) =>
@@ -486,7 +522,9 @@ class _BillListPageState extends State<BillListPage> {
         context: context,
         builder: (_) => AlertDialog(
               title: Text('Pagar'),
-              content: Text(!_isReceivement ? 'Você tem certeza que deseja pagar todas contas?' : 'Vocsê tem certeza que deseja receber todas contas?'),
+              content: Text(!_isReceivement
+                  ? 'Você tem certeza que deseja pagar todas contas?'
+                  : 'Vocsê tem certeza que deseja receber todas contas?'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
@@ -601,23 +639,28 @@ class _BillListPageState extends State<BillListPage> {
   _updateDataApi() async {
     List<BillModel> listBill = List<BillModel>();
     await Future.delayed(Duration(milliseconds: 500), () {});
-    await BillController.getBillsByCurrentUser().then((value) => value.forEach((x) {listBill.add(x);}));
+    await BillController.getBillsByCurrentUser()
+        .then((value) => value.forEach((x) {
+              listBill.add(x);
+            }));
     bills = listBill;
     _updateData(index);
     _newIndex();
   }
 
   _newIndex() {
-    List<BillModel> billNotPaid = bills.where((element) => element.paid == false).toList();
+    List<BillModel> billNotPaid =
+        bills.where((element) => element.paid == false).toList();
 
     if (!billNotPaid.isEmpty) {
-      itemCount = QtdMonth.quantityMonths(billNotPaid[billNotPaid.length - 1].payDAy);
+      itemCount =
+          QtdMonth.quantityMonths(billNotPaid[billNotPaid.length - 1].payDAy);
     } else {
       itemCount = 1;
     }
   }
 
-   Future<bool> onWillPop() async {
+  Future<bool> onWillPop() async {
     DateTime currentTime = DateTime.now();
 
     bool backButton = backButtonPressedTime == null ||
@@ -625,10 +668,11 @@ class _BillListPageState extends State<BillListPage> {
 
     if (backButton) {
       backButtonPressedTime = currentTime;
-      Fluttertoast.showToast(msg: 'Clique em voltar mais uma vez para sair do app',
-      fontSize: 12,
-      backgroundColor: Colors.black,
-      textColor: Colors.white);
+      Fluttertoast.showToast(
+          msg: 'Clique em voltar mais uma vez para sair do app',
+          fontSize: 12,
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
       return false;
     }
     return true;

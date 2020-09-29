@@ -47,8 +47,9 @@ class DashboardComponent extends StatefulWidget{
       List<BillModel> billNotPaid =
         bills.where((element) => element.paid == false).toList();
 
-    if (!billNotPaid.isEmpty) {
-      itemCount = QtdMonth.quantityMonths(billNotPaid[billNotPaid.length - 1].payDAy);
+    if (billNotPaid.isNotEmpty) {
+      billNotPaid.sort((a, b) => DateTime.parse(b.payDAy).compareTo(DateTime.parse(a.payDAy)));
+      itemCount = QtdMonth.quantityMonths(billNotPaid[0].payDAy);
     } else {
       itemCount = 1;
     }
