@@ -32,9 +32,8 @@ public class UserService implements IService<User>{
     }
 
     @Override
-    public User insert(User user) {
-        User insert = repository.insert(user);
-        return insert;
+    public User save(User user) {
+        return repository.save(user);
     }
 
     @Override
@@ -61,4 +60,7 @@ public class UserService implements IService<User>{
                 .build();
     }
 
+    public void deleteAll(List<User> users) {
+        repository.deleteAll(users);
+    }
 }

@@ -40,7 +40,7 @@ public class BillService implements IService<Bill> {
     }
 
     @Override
-    public Bill insert(Bill bill) {
+    public Bill save(Bill bill) {
         User user = userService.findById(bill.getUserId());
         user.setBills(repository.findByUserId(bill.getUserId()).get());
 
@@ -163,5 +163,9 @@ public class BillService implements IService<Bill> {
         bill.setPaid(true);
         repository.save(bill);
         return bill;
+    }
+
+    public void deleteAll(List<Bill> bills) {
+        repository.deleteAll(bills);
     }
 }

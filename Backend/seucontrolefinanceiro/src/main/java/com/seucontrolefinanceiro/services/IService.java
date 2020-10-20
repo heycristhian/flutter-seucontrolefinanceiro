@@ -10,7 +10,7 @@ public interface IService<T> {
 
     public List<T> findAll();
     public T findById(String id);
-    public T insert(T t);
+    public T save(T t);
     public void delete(String id);
     public T update(T newObj);
     public T updateData(T newObj, String id);

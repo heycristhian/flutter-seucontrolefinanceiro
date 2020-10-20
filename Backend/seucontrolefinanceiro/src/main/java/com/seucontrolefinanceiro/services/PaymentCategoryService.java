@@ -27,7 +27,7 @@ public class PaymentCategoryService implements IService<PaymentCategory> {
     }
 
     @Override
-    public PaymentCategory insert(PaymentCategory paymentCategory) {
+    public PaymentCategory save(PaymentCategory paymentCategory) {
         PaymentCategory insert = repository.insert(paymentCategory);
         return insert;
     }

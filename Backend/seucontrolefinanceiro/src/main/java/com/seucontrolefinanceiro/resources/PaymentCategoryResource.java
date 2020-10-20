@@ -39,7 +39,7 @@ public class PaymentCategoryResource implements IResource<PaymentCategoryDTO, Pa
     @PostMapping
     public ResponseEntity<PaymentCategoryDTO> insert(@RequestBody @Validated PaymentCategoryForm form, UriComponentsBuilder uriBuilder) {
         PaymentCategory paymentCategory = form.converter();
-        paymentCategory = service.insert(paymentCategory);
+        paymentCategory = service.save(paymentCategory);
         URI uri = uriBuilder.path("scf-service/payment-categories/{id}").buildAndExpand(paymentCategory.getId()).toUri();
         return ResponseEntity.created(uri).body(new PaymentCategoryDTO(paymentCategory));
     }

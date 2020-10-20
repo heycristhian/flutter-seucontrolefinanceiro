@@ -4,7 +4,9 @@ import com.seucontrolefinanceiro.domain.Bill;
 import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.UserForm;
+import com.seucontrolefinanceiro.services.BillService;
 import com.seucontrolefinanceiro.services.UserService;
+import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,8 +20,8 @@ import java.util.List;
 @RequestMapping("scf-service/users")
 public class UserResource implements IResource<UserDTO, UserForm> {
 
-    @Autowired
-    private UserService service;
+    @Autowired private UserService service;
+    @Autowired private BillService billService;
 
     @Override
     @GetMapping
@@ -40,7 +42,7 @@ public class UserResource implements IResource<UserDTO, UserForm> {
     @PostMapping
     public ResponseEntity<UserDTO> insert(@RequestBody @Validated UserForm form, UriComponentsBuilder uriBuilder) {
         User user = form.converter();
-        user = service.insert(user);
+        user = service.save(user);
         URI uri = uriBuilder.path("scf-service/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(new UserDTO(user));
     }
@@ -54,6 +56,18 @@ public class UserResource implements IResource<UserDTO, UserForm> {
         } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/resetAccount/{id}")
+    public ResponseEntity<String> resetAccount(@PathVariable String id) {
+        try {
+            User user = service.findById(id);
+            billService.deleteAll(user.getBills());
+            return ResponseEntity.ok("Account reset successfully!");
+
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

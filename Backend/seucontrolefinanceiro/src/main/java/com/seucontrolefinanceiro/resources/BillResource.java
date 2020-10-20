@@ -43,7 +43,7 @@ public class BillResource implements IResource<BillDTO, BillForm> {
     @PostMapping
     public ResponseEntity<BillDTO> insert(@RequestBody @Validated BillForm form, UriComponentsBuilder uriBuilder) {
         Bill bill = form.converter();
-        service.insert(bill);
+        service.save(bill);
         URI uri = uriBuilder.path("scf-service/bills/{id}").buildAndExpand(bill.getId()).toUri();
         return ResponseEntity.created(uri).body(new BillDTO(bill));
     }
