@@ -62,12 +62,11 @@ public class UserResource implements IResource<UserDTO, UserForm> {
     @DeleteMapping("/resetAccount/{id}")
     public ResponseEntity<String> resetAccount(@PathVariable String id) {
         try {
-            User user = service.findById(id);
-            billService.deleteAll(user.getBills());
-            return ResponseEntity.ok("Account reset successfully!");
-
+        User user = service.findById(id);
+        billService.deleteAll(user.getBills());
+        return ResponseEntity.ok("Account reset successfully!");
         } catch (ObjectNotFoundException e) {
-            return ResponseEntity.notFound().build();
+           return ResponseEntity.notFound().build();
         }
     }
 

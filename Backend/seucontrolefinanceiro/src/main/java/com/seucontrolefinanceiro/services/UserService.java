@@ -1,17 +1,15 @@
 package com.seucontrolefinanceiro.services;
 
-import com.seucontrolefinanceiro.domain.Bill;
 import com.seucontrolefinanceiro.domain.User;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class UserService implements IService<User>{
+@org.springframework.stereotype.Service
+public class UserService implements Service<User> {
 
     @Autowired
     private UserRepository repository;

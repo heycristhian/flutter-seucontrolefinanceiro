@@ -4,7 +4,7 @@ import com.seucontrolefinanceiro.repository.UserRepository;
 
 import java.util.List;
 
-public interface IService<T> {
+public interface Service<T> {
 
     UserRepository repository = null;
 

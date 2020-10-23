@@ -49,6 +49,7 @@ dependencies:
   map: ^0.1.0+1
   latlng: ^0.0.2
   fluttertoast: ^7.0.2
+  fl_chart: ^0.12.0
   
 dev_dependencies:
   flutter_test:

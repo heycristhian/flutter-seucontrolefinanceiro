@@ -4,13 +4,12 @@ import com.seucontrolefinanceiro.domain.PaymentCategory;
 import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class PaymentCategoryService implements IService<PaymentCategory> {
+@org.springframework.stereotype.Service
+public class PaymentCategoryService implements Service<PaymentCategory> {
 
     @Autowired
     private PaymentCategoryRepository repository;

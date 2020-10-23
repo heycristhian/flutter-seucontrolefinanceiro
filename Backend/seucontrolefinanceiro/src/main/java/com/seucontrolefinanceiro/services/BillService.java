@@ -7,26 +7,22 @@ import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import com.seucontrolefinanceiro.services.util.GenerateObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-public class BillService implements IService<Bill> {
+@org.springframework.stereotype.Service
+public class BillService implements Service<Bill> {
 
-    @Autowired
-    private BillRepository repository;
+    @Autowired private BillRepository repository;
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
-    private final Integer portion = 11;
+    private final int PORTION_DEFAULT = 11;
 
     @Override
     public List<Bill> findAll() {
@@ -42,22 +38,9 @@ public class BillService implements IService<Bill> {
     @Override
     public Bill save(Bill bill) {
         User user = userService.findById(bill.getUserId());
-        user.setBills(repository.findByUserId(bill.getUserId()).get());
-
-        if (bill.isEveryMonth()) {
-            Integer index = bill.getPortion() == null ? portion : bill.getPortion();
-            List<Bill> bills = GenerateObject.generateBills(bill, index);
-            repository.insert(bill);
-            user.addToListBill(bill);
-            for (Bill b : bills) {
-                b.setParent(bill.getId());
-                repository.insert(b);
-                user.addToListBill(b);
-            }
-        } else {
-            repository.insert(bill);
-            user.addToListBill(bill);
-        }
+        List<Bill> allBillsByUserId = repository.findByUserId(bill.getUserId()).orElse(null);
+        user.setBills(allBillsByUserId);
+        analyzeMonthlyBill(bill, user);
         String parentId = bill.getParent() == null ? bill.getId() : bill.getParent();
         bill.setParent(parentId);
         repository.save(bill);
@@ -72,64 +55,24 @@ public class BillService implements IService<Bill> {
     }
 
     @Override
-    public Bill update(Bill newObj) {
-        if (!newObj.isPaid()) {
-            Bill oldObj = findById(newObj.getId());
-            boolean oldObjIsEveryMonth = oldObj.isEveryMonth();
-            boolean newObjIsEveryMonth = newObj.isEveryMonth();
-            String parentId;
+    public Bill update(Bill newBill) {
+        if (!newBill.isPaid()) {
+            Bill oldBill = findById(newBill.getId());
+            boolean oldBillIsEveryMonth = oldBill.isEveryMonth();
+            boolean newBillIsEveryMonth = newBill.isEveryMonth();
+            newBill.setParent((newBill.getParent() == null) ? newBill.getId() : newBill.getParent());
 
-            newObj.setParent((newObj.getParent() == null) ? newObj.getId() : newObj.getParent());
-
-            User user = userService.findById(newObj.getUserId());
-            user.setBills(repository.findByUserId(newObj.getUserId()).get());
-            List<Bill> bills = new ArrayList<>();
-
-            if (newObjIsEveryMonth && !oldObjIsEveryMonth) {
-                Integer index = newObj.getPortion() == null ? portion : newObj.getPortion();
-                bills = GenerateObject.generateBills(newObj, index);
-
-                for (Bill b : bills) {
-                    b.setParent(newObj.getId());
-                    repository.insert(b);
-                    user.addToListBill(b);
-                }
-                userRepository.save(user);
-            } else if (oldObjIsEveryMonth && !newObjIsEveryMonth) {
-                parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
-
-                repository.findByUserId(newObj.getUserId()).get()
-                        .stream().filter(x ->
-                            x.isPaid() == false
-                            && x.getParent().compareTo(parentId) == 0)
-                        .collect(Collectors.toList()).forEach(x -> repository.delete(x));
-
-                newObj.setPortion(null);
-
-            } else if(newObj.isEveryMonth()){
-                parentId = newObj.getParent() == null ? newObj.getId() : newObj.getParent();
-                try {
-                    bills = repository.findByUserId(newObj.getUserId())
-                            .get().stream()
-                            .filter(x -> x.getParent().equals(parentId)
-                                    && x.isPaid() == false
-                                    && !x.getId().equals(newObj.getId()))
-                            .collect(Collectors.toList());
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                }
-
-                int i = 0;
-                for (Bill b : bills) {
-                    ++i;
-                    b = GenerateObject.cloneBill(b, newObj);
-                    repository.save(b);
-                }
+            if (newBillIsEveryMonth && !oldBillIsEveryMonth) {
+               createChildrenBill(newBill);
+            } else if (oldBillIsEveryMonth && !newBillIsEveryMonth) {
+                removeChildrenBill(newBill);
+            } else if(newBill.isEveryMonth()){
+                onlyUpdateChildrenBill(newBill);
             }
-            repository.save(newObj);
-            return newObj;
+            repository.save(newBill);
+            return newBill;
         } else {
-            return pay(newObj);
+            return pay(newBill);
         }
     }
 
@@ -167,5 +110,71 @@ public class BillService implements IService<Bill> {
 
     public void deleteAll(List<Bill> bills) {
         repository.deleteAll(bills);
+    }
+
+    private void analyzeMonthlyBill(Bill bill, User user) {
+        if (bill.isEveryMonth()) {
+            Integer index = bill.getPortion() == null ? PORTION_DEFAULT : bill.getPortion();
+            List<Bill> bills = GenerateObject.generateBills(bill, index);
+            repository.insert(bill);
+            user.addToListBill(bill);
+
+            for (Bill b : bills) {
+                b.setParent(bill.getId());
+                repository.insert(b);
+                user.addToListBill(b);
+            }
+        } else {
+            repository.insert(bill);
+            user.addToListBill(bill);
+        }
+    }
+
+    private void createChildrenBill(Bill newBill) {
+        List<Bill> bills = new ArrayList<>();
+        User user = userService.findById(newBill.getUserId());
+        user.setBills(repository.findByUserId(newBill.getUserId()).get());
+
+        Integer index = newBill.getPortion() == null ? PORTION_DEFAULT : newBill.getPortion();
+        bills = GenerateObject.generateBills(newBill, index);
+
+        for (Bill b : bills) {
+            b.setParent(newBill.getId());
+            repository.insert(b);
+            user.addToListBill(b);
+        }
+        userRepository.save(user);
+    }
+
+    private void removeChildrenBill(Bill newBill) {
+        String parentId = newBill.getParent() == null ? newBill.getId() : newBill.getParent();
+
+        repository.findByUserId(newBill.getUserId()).get()
+            .stream().filter(x ->
+            x.isPaid() == false
+                    && x.getParent().compareTo(parentId) == 0)
+            .collect(Collectors.toList()).forEach(x -> repository.delete(x));
+
+        newBill.setPortion(null);
+    }
+
+    private void onlyUpdateChildrenBill(Bill newBill) {
+        List<Bill> bills = new ArrayList<>();
+        String parentId = newBill.getParent() == null ? newBill.getId() : newBill.getParent();
+        try {
+            bills = repository.findByUserId(newBill.getUserId())
+                    .get().stream()
+                    .filter(x -> x.getParent().equals(parentId)
+                            && x.isPaid() == false
+                            && !x.getId().equals(newBill.getId()))
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        for (Bill b : bills) {
+            b = GenerateObject.cloneBill(b, newBill);
+            repository.save(b);
+        }
     }
 }

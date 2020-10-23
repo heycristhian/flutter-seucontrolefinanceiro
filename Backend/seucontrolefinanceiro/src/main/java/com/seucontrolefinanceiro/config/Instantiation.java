@@ -26,10 +26,12 @@ public class Instantiation implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        boolean existData = paymentCategoryRepository.findAll().isEmpty();
+        boolean notExistData = paymentCategoryRepository.findAll().isEmpty();
 
-        if (existData) {
+        System.out.println("Daniel");
+        System.out.println(new BCryptPasswordEncoder().encode("admin"));
 
+        if (notExistData) {
             paymentCategoryRepository.save(
                 PaymentCategory.builder()
                     .description("Empréstimo")
@@ -189,6 +191,7 @@ public class Instantiation implements CommandLineRunner {
                     .build()
             );
         }
+
 
     }
 }

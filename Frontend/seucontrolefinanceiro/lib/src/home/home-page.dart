@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
+import 'package:seucontrolefinanceiro/src/graph/graphs.dart';
 import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
 import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/login/login-page.dart';
@@ -84,6 +85,20 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pop(context);
                       },
                     ),
+                    ListTile(
+                      title: Text("Gráficos"),
+                      trailing: Icon(
+                        Icons.equalizer,
+                        color: Colors.orangeAccent,
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (BuildContext context) => Graphs()));
+                      },
+                    ),
                     Divider(),
                     ListTile(
                         title: Text("Sair"),
@@ -134,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               body: WillPopScope(
-                  onWillPop: onWillPop, child: BodyComponent().body(context)));
+                  onWillPop: onWillPop, child: BodyComponent().body(context, this)));
         });
   }
 
@@ -154,5 +169,9 @@ class _HomePageState extends State<HomePage> {
       return false;
     }
     return true;
+  }
+
+  updateScreen() {
+    setState(() {});
   }
 }
