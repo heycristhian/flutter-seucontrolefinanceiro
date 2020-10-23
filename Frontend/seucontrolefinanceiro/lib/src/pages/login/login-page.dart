@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
+import 'package:seucontrolefinanceiro/src/pages/loader/laoder-page.dart';
+import 'package:seucontrolefinanceiro/src/services/login-service.dart';
 import 'components/constants-components.dart';
 
 class LoginPage extends StatefulWidget {

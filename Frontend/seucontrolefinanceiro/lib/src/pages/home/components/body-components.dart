@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
-import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
-import 'package:seucontrolefinanceiro/src/home/components/app-bar-component.dart';
-import 'package:seucontrolefinanceiro/src/home/components/dashboard-component.dart';
-import 'package:seucontrolefinanceiro/src/loader/loader.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+import 'package:seucontrolefinanceiro/src/pages/bill-form/util/icon-category.dart';
+import 'package:seucontrolefinanceiro/src/controllers/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/pages/home/components/app-bar-component.dart';
+import 'package:seucontrolefinanceiro/src/pages/home/components/dashboard-component.dart';
+import 'package:seucontrolefinanceiro/src/pages/loader/loader.dart';
 
 class BodyComponent {
   final _streamController = StreamController<List<BillModel>>();

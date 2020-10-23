@@ -3,9 +3,9 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/src/bill-list/bill-list-page.dart';
-import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
-import 'package:seucontrolefinanceiro/src/global/qtd-month.dart';
-import 'package:seucontrolefinanceiro/src/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/controllers/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/pages/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/util/qtd-month.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class DashboardComponent extends StatefulWidget{

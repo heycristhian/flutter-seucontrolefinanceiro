@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:seucontrolefinanceiro/src/loader/laoder-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'package:seucontrolefinanceiro/src/model/remember-me.dart';
+import 'package:seucontrolefinanceiro/src/pages/loader/laoder-page.dart';
+import 'package:seucontrolefinanceiro/src/pages/login/login-page.dart';
+import 'package:seucontrolefinanceiro/src/services/login-service.dart';
 import 'dart:async';
 import 'package:shimmer/shimmer.dart';
 

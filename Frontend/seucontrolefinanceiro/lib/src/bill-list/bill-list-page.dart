@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
-import 'package:seucontrolefinanceiro/src/bill-form/util/icon-category.dart';
-import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
-import 'package:seucontrolefinanceiro/src/global/qtd-month.dart';
-import 'package:seucontrolefinanceiro/src/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/pages/bill-form/bill-form-page.dart';
+import 'package:seucontrolefinanceiro/src/pages/bill-form/util/icon-category.dart';
+import 'package:seucontrolefinanceiro/src/controllers/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/pages/home/home-page.dart';
+import 'package:seucontrolefinanceiro/src/util/qtd-month.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 
 class BillListPage extends StatefulWidget {

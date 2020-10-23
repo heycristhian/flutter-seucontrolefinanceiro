@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:seucontrolefinanceiro/src/bill-form/bill-form-page.dart';
-import 'package:seucontrolefinanceiro/src/graph/graphs.dart';
-import 'package:seucontrolefinanceiro/src/home/components/body-components.dart';
-import 'package:seucontrolefinanceiro/src/loader/loader.dart';
-import 'package:seucontrolefinanceiro/src/login/login-page.dart';
-import 'package:seucontrolefinanceiro/src/login/login-service.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
-import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
+import 'package:seucontrolefinanceiro/src/controllers/user-controller.dart';
+import 'package:seucontrolefinanceiro/src/pages/bill-form/bill-form-page.dart';
+import 'package:seucontrolefinanceiro/src/pages/graph/graphs.dart';
+import 'package:seucontrolefinanceiro/src/pages/loader/loader.dart';
+import 'package:seucontrolefinanceiro/src/pages/login/login-page.dart';
+import 'package:seucontrolefinanceiro/src/services/login-service.dart';
+
+import 'components/body-components.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -1,5 +1,5 @@
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
-import 'package:seucontrolefinanceiro/src/payment-category/payment-category-service.dart';
+import 'package:seucontrolefinanceiro/src/services/payment-category-service.dart';
 
 class PaymentCategoryController {
 

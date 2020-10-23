@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:seucontrolefinanceiro/src/global/url-global.dart';
+import 'package:seucontrolefinanceiro/src/environment/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/auth-model.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'package:seucontrolefinanceiro/src/model/remember-me.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
-import 'package:seucontrolefinanceiro/src/user/user-controller.dart';
+import 'package:seucontrolefinanceiro/src/controllers/user-controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {

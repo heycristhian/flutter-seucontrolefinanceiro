@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_progress_button/flutter_progress_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:seucontrolefinanceiro/src/bill/bill-controller.dart';
-import 'package:seucontrolefinanceiro/src/home/home-page.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+import 'package:seucontrolefinanceiro/src/controllers/bill-controller.dart';
+import 'package:seucontrolefinanceiro/src/pages/home/home-page.dart';
 
 class BillFormPage extends StatefulWidget {
   BillModel billModel;

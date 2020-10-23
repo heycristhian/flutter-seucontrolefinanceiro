@@ -1,6 +1,6 @@
-import 'package:seucontrolefinanceiro/src/bill/bill-service.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
+import 'package:seucontrolefinanceiro/src/services/bill-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BillController {

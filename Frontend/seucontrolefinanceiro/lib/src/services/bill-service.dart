@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:seucontrolefinanceiro/src/global/url-global.dart';
+import 'package:seucontrolefinanceiro/src/environment/url-global.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
