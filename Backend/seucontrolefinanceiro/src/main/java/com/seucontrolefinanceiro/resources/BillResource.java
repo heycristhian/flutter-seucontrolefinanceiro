@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("scf-service/bills")
-public class BillResource implements IResource<BillDTO, BillForm> {
+public class BillResource implements Resource<BillDTO, BillForm> {
 
     @Autowired
     private BillService service;

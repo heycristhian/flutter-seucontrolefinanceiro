@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("scf-service/users")
-public class UserResource implements IResource<UserDTO, UserForm> {
+public class UserResource implements Resource<UserDTO, UserForm> {
 
     @Autowired private UserService service;
     @Autowired private BillService billService;

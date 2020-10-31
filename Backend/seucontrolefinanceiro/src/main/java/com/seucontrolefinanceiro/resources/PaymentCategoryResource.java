@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("scf-service/payment-categories")
-public class PaymentCategoryResource implements IResource<PaymentCategoryDTO, PaymentCategoryForm> {
+public class PaymentCategoryResource implements Resource<PaymentCategoryDTO, PaymentCategoryForm> {
 
     @Autowired
     private PaymentCategoryService service;

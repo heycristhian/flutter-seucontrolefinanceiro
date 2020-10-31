@@ -28,9 +28,6 @@ public class Instantiation implements CommandLineRunner {
 
         boolean notExistData = paymentCategoryRepository.findAll().isEmpty();
 
-        System.out.println("Daniel");
-        System.out.println(new BCryptPasswordEncoder().encode("admin"));
-
         if (notExistData) {
             paymentCategoryRepository.save(
                 PaymentCategory.builder()

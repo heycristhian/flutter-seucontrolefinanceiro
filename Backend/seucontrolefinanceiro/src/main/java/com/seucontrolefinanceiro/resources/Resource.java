@@ -9,7 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-public interface IResource<T, K> {
+public interface Resource<T, K> {
 
     public ResponseEntity<List<T>> find(String query);
     public ResponseEntity<T> findById(@PathVariable String id);

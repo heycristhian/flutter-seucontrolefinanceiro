@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    _mockCheckForSession().then((RememberMe result) {
+    _checkForSession().then((RememberMe result) {
       if (result.rememberMe == 'true') {
         LoginModel loginModel = LoginModel();
         loginModel.user = result.user;
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  Future<RememberMe> _mockCheckForSession() async {
+  Future<RememberMe> _checkForSession() async {
     await Future.delayed(Duration(milliseconds: 2000), () {});
     RememberMe rememberMe = await LoginService.getRemeberMe();
     return rememberMe;
