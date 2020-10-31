@@ -14,6 +14,8 @@ import 'package:seucontrolefinanceiro/src/util/privacy.dart';
 class BodyComponent {
   final _streamController = StreamController<List<BillModel>>();
   final _streamControllerHidden = StreamController<bool>();
+  bool hidden;
+  String hiddenValue = 'R\$ xxxx,xx';
 
   _loadBills() async {
     List<BillModel> billsByCurrentUser =
@@ -63,7 +65,7 @@ class BodyComponent {
                                 if (!snapshot.hasData) {
                                   CircularProgressIndicator();
                                 }
-                                bool hidden = snapshot.data;
+                                this.hidden = snapshot.data;
                                 return DashboardComponent().dashboard(context, bills, _homePageState, hidden);
                               },
                             )
@@ -212,7 +214,7 @@ class BodyComponent {
         ),
         Row(
           children: <Widget>[
-            Text('R\$ ${bill.amount}',
+            Text(this.hidden != false ? this.hiddenValue : 'R\$ ${bill.amount}',
                 style: TextStyle(color: Colors.blueAccent[700])),
             SizedBox(
               width: 10,

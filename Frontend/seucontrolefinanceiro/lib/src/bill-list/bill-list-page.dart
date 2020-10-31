@@ -108,7 +108,7 @@ class _BillListPageState extends State<BillListPage> {
           _returnBillsWithParams('RECEIVEMENT', year, month, false);
 
       _returnBillsWithParams('PAYMENT', year, month, true).forEach((x) {
-        paymentAmountPaid += double.parse(x.monthBalanceCard);
+        paymentAmountPaid += double.parse(x.amount);
       });
 
       bills
@@ -429,7 +429,7 @@ class _BillListPageState extends State<BillListPage> {
 
       _returnBillsWithParams('PAYMENT', _date.year, _date.month, true)
           .forEach((x) {
-        paymentAmountPaid += double.parse(x.monthBalanceCard);
+        paymentAmountPaid += double.parse(x.amount);
       });
 
       listBillPayment.forEach((element) {
@@ -682,7 +682,7 @@ class _BillListPageState extends State<BillListPage> {
   getMonthBalanceText() {
     String msg = 'R\$ ${balance.toStringAsFixed(2).replaceAll('.', ',')}';
     if (this.hidden) {
-      msg = 'R\$ xxxx,xx';
+      msg = this.hiddenValue;
     }
     return Text(
       msg,

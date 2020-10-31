@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Privacy {
   static Future<bool> changeHidden() async {
     var prefs = await SharedPreferences.getInstance();
-    bool hidden = prefs.getBool('hidden');
+    bool hidden = await getHidden();
     hidden = !hidden;
     prefs.setBool('hidden', hidden);
     return hidden;
