@@ -17,7 +17,8 @@ class BillListPage extends StatefulWidget {
   int itemCount;
   bool hidden;
 
-  BillListPage(List<BillModel> bills, String dateString, int index, itemCount, bool hidden) {
+  BillListPage(List<BillModel> bills, String dateString, int index, itemCount,
+      bool hidden) {
     this.bills = bills;
     this.dateString = dateString;
     this.index = index;
@@ -45,9 +46,10 @@ class _BillListPageState extends State<BillListPage> {
   Map months = Map<int, String>();
   int itemCount;
   bool hidden;
+  String hiddenValue = 'R\$ xxxx,xx';
 
-  _BillListPageState(
-      List<BillModel> bills, String dateString, int index, int itemCount, bool hidden) {
+  _BillListPageState(List<BillModel> bills, String dateString, int index,
+      int itemCount, bool hidden) {
     this.bills = bills;
     this.dateString = dateString;
     this.index = index;
@@ -106,7 +108,7 @@ class _BillListPageState extends State<BillListPage> {
           _returnBillsWithParams('RECEIVEMENT', year, month, false);
 
       _returnBillsWithParams('PAYMENT', year, month, true).forEach((x) {
-        paymentAmountPaid += double.parse(x.amount);
+        paymentAmountPaid += double.parse(x.monthBalanceCard);
       });
 
       bills
@@ -135,7 +137,8 @@ class _BillListPageState extends State<BillListPage> {
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
-      balance = (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
+      balance =
+          (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
     }
 
     if (_date == null) {
@@ -177,21 +180,12 @@ class _BillListPageState extends State<BillListPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    'RECEBIMENTOS',
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 16, color: Colors.grey),
-                                  ),
-                                  Text(
-                                    'R\$ ${receivement.toStringAsFixed(2).replaceAll('.', ',')}',
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 14, color: Colors.redAccent),
-                                  ),
-                                  Text(
-                                    'R\$ ${receivementPaid.toStringAsFixed(2).replaceAll('.', ',')}',
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 14, color: Colors.green),
-                                  )
+                                  paymentOrReceivementCard(
+                                      'RECEBIMENTOS',
+                                      receivement,
+                                      receivementPaid,
+                                      Colors.redAccent,
+                                      Colors.green)
                                 ],
                               ),
                             ],
@@ -200,27 +194,7 @@ class _BillListPageState extends State<BillListPage> {
                       ],
                     ),
                     Container(height: 1, color: Colors.black26),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'SALDO DO MÊS',
-                          style: GoogleFonts.overpass(
-                              fontSize: 16, color: Colors.blueGrey),
-                        ),
-                        Text(
-                          'R\$ ${balance.toStringAsFixed(2).replaceAll('.', ',')}',
-                          style: GoogleFonts.overpass(
-                              fontSize: 18,
-                              color: balance >= 0
-                                  ? Colors.orangeAccent[400]
-                                  : Colors.redAccent),
-                        )
-                      ],
-                    )
+                    monthBalanceCard(),
                   ],
                 )),
           ),
@@ -245,7 +219,7 @@ class _BillListPageState extends State<BillListPage> {
               onPressed: () {
                 _dialogPayBill();
               },
-            )
+            ),
           ],
           elevation: 0,
           backgroundColor: Colors.white,
@@ -353,25 +327,8 @@ class _BillListPageState extends State<BillListPage> {
   Widget buildView() {
     return Row(
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'PAGAMENTOS',
-              style: GoogleFonts.overpass(fontSize: 16, color: Colors.grey),
-            ),
-            Text(
-              'R\$ ${paymentAmount.toStringAsFixed(2).replaceAll('.', ',')}',
-              style:
-                  GoogleFonts.overpass(fontSize: 14, color: Colors.redAccent),
-            ),
-            Text(
-              'R\$ ${paymentAmountPaid.toStringAsFixed(2).replaceAll('.', ',')}',
-              style:
-                  GoogleFonts.overpass(fontSize: 14, color: Colors.blueAccent),
-            )
-          ],
-        ),
+        paymentOrReceivementCard('PAGAMENTOS', paymentAmount, paymentAmountPaid,
+            Colors.redAccent, Colors.blueAccent),
       ],
     );
   }
@@ -412,10 +369,7 @@ class _BillListPageState extends State<BillListPage> {
             ),
           ],
         ),
-        Text(
-            'R\$ ${double.parse(bill.amount).toStringAsFixed(2).replaceAll('.', ',')}',
-            style: TextStyle(
-                color: _isReceivement ? Colors.green : Colors.blue[800])),
+        getAmountText(bill.amount),
       ],
     );
   }
@@ -475,7 +429,7 @@ class _BillListPageState extends State<BillListPage> {
 
       _returnBillsWithParams('PAYMENT', _date.year, _date.month, true)
           .forEach((x) {
-        paymentAmountPaid += double.parse(x.amount);
+        paymentAmountPaid += double.parse(x.monthBalanceCard);
       });
 
       listBillPayment.forEach((element) {
@@ -504,7 +458,8 @@ class _BillListPageState extends State<BillListPage> {
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
-      balance = (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
+      balance =
+          (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
     });
   }
 
@@ -677,5 +632,76 @@ class _BillListPageState extends State<BillListPage> {
       return false;
     }
     return true;
+  }
+
+  paymentOrReceivementCard(String title, double higherValue, double lowerValue,
+      higherColor, lowerColor) {
+    var children2 = <Widget>[
+      Text(
+        title,
+        style: GoogleFonts.overpass(fontSize: 16, color: Colors.grey),
+      ),
+      getTextBottom(higherValue, higherColor, 14),
+      getTextBottom(lowerValue, lowerColor, 14),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children2,
+    );
+  }
+
+  getTextBottom(double value, color, double fontSize) {
+    if (this.hidden) {
+      return Text(
+        this.hiddenValue,
+        style: GoogleFonts.overpass(fontSize: fontSize, color: color),
+      );
+    }
+    return Text(
+      'R\$ ${value.toStringAsFixed(2).replaceAll('.', ',')}',
+      style: GoogleFonts.overpass(fontSize: fontSize, color: color),
+    );
+  }
+
+  monthBalanceCard() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(
+          height: 15,
+        ),
+        Text(
+          'SALDO DO MÊS',
+          style: GoogleFonts.overpass(fontSize: 16, color: Colors.blueGrey),
+        ),
+        getMonthBalanceText()
+      ],
+    );
+  }
+
+  getMonthBalanceText() {
+    String msg = 'R\$ ${balance.toStringAsFixed(2).replaceAll('.', ',')}';
+    if (this.hidden) {
+      msg = 'R\$ xxxx,xx';
+    }
+    return Text(
+      msg,
+      style: GoogleFonts.overpass(
+          fontSize: 18,
+          color: balance >= 0 ? Colors.orangeAccent[400] : Colors.redAccent),
+    );
+  }
+
+  getAmountText(String amount) {
+    if (this.hidden) {
+      return Text(this.hiddenValue,
+          style: TextStyle(
+              color: _isReceivement ? Colors.green : Colors.blue[800]));
+    }
+
+    return Text(
+        'R\$ ${double.parse(amount).toStringAsFixed(2).replaceAll('.', ',')}',
+        style:
+            TextStyle(color: _isReceivement ? Colors.green : Colors.blue[800]));
   }
 }
