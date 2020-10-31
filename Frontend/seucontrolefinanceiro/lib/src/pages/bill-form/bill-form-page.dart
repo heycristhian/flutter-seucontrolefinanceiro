@@ -439,7 +439,6 @@ class _BillFormPageState extends State<BillFormPage> {
   _attData(int index) {
     setState(() {
       icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
-      print('index: ' + index.toString());
       if (index == 0) {
         colorBtn = Color.fromRGBO(17, 199, 111, 1);
         color1 = Color.fromRGBO(17, 199, 111, 1);

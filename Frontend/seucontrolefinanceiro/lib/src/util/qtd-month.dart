@@ -9,11 +9,8 @@ class QtdMonth {
     int monthsCard = int.parse(monthsCount.toStringAsFixed(0));
 
     if (monthsCount - monthsCount.round() == 0) {
-      print('aqui novo:' + monthsCard.toString());
       return monthsCard; 
     } else {
-      print('aqui novo:' + (monthsCard+1).toString());
-
       return monthsCard+1; 
     }
   }

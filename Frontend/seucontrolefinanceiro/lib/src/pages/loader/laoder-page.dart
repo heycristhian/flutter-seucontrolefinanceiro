@@ -32,13 +32,11 @@ class _LoaderPageState extends State<LoaderPage> {
           AuthModel authModel = AuthModel();
           authModel = snapshot.data;
 
-          print('AUTH ' + snapshot.data.toString());
 
           if (!snapshot.hasData) {
             return Loader.load();
           }
           if (snapshot.hasError) {
-            print('deu erro classe: loader-page');
             return Loader.load();
           } else if (snapshot.hasData && authModel.email == 'error') {
             return LoginPage(false);

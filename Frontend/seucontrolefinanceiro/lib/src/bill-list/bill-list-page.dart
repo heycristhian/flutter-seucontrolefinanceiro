@@ -15,17 +15,19 @@ class BillListPage extends StatefulWidget {
   String dateString;
   int index;
   int itemCount;
+  bool hidden;
 
-  BillListPage(List<BillModel> bills, String dateString, int index, itemCount) {
+  BillListPage(List<BillModel> bills, String dateString, int index, itemCount, bool hidden) {
     this.bills = bills;
     this.dateString = dateString;
     this.index = index;
     this.itemCount = itemCount;
+    this.hidden = hidden;
   }
 
   @override
   _BillListPageState createState() =>
-      _BillListPageState(bills, dateString, index, itemCount);
+      _BillListPageState(bills, dateString, index, itemCount, this.hidden);
 }
 
 enum TripType { oneway, roundtrip, multicity }
@@ -42,13 +44,15 @@ class _BillListPageState extends State<BillListPage> {
   int index;
   Map months = Map<int, String>();
   int itemCount;
+  bool hidden;
 
   _BillListPageState(
-      List<BillModel> bills, String dateString, int index, int itemCount) {
+      List<BillModel> bills, String dateString, int index, int itemCount, bool hidden) {
     this.bills = bills;
     this.dateString = dateString;
     this.index = index;
     this.itemCount = itemCount;
+    this.hidden = hidden;
   }
 
   @override
@@ -76,7 +80,6 @@ class _BillListPageState extends State<BillListPage> {
   @override
   Widget build(BuildContext context) {
     receivementPaid = receivementPaid == null ? 0 : receivementPaid;
-
     months.putIfAbsent(1, () => 'Janeiro');
     months.putIfAbsent(2, () => 'Fevereiro');
     months.putIfAbsent(3, () => 'Março');
@@ -132,7 +135,6 @@ class _BillListPageState extends State<BillListPage> {
 
       itemCountListBillPayment = listBillPayment.length;
       itemCountListBillReceivement = listBillReceivement.length;
-      print('balance: ' + balance.toString());
       balance = (receivement + receivementPaid) - (paymentAmountPaid + paymentAmount);
     }
 

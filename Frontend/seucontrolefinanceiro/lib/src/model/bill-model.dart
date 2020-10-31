@@ -34,7 +34,6 @@ class BillModel {
     if (json != null) {
       billDescription = json['billDescription'];
       var test = json['amount'];
-      print(test);
       amount = json['amount'].toString();
       everyMonth = json['everyMonth'];
       payDAy = json['payDAy'];

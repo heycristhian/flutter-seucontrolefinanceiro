@@ -276,9 +276,6 @@ class _LoginPageState extends State<LoginPage> {
     loginModel.user = _ctrlUser.text.trim();
     loginModel.password = _ctrlPassword.text.trim();
 
-    print(loginModel.user);
-    print(loginModel.password);
-
     Navigator.pushReplacement(
         context,
         CupertinoPageRoute(

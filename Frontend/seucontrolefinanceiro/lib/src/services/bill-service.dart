@@ -63,7 +63,6 @@ class BillService {
 
     var response = await http.post(url, headers: header, body: _body);
 
-    print('Status code inserBill: ${response.statusCode}');
   }
 
   static Future<BillModel> updateBill(BillModel billModel) async {
@@ -100,8 +99,6 @@ class BillService {
     var _body = json.encode(params);
 
     var response = await http.put(url, headers: header, body: _body);
-
-    print('Status code updateBill: ${response.statusCode}');
   }
 
   static Future<void> deleteBill(String id) async {
@@ -117,6 +114,5 @@ class BillService {
     var url = UrlGlobal.url() + '/scf-service/bills/' + id;
 
     var response = await http.delete(url, headers: header);
-    print('Status code updateBill: ${response.statusCode}');
   }
 }

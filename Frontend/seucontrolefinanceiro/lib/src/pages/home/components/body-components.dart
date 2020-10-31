@@ -9,9 +9,11 @@ import 'package:seucontrolefinanceiro/src/controllers/bill-controller.dart';
 import 'package:seucontrolefinanceiro/src/pages/home/components/app-bar-component.dart';
 import 'package:seucontrolefinanceiro/src/pages/home/components/dashboard-component.dart';
 import 'package:seucontrolefinanceiro/src/pages/loader/loader.dart';
+import 'package:seucontrolefinanceiro/src/util/privacy.dart';
 
 class BodyComponent {
   final _streamController = StreamController<List<BillModel>>();
+  final _streamControllerHidden = StreamController<bool>();
 
   _loadBills() async {
     List<BillModel> billsByCurrentUser =
@@ -38,6 +40,9 @@ class BodyComponent {
             );
           }
           List<BillModel> bills = snapshot.data;
+
+          getHidden();
+
           return Container(
               color: Colors.white,
               height: double.infinity,
@@ -51,7 +56,18 @@ class BodyComponent {
                         Stack(
                           children: <Widget>[
                             AppBarComponent().myAppBar(),
-                            DashboardComponent().dashboard(context, bills)
+
+                            StreamBuilder(
+                              stream: _streamControllerHidden.stream,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  CircularProgressIndicator();
+                                }
+                                bool hidden = snapshot.data;
+                                return DashboardComponent().dashboard(context, bills, _homePageState, hidden);
+                              },
+                            )
+                            //DashboardComponent().dashboard(context, bills, _homePageState)
                           ],
                         ),
                         SizedBox(
@@ -216,5 +232,10 @@ class BodyComponent {
         ),
       ],
     );
+  }
+
+  Future<bool> getHidden() async {
+    bool hidden = await Privacy.getHidden();
+    _streamControllerHidden.add(hidden);
   }
 }
