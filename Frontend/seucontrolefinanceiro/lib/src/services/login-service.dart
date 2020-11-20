@@ -11,8 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
   static Future<AuthModel> login(LoginModel loginModel) async {
-    var url =
-        UrlGlobal.url() + '/auth';
+    var url = UrlGlobal.url() + '/auth';
 
     var prefs = await SharedPreferences.getInstance();
     var header = {"Content-Type": "application/json"};
@@ -68,5 +67,4 @@ class LoginService {
     rememberMe.password = prefs.getString('password') ?? '';
     return rememberMe;
   }
-
 }
