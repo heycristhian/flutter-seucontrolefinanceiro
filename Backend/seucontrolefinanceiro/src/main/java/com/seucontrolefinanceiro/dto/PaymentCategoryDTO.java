@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.dto;
 
-import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.model.PaymentCategory;
 import lombok.Getter;
 import lombok.NonNull;
 

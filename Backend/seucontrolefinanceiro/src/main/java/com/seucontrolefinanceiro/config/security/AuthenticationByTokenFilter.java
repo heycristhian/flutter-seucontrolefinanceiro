@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.config.security;
 
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

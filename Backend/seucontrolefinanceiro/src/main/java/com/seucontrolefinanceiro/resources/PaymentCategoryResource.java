@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.resources;
 
-import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.model.PaymentCategory;
 import com.seucontrolefinanceiro.dto.PaymentCategoryDTO;
 import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.PaymentCategoryForm;

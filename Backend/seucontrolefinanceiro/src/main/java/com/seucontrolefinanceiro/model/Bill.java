@@ -1,4 +1,4 @@
-package com.seucontrolefinanceiro.domain;
+package com.seucontrolefinanceiro.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

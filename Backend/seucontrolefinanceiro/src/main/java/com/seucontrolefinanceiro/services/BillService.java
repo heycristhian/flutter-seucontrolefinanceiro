@@ -1,16 +1,21 @@
 package com.seucontrolefinanceiro.services;
 
-import com.seucontrolefinanceiro.domain.Bill;
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.Bill;
+import com.seucontrolefinanceiro.model.User;
+import com.seucontrolefinanceiro.model.domain.Panel;
+import com.seucontrolefinanceiro.model.domain.PanelHome;
 import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import com.seucontrolefinanceiro.services.util.GenerateObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
@@ -38,7 +43,7 @@ public class BillService implements Service<Bill> {
     @Override
     public Bill save(Bill bill) {
         User user = userService.findById(bill.getUserId());
-        List<Bill> allBillsByUserId = repository.findByUserId(bill.getUserId()).orElse(null);
+        List<Bill> allBillsByUserId = repository.findByUserId(bill.getUserId());
         user.setBills(allBillsByUserId);
         analyzeMonthlyBill(bill, user);
         String parentId = bill.getParent() == null ? bill.getId() : bill.getParent();
@@ -133,7 +138,7 @@ public class BillService implements Service<Bill> {
     private void createChildrenBill(Bill newBill) {
         List<Bill> bills = new ArrayList<>();
         User user = userService.findById(newBill.getUserId());
-        user.setBills(repository.findByUserId(newBill.getUserId()).get());
+        user.setBills(repository.findByUserId(newBill.getUserId()));
 
         Integer index = newBill.getPortion() == null ? PORTION_DEFAULT : newBill.getPortion();
         bills = GenerateObject.generateBills(newBill, index);
@@ -149,7 +154,7 @@ public class BillService implements Service<Bill> {
     private void removeChildrenBill(Bill newBill) {
         String parentId = newBill.getParent() == null ? newBill.getId() : newBill.getParent();
 
-        repository.findByUserId(newBill.getUserId()).get()
+        repository.findByUserId(newBill.getUserId())
             .stream().filter(x ->
             x.isPaid() == false
                     && x.getParent().compareTo(parentId) == 0)
@@ -163,7 +168,7 @@ public class BillService implements Service<Bill> {
         String parentId = newBill.getParent() == null ? newBill.getId() : newBill.getParent();
         try {
             bills = repository.findByUserId(newBill.getUserId())
-                    .get().stream()
+                    .stream()
                     .filter(x -> x.getParent().equals(parentId)
                             && x.isPaid() == false
                             && !x.getId().equals(newBill.getId()))
@@ -176,5 +181,43 @@ public class BillService implements Service<Bill> {
             b = GenerateObject.cloneBill(b, newBill);
             repository.save(b);
         }
+    }
+
+    public PanelHome getPanelHome(String userId) {
+        List<Bill> billsByUser = repository.findByUserId(userId);
+        Set<LocalDate> dates = billsByUser
+                .stream()
+                .map(Bill::getPayDAy)
+                .collect(Collectors.toSet());
+
+        List<Panel> panels = new ArrayList<>();
+
+        for (LocalDate date : dates) {
+            BigDecimal amount = getPanelAmount(billsByUser);
+            String title = getPanelTitle(date);
+            panels.add(
+                Panel.builder()
+                    .date(date)
+                    .amount(amount)
+                    .title(title)
+                    .build()
+            );
+        }
+
+        return PanelHome.builder()
+                .panels(panels)
+                .panelQuantity(dates.size())
+                .build();
+    }
+
+    private BigDecimal getPanelAmount(List<Bill> bills) {
+        return bills
+            .stream()
+            .map(Bill::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private String getPanelTitle(LocalDate date) {
+        return "Temporario";
     }
 }

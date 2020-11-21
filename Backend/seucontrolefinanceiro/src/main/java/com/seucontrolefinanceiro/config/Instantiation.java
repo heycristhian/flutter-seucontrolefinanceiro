@@ -1,8 +1,8 @@
 package com.seucontrolefinanceiro.config;
 
-import com.seucontrolefinanceiro.domain.BillType;
-import com.seucontrolefinanceiro.domain.PaymentCategory;
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.BillType;
+import com.seucontrolefinanceiro.model.PaymentCategory;
+import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.repository.BillRepository;
 import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.repository.UserRepository;

@@ -1,8 +1,8 @@
 package com.seucontrolefinanceiro.form;
 
-import com.seucontrolefinanceiro.domain.Bill;
-import com.seucontrolefinanceiro.domain.BillType;
-import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.model.Bill;
+import com.seucontrolefinanceiro.model.BillType;
+import com.seucontrolefinanceiro.model.PaymentCategory;
 import com.seucontrolefinanceiro.services.PaymentCategoryService;
 
 import lombok.Getter;

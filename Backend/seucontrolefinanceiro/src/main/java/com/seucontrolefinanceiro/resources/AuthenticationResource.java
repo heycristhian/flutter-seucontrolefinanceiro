@@ -1,7 +1,7 @@
 package com.seucontrolefinanceiro.resources;
 
 import com.seucontrolefinanceiro.config.security.TokenService;
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.dto.TokenDTO;
 import com.seucontrolefinanceiro.form.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;

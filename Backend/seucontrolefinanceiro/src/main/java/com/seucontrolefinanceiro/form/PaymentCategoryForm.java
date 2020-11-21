@@ -1,7 +1,7 @@
 package com.seucontrolefinanceiro.form;
 
-import com.seucontrolefinanceiro.domain.BillType;
-import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.model.BillType;
+import com.seucontrolefinanceiro.model.PaymentCategory;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

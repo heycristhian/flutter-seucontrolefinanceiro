@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.services;
 
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

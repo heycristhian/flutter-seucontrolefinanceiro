@@ -1,4 +1,4 @@
-package com.seucontrolefinanceiro.domain;
+package com.seucontrolefinanceiro.model;
 
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,7 +1,7 @@
 package com.seucontrolefinanceiro.dto;
 
-import com.seucontrolefinanceiro.domain.Bill;
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.Bill;
+import com.seucontrolefinanceiro.model.User;
 import lombok.Getter;
 
 import java.util.ArrayList;

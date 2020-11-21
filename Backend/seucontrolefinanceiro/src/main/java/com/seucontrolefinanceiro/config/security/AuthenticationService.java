@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.config.security;
 
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import com.seucontrolefinanceiro.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

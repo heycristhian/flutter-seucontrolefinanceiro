@@ -1,6 +1,5 @@
-package com.seucontrolefinanceiro.domain;
+package com.seucontrolefinanceiro.model;
 
-import com.seucontrolefinanceiro.repository.BillRepository;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;

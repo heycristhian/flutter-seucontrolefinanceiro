@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.services;
 
-import com.seucontrolefinanceiro.domain.PaymentCategory;
+import com.seucontrolefinanceiro.model.PaymentCategory;
 import com.seucontrolefinanceiro.repository.PaymentCategoryRepository;
 import com.seucontrolefinanceiro.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

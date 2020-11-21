@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.dto;
 
-import com.seucontrolefinanceiro.domain.Bill;
+import com.seucontrolefinanceiro.model.Bill;
 import lombok.Getter;
 
 import java.math.BigDecimal;

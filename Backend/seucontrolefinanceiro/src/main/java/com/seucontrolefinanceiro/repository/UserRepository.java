@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.repository;
 
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

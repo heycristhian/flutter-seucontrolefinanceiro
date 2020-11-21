@@ -7,7 +7,7 @@ class SplashScreenProvider {
     prefs.setString('type', '');
     prefs.setString('user', '');
     prefs.setString('userId', '');
-    prefs.setBool('rememberMe', false);
+    prefs.setString('rememberMe', 'false');
   }
 
   static setRememberMe(bool validation) async {
@@ -17,7 +17,7 @@ class SplashScreenProvider {
 
   static Future<bool> getRemeberMe() async {
     var prefs = await SharedPreferences.getInstance();
-    bool rememberMe = prefs.getBool('rememberMe') ?? '';
-    return rememberMe;
+    String rememberMe = prefs.getString('rememberMe') ?? '';
+    return rememberMe == "true";
   }
 }

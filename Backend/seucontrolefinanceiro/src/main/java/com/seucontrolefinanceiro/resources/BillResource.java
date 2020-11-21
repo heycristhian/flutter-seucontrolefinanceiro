@@ -1,6 +1,6 @@
 package com.seucontrolefinanceiro.resources;
 
-import com.seucontrolefinanceiro.domain.Bill;
+import com.seucontrolefinanceiro.model.Bill;
 import com.seucontrolefinanceiro.dto.BillDTO;
 import com.seucontrolefinanceiro.dto.UserDTO;
 import com.seucontrolefinanceiro.form.BillForm;

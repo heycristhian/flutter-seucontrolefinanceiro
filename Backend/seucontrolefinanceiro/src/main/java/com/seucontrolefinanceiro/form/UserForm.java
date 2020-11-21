@@ -1,10 +1,8 @@
 package com.seucontrolefinanceiro.form;
 
-import com.seucontrolefinanceiro.domain.User;
+import com.seucontrolefinanceiro.model.User;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
 
 @RequiredArgsConstructor
 public class UserForm {

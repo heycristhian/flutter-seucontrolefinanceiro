@@ -1,8 +1,7 @@
 package com.seucontrolefinanceiro.services.util;
 
-import com.seucontrolefinanceiro.domain.Bill;
+import com.seucontrolefinanceiro.model.Bill;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
