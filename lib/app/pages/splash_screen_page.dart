@@ -11,7 +11,8 @@ class SplashScreenPage extends StatefulWidget {
 class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   Widget build(BuildContext context) {
-    SplashScreenController.hasLoggedUser(context);
+    Future.delayed(Duration(seconds: 1))
+        .then((value) => {SplashScreenController.hasLoggedUser(context)});
     return _loadSplashScreen();
   }
 

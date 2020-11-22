@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:seucontrolefinanceiro/src/environment/url-global.dart';
+import 'package:seucontrolefinanceiro/app/environment/environment.dart';
 import 'package:seucontrolefinanceiro/src/model/auth-model.dart';
 import 'package:seucontrolefinanceiro/src/model/login-model.dart';
 import 'package:seucontrolefinanceiro/src/model/remember-me.dart';
@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
   static Future<AuthModel> login(LoginModel loginModel) async {
-    var url = UrlGlobal.url() + '/auth';
+    var url = Environment().api(endpoint: 'auth');
 
     var prefs = await SharedPreferences.getInstance();
     var header = {"Content-Type": "application/json"};

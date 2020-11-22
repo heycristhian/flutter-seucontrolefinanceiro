@@ -1,55 +1,24 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:seucontrolefinanceiro/src/model/login-model.dart';
-import 'package:seucontrolefinanceiro/src/pages/loader/laoder-page.dart';
-import 'package:seucontrolefinanceiro/src/services/login-service.dart';
-import 'components/constants-components.dart';
+import 'package:seucontrolefinanceiro/app/controllers/login_controller.dart';
+import 'package:seucontrolefinanceiro/app/models/domain/login.dart';
+import 'package:seucontrolefinanceiro/app/pages/login/components/constants-components.dart';
+import 'package:seucontrolefinanceiro/app/providers/util_provider.dart';
 
 class LoginPage extends StatefulWidget {
-  bool _aut;
-  LoginPage(bool aut) {
-    this._aut = aut;
-  }
-
   @override
-  _LoginPageState createState() => _LoginPageState(_aut);
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _rememberMe = false;
-  bool _aut;
   final _ctrlUser = TextEditingController();
   final _ctrlPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final LoginModel loginModel = LoginModel();
+  bool _rememberMe = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      if (!_aut) {
-        return AwesomeDialog(
-          context: context,
-          animType: AnimType.BOTTOMSLIDE,
-          dialogType: DialogType.ERROR,
-          body: Text(
-            'Os dados informados para acesso não batem com os nossos registros!',
-            style: TextStyle(),
-          ),
-          btnOkColor: Colors.red,
-          btnOkOnPress: () {},
-        )..show();
-      }
-    });
-  }
-
-  _LoginPageState(bool aut) {
-    this._aut = aut;
-  }
+  final Login login = Login();
 
   Widget _buildEmailTF() {
     return Column(
@@ -137,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value;
-                  LoginService.setRememberMe(_rememberMe);
+                  UtilProvider.setRememberMe(_rememberMe);
                 });
               },
             ),
@@ -273,13 +242,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _clickButton(BuildContext context) async {
-    loginModel.user = _ctrlUser.text.trim();
-    loginModel.password = _ctrlPassword.text.trim();
+    login.user = _ctrlUser.text.trim();
+    login.password = _ctrlPassword.text.trim();
 
-    Navigator.pushReplacement(
-        context,
-        CupertinoPageRoute(
-            builder: (BuildContext context) => LoaderPage(loginModel)));
+    LoginController.doLogin(login: login, context: context);
   }
 
   Future<bool> onWillPop() async {

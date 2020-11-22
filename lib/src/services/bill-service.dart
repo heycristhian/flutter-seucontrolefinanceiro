@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:seucontrolefinanceiro/src/environment/url-global.dart';
+import 'package:seucontrolefinanceiro/app/environment/environment.dart';
 import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +18,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = UrlGlobal.url() + '/scf-service/users/$user/bills';
+    var url = Environment().api(endpoint: 'scf-service/users/$user/bills');
 
     Response response =
         await Dio().request(url.toString(), options: Options(headers: header));
@@ -41,7 +41,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = UrlGlobal.url() + '/scf-service/bills';
+    var url = Environment().api(endpoint: 'scf-service/bills');
 
     Map params = {
       "billDescription": billModel.billDescription,
@@ -62,7 +62,6 @@ class BillService {
     var _body = json.encode(params);
 
     var response = await http.post(url, headers: header, body: _body);
-
   }
 
   static Future<BillModel> updateBill(BillModel billModel) async {
@@ -75,7 +74,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = UrlGlobal.url() + '/scf-service/bills';
+    var url = Environment().api(endpoint: 'scf-service/bills');
 
     Map params = {
       "id": billModel.id,
@@ -111,7 +110,7 @@ class BillService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = UrlGlobal.url() + '/scf-service/bills/' + id;
+    var url = Environment().api(endpoint: 'scf-service/bills/$id');
 
     var response = await http.delete(url, headers: header);
   }

@@ -8,7 +8,6 @@ import 'package:seucontrolefinanceiro/src/controllers/user-controller.dart';
 import 'package:seucontrolefinanceiro/src/pages/bill-form/bill-form-page.dart';
 import 'package:seucontrolefinanceiro/src/pages/graph/graphs.dart';
 import 'package:seucontrolefinanceiro/src/pages/loader/loader.dart';
-import 'package:seucontrolefinanceiro/src/pages/login/login-page.dart';
 import 'package:seucontrolefinanceiro/src/services/login-service.dart';
 
 import 'components/body-components.dart';
@@ -109,11 +108,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                         onTap: () => {
                               LoginService.resetPrefs(),
-                              Navigator.pushReplacement(
+                              /*Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           LoginPage(true)))
+                            */
                             }),
                   ],
                 ),
@@ -150,7 +150,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               body: WillPopScope(
-                  onWillPop: onWillPop, child: BodyComponent().body(context, this)));
+                  onWillPop: onWillPop,
+                  child: BodyComponent().body(context, this)));
         });
   }
 

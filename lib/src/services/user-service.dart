@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:seucontrolefinanceiro/src/environment/url-global.dart';
+import 'package:seucontrolefinanceiro/app/environment/environment.dart';
 import 'package:seucontrolefinanceiro/src/model/user-model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +17,7 @@ class UserService {
       "Authorization": "$tokenType $token"
     };
 
-    var url = UrlGlobal.url() + '/scf-service/users/' + userId;
+    var url = Environment().api(endpoint: 'scf-service/users/$userId');
 
     var user = UserModel();
 

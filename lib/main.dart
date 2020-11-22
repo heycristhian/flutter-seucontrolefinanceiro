@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seucontrolefinanceiro/app/models/domain/login.dart';
 import 'package:seucontrolefinanceiro/app/pages/home_page.dart';
-import 'package:seucontrolefinanceiro/app/pages/login_page.dart';
+import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
+import 'package:seucontrolefinanceiro/app/pages/login/login_page.dart';
 
 import 'app/pages/splash_screen_page.dart';
 
@@ -20,7 +22,8 @@ class AppWidget extends StatelessWidget {
       routes: {
         '/splash_screen_page': (context) => SplashScreenPage(),
         '/home_page': (context) => HomePage(),
-        '/login_page': (context) => LoginPage()
+        '/login_page': (context) => LoginPage(),
+        '/loader_page': (context) => LoaderPage()
       },
       initialRoute: '/splash_screen_page',
     );
