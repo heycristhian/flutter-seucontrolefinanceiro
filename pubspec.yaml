@@ -50,6 +50,8 @@ dependencies:
   latlng: ^0.0.2
   fluttertoast: ^7.0.2
   fl_chart: ^0.12.0
+  hasura_connect: ^2.0.0
+  graphql_flutter: ^3.0.0
   
 dev_dependencies:
   flutter_test:

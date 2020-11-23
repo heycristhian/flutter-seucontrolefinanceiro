@@ -35,4 +35,11 @@ class UtilProvider {
   static getPrefs() async {
     return await SharedPreferences.getInstance();
   }
+
+  static getToken() async {
+    var prefs = await UtilProvider.getPrefs();
+    String token = prefs.getString('token') ?? '';
+    String tokenType = prefs.getString('type') ?? '';
+    return '$tokenType $token';
+  }
 }
