@@ -1,21 +1,36 @@
+import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+
 class Panel {
-  String title;
+  String date;
   int year;
   int amount;
+  String title;
+  List<BillModel> bills;
 
-  Panel({this.title, this.year, this.amount});
+  Panel({this.date, this.year, this.amount, this.title, this.bills});
 
   Panel.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
+    date = json['date'];
     year = json['year'];
     amount = json['amount'];
+    title = json['title'];
+    if (json['bills'] != null) {
+      bills = new List<BillModel>();
+      json['bills'].forEach((v) {
+        bills.add(BillModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
+    data['date'] = this.date;
     data['year'] = this.year;
     data['amount'] = this.amount;
+    data['title'] = this.title;
+    if (this.bills != null) {
+      data['bills'] = this.bills.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

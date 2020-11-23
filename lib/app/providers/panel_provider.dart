@@ -1,9 +1,7 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:seucontrolefinanceiro/app/environment/environment.dart';
 import 'package:seucontrolefinanceiro/app/models/domain/panel-home.dart';
 import 'package:seucontrolefinanceiro/app/providers/util_provider.dart';
-import 'package:http/http.dart' as http;
 
 class PanelProvider {
   static Future<PanelHome> getPanels() async {
@@ -13,22 +11,11 @@ class PanelProvider {
     var uri = Environment().api(endpoint: 'api/v1/panels?userId=$userId');
 
     var panelHome = PanelHome();
-    var response = await http.get(uri, headers: header);
 
-    print('response.statusCode');
-    print(response.statusCode);
+    Response response =
+        await Dio().request(uri.toString(), options: Options(headers: header));
 
-    if (response.statusCode == 200) {
-      var currentResponse = json.decode(response.body);
-
-      try {
-        panelHome = PanelHome.fromJson(currentResponse);
-      } on Exception {
-        print('Sem users!');
-      }
-    }
-    print('panelHome');
-    print(panelHome.toJson());
+    panelHome = PanelHome.fromJson(response.data);
     return panelHome;
   }
 }

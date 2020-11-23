@@ -14,7 +14,7 @@ class _TimeLineState extends State<TimeLine> {
   List<BillModel> billsPaid = List<BillModel>();
   @override
   Widget build(BuildContext context) {
-    Future<List<BillModel>> billsFuture = BillProvider.getBillsPaid();
+    Future<List<BillModel>> billsFuture = BillProvider.getBills(isPaid: true);
     return FutureBuilder(
       future: billsFuture,
       builder: (context, snapshot) {

@@ -22,7 +22,7 @@ class AppWidget extends StatelessWidget {
         '/splash_screen_page': (context) => SplashScreenPage(),
         '/home_page': (context) => HomePage(),
         '/login_page': (context) => LoginPage(),
-        '/loader_page': (context) => LoaderPage()
+        '/loader_page': (context) => LoaderPage(),
       },
       initialRoute: '/splash_screen_page',
     );

@@ -7,6 +7,7 @@ import 'package:seucontrolefinanceiro/app/components/text_components.dart';
 import 'package:seucontrolefinanceiro/app/controllers/home_controller.dart';
 import 'package:seucontrolefinanceiro/app/models/domain/panel-home.dart';
 import 'package:seucontrolefinanceiro/app/models/user-model.dart';
+import 'package:seucontrolefinanceiro/app/pages/bills_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/components/time_line.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/providers/panel_provider.dart';
@@ -19,6 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   UserModel userModel = UserModel();
+  int indexPage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -203,6 +206,11 @@ class _HomePageState extends State<HomePage> {
                 margin: EdgeInsets.only(top: 90),
                 height: 200,
                 child: PageView.builder(
+                  onPageChanged: (indexPage) {
+                    setState(() {
+                      this.indexPage = indexPage;
+                    });
+                  },
                   itemCount: getItemCount(),
                   controller:
                       PageController(viewportFraction: 1, initialPage: 0),
@@ -235,12 +243,21 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                     )),
                               ),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 50),
-                                  child: TextComponents.textWithGoogleFont(
-                                      text: 'R\$ ' + getCurrentAmount(index),
-                                      color: _primaryColor,
-                                      fontSize: 40.0))
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              BillsPage(this.indexPage)));
+                                },
+                                child: Padding(
+                                    padding: const EdgeInsets.only(top: 50),
+                                    child: TextComponents.textWithGoogleFont(
+                                        text: 'R\$ ' + getCurrentAmount(index),
+                                        color: _primaryColor,
+                                        fontSize: 40.0)),
+                              )
                             ],
                           )),
                     );
