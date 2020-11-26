@@ -26,10 +26,15 @@ enum TripType { oneway, roundtrip, multicity }
 class _BillsPageState extends State<BillsPage> {
   PanelHome panel = PanelHome();
   TripType _selectedTrip = TripType.oneway;
+  var _isPayment = true;
+  var currentBillsByType = List<BillModel>();
+  var controller = BillsPageController();
+
   Map<TripType, String> _tripTypes = {
     TripType.oneway: 'PAGAMENTO',
     TripType.roundtrip: 'RECEBIMENTO',
   };
+
   int indexPage;
 
   _BillsPageState(int indexPage) {
@@ -61,7 +66,9 @@ class _BillsPageState extends State<BillsPage> {
         if (snapshot.hasError) {
           return LoaderPage();
         }
-        this.panel = snapshot.data;
+
+        setBills(snapshot.data);
+
         return SafeArea(
           top: false,
           child: Scaffold(
@@ -182,7 +189,7 @@ class _BillsPageState extends State<BillsPage> {
             body: WillPopScope(
               onWillPop: onWillPop,
               child: PageView.builder(
-                itemCount: getItemCountMonths(),
+                itemCount: getItemCountByMonths(),
                 controller:
                     PageController(viewportFraction: 1, initialPage: indexPage),
                 onPageChanged: (indexPage) {
@@ -244,7 +251,11 @@ class _BillsPageState extends State<BillsPage> {
   }
 
   Widget billList(index) {
-    var bills = this.panel.panels[indexPage].bills;
+    var bills =
+        this.controller.currentBillsByType(getAllCurrentBills(), _isPayment);
+    if (bills.isEmpty) {
+      return Row();
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -288,12 +299,12 @@ class _BillsPageState extends State<BillsPage> {
 
   Widget buildTripTypeSelector(TripType tripType) {
     var isSelected = _selectedTrip == tripType;
-
     return FlatButton(
       padding: EdgeInsets.only(left: 4, right: 16),
       onPressed: () {
         setState(() {
           _selectedTrip = tripType;
+          this._isPayment = _tripTypes[tripType] == 'PAGAMENTO';
         });
       },
       shape: RoundedRectangleBorder(
@@ -323,7 +334,7 @@ class _BillsPageState extends State<BillsPage> {
         context: context,
         builder: (_) => AlertDialog(
               title: Text('Pagar'),
-              content: Text(false
+              content: Text(_isPayment
                   ? 'Você tem certeza que deseja pagar todas contas?'
                   : 'Vocsê tem certeza que deseja receber todas contas?'),
               actions: <Widget>[
@@ -340,7 +351,8 @@ class _BillsPageState extends State<BillsPage> {
   }
 
   void _dialogUpdateBill(int index) {
-    var msg = 'Deseja editar a conta {model.billDescription}';
+    var model = currentBillsByType[index];
+    var msg = 'Deseja editar a conta ${model.billDescription}';
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -364,8 +376,8 @@ class _BillsPageState extends State<BillsPage> {
 
   void _dialogPayOneBill(int index) {
     String msg;
-    var model = BillModel();
-    if (false) {
+    var model = currentBillsByType[index];
+    if (!_isPayment) {
       //model = listBillReceivement[index];
       msg = 'Deseja receber somente a conta ${model.billDescription}?';
     } else {
@@ -382,7 +394,13 @@ class _BillsPageState extends State<BillsPage> {
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w700)),
               actions: <Widget>[
-                FlatButton(onPressed: () async {}, child: Text('Sim')),
+                FlatButton(
+                    onPressed: () async {
+                      await controller.payBill(currentBillsByType[index]);
+                      Navigator.pop(context);
+                      setState(() {});
+                    },
+                    child: Text('Sim')),
                 FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -467,12 +485,15 @@ class _BillsPageState extends State<BillsPage> {
         style: TextStyle(color: Colors.blue[800]));
   }
 
-  getItemCountMonths() {
+  getItemCountByMonths() {
     return this.panel.panelQuantity;
   }
 
   getItemCount(index) {
-    return this.panel.panels[index].bills.length;
+    return this
+        .controller
+        .currentBillsByType(getAllCurrentBills(), _isPayment)
+        .length;
   }
 
   getMonthTitle() {
@@ -481,5 +502,15 @@ class _BillsPageState extends State<BillsPage> {
 
   getYearTitle() {
     return this.panel.panels[indexPage].year.toString();
+  }
+
+  getAllCurrentBills() {
+    return this.panel.panels[this.indexPage].bills;
+  }
+
+  void setBills(snapshotData) {
+    this.panel = snapshotData;
+    this.currentBillsByType =
+        controller.currentBillsByType(getAllCurrentBills(), _isPayment);
   }
 }

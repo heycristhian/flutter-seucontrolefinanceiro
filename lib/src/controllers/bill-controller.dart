@@ -31,7 +31,7 @@ class BillController {
     var prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
 
-    if (billModel.paid == true) {
+    if (billModel.paid) {
       billModel.paidIn = DateTime.now().toString().substring(0, 10);
     }
 

@@ -1,4 +1,4 @@
-import 'package:seucontrolefinanceiro/src/model/bill-model.dart';
+import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 
 class Panel {
   String date;

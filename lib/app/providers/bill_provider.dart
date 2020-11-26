@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:seucontrolefinanceiro/app/environment/environment.dart';
 import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 import 'package:seucontrolefinanceiro/app/providers/util_provider.dart';
+import 'package:http/http.dart' as http;
 
 class BillProvider {
   static Future<List<BillModel>> getBills({isPaid}) async {
@@ -23,5 +26,38 @@ class BillProvider {
     } on Exception {
       return bills;
     }
+  }
+
+  static Future<BillModel> updateBill(BillModel billModel) async {
+    var header = await UtilProvider.getHeaderWithAuth();
+    var url = Environment().api(endpoint: 'api/v1/bills');
+
+    Map params = BillProvider.createParam(billModel);
+
+    var _body = json.encode(params);
+
+    var response = await http.put(url, headers: header, body: _body);
+    print(response.statusCode);
+  }
+
+  static Map createParam(billModel) {
+    return {
+      "id": billModel.id,
+      "billDescription": billModel.billDescription,
+      "amount": billModel.amount,
+      "everyMonth": billModel.everyMonth,
+      "payDAy": billModel.payDAy,
+      "billType": billModel.billType,
+      "paymentCategory": {
+        "description": billModel.paymentCategory.description,
+        "mutable": true,
+        "billType": billModel.paymentCategory.billType
+      },
+      "paid": billModel.paid == null ? false : billModel.paid,
+      "userId": billModel.userId,
+      "parentId": billModel.parentId,
+      "portion": billModel.portion,
+      "paidIn": billModel.paidIn,
+    };
   }
 }

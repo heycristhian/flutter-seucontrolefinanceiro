@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:seucontrolefinanceiro/app/controllers/time_line_controller.dart';
 import 'package:seucontrolefinanceiro/app/icons.dart';
 import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 import 'package:seucontrolefinanceiro/app/providers/bill_provider.dart';
@@ -24,7 +25,7 @@ class _TimeLineState extends State<TimeLine> {
         if (snapshot.hasError) {
           return getCircularProgress();
         }
-        billsPaid = snapshot.data;
+        setBills(snapshot.data);
         return timeLineBody();
       },
     );
@@ -61,7 +62,7 @@ class _TimeLineState extends State<TimeLine> {
               ),
               GestureDetector(
                 onLongPress: () {
-                  getDialog();
+                  getDialog(index);
                 },
                 child: FlatButton(
                   color: Colors.white,
@@ -78,7 +79,8 @@ class _TimeLineState extends State<TimeLine> {
     );
   }
 
-  getDialog() {
+  getDialog(int index) {
+    BillModel bill = billsPaid[index];
     return showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -93,7 +95,11 @@ class _TimeLineState extends State<TimeLine> {
                       color: Colors.white, fontWeight: FontWeight.w700)),
               actions: <Widget>[
                 FlatButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      await TimeLineController.undoBillPaid(bill);
+                      Navigator.pop(context);
+                      setState(() {});
+                    },
                     child: Text(
                       'Sim',
                       style: TextStyle(color: Colors.white70),
@@ -151,24 +157,31 @@ class _TimeLineState extends State<TimeLine> {
         ),
         Row(
           children: <Widget>[
-            Text('R\$ 0', style: TextStyle(color: Colors.blueAccent[700])),
+            Text('R\$ ${double.parse(bill.amount).toStringAsFixed(2)}',
+                style: TextStyle(color: Colors.blueAccent[700])),
             SizedBox(
               width: 10,
             ), /*
-            bill.billType.compareTo('PAYMENT') == 0
-                ? Icon(
-                    Icons.arrow_upward,
-                    size: 15,
-                    color: Colors.red,
-                  )
-                : Icon(
-                    Icons.arrow_downward,
-                    size: 15,
-                    color: Colors.green,
-                  )*/
+                    bill.billType.compareTo('PAYMENT') == 0
+                        ? Icon(
+                            Icons.arrow_upward,
+                            size: 15,
+                            color: Colors.red,
+                          )
+                        : Icon(
+                            Icons.arrow_downward,
+                            size: 15,
+                            color: Colors.green,
+                          )*/
           ],
         ),
       ],
     );
+  }
+
+  void setBills(data) {
+    billsPaid = data;
+    billsPaid.sort(
+        (a, b) => DateTime.parse(b.payDAy).compareTo(DateTime.parse(a.payDAy)));
   }
 }
