@@ -11,6 +11,7 @@ import 'package:seucontrolefinanceiro/app/pages/bills_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/components/time_line.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/providers/panel_provider.dart';
+import 'package:seucontrolefinanceiro/app/providers/payment_category_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -77,8 +78,8 @@ class _HomePageState extends State<HomePage> {
                 FloatingActionButtonLocation.endDocked,
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add, color: Colors.white),
-              onPressed: () {
-                //EFEITO
+              onPressed: () async {
+                Navigator.of(context).pushReplacementNamed('/bill_form');
               },
               backgroundColor: Theme.of(context).primaryColor,
             ),
