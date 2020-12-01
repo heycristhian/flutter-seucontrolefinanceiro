@@ -1,12 +1,13 @@
-class PaymentCategory {
+class PaymentCategoryModel {
   String id;
   String description;
   bool mutable;
   String billType;
 
-  PaymentCategory({this.id, this.description, this.mutable, this.billType});
+  PaymentCategoryModel(
+      {this.id, this.description, this.mutable, this.billType});
 
-  PaymentCategory.fromJson(Map<String, dynamic> json) {
+  PaymentCategoryModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     description = json['description'];
     mutable = json['mutable'];

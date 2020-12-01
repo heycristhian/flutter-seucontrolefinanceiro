@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seucontrolefinanceiro/app/pages/bill_form_page.dart';
+import 'package:seucontrolefinanceiro/app/pages/bills/bill_form_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/home_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/login/login_page.dart';

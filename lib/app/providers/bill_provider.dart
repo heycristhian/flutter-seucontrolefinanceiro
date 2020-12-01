@@ -28,7 +28,7 @@ class BillProvider {
     }
   }
 
-  static Future<BillModel> updateBill(BillModel billModel) async {
+  static updateBill(BillModel billModel) async {
     var header = await UtilProvider.getHeaderWithAuth();
     var url = Environment().api(endpoint: 'api/v1/bills');
 
@@ -59,5 +59,33 @@ class BillProvider {
       "portion": billModel.portion,
       "paidIn": billModel.paidIn,
     };
+  }
+
+  static Future<int> save(BillModel billModel) async {
+    var header = await UtilProvider.getHeaderWithAuth();
+    var prefs = await UtilProvider.getPrefs();
+    var userId = prefs.getString('userId');
+    var url = Environment().api(endpoint: 'api/v1/bills');
+
+    Map params = {
+      "billDescription": billModel.billDescription,
+      "amount": billModel.amount,
+      "everyMonth": billModel.everyMonth,
+      "payDAy": billModel.payDAy,
+      "billType": billModel.billType,
+      "paymentCategory": {
+        "description": billModel.paymentCategory.description,
+        "billType": billModel.paymentCategory.billType
+      },
+      "paid": false,
+      "userId": userId,
+      "portion": billModel.portion,
+    };
+
+    var _body = json.encode(params);
+
+    var response = await http.post(url, headers: header, body: _body);
+
+    return response.statusCode;
   }
 }

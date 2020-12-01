@@ -20,8 +20,6 @@ class AuthProvider {
 
     var response = await http.post(url, headers: header, body: _body);
 
-    print('Response status: ${response.statusCode}');
-
     try {
       UserModel user = UserModel();
       Map mapResponse = json.decode(response.body);

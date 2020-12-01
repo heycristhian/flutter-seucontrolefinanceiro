@@ -7,8 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_progress_button/flutter_progress_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:seucontrolefinanceiro/app/controllers/bill_form_page_controller.dart';
 import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
-import 'package:seucontrolefinanceiro/app/pages/home/home_page.dart';
+import 'package:seucontrolefinanceiro/app/models/payment-category-model.dart';
+import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
+import 'package:seucontrolefinanceiro/app/providers/payment_category_provider.dart';
 
 class BillFormPage extends StatefulWidget {
   @override
@@ -24,6 +27,31 @@ class _BillFormPageState extends State<BillFormPage> {
   BillModel billModel;
   int indexPage = 1;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    PaymentCategoryProvider.findAllByBillType('PAYMENT')
+        .then((cat) => {this.categories = cat});
+  }
+
+  List<String> categories = [
+    'Alimentação',
+    'Banco',
+    'Compras',
+    'Dívidas',
+    'Educação',
+    'Impostos',
+    'Lanchonetes',
+    'Lazer',
+    'Presentes',
+    'Roupas',
+    'Serviços',
+    'Supermercado',
+    'Transporte',
+    'Viagem',
+    'Outros'
+  ];
 
   Future<Null> selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -55,23 +83,24 @@ class _BillFormPageState extends State<BillFormPage> {
 
   bool _isSwitched = false;
 
-  List<String> category = [
-    'Alimentação',
-    'Banco',
-    'Compras',
-    'Dívidas',
-    'Educação',
-    'Impostos',
-    'Lanchonetes',
-    'Lazer',
-    'Presentes',
-    'Roupas',
-    'Serviços',
-    'Supermercado',
-    'Transporte',
-    'Viagem',
-    'Outros'
-  ];
+  @override
+  Widget build(BuildContext context) {
+    var billType = indexPage == 1 ? 'PAYMENT' : 'RECEIVEMENT';
+    var futureCategories;
+    futureCategories = PaymentCategoryProvider.findAllByBillType(billType);
+    return FutureBuilder(
+        future: futureCategories,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || futureCategories == null) {
+            return LoaderPage();
+          }
+
+          if (snapshot.hasError) {
+            return LoaderPage();
+          }
+          return _material();
+        });
+  }
 
   Widget _containerRendaDespesa(Icon icon, Color color1, Color color2) {
     return WillPopScope(
@@ -162,7 +191,7 @@ class _BillFormPageState extends State<BillFormPage> {
                   color: Colors.grey,
                 ),
                 isExpanded: true,
-                items: category.map((String dropdownStringItem) {
+                items: categories.map((String dropdownStringItem) {
                   return DropdownMenuItem(
                     value: dropdownStringItem,
                     child: Text(dropdownStringItem),
@@ -170,12 +199,9 @@ class _BillFormPageState extends State<BillFormPage> {
                 }).toList(),
                 onChanged: (String newValue) {
                   setState(() {
-                    this.currentCategory = newValue;
-                    this.categoriaSelecionada = newValue;
-                    if (billModel != null) {
-                      billModel.paymentCategory.description = currentCategory;
-                    }
-                    inSetState();
+                    setState(() {
+                      this.currentCategory = newValue;
+                    });
                   });
                 },
               ),
@@ -195,11 +221,9 @@ class _BillFormPageState extends State<BillFormPage> {
                     ),
                   ),
                   Switch(
-                    //onChanged: (val) => setState(() => _isSwitched = val),
                     onChanged: (bool val) {
                       setState(() {
-                        _isSwitched = val;
-                        inSetState();
+                        this._isSwitched = val;
                       });
                     },
                     value: _isSwitched,
@@ -265,30 +289,6 @@ class _BillFormPageState extends State<BillFormPage> {
 
   DateTime backButtonPressedTime;
 
-  @override
-  Widget build(BuildContext context) {
-    if (billModel != null) {
-      _ctrlMoney.text = billModel.amount;
-      _ctrlDescription.text = billModel.billDescription;
-      _ctrlPortion.text =
-          billModel.portion == null ? '' : billModel.portion.toString();
-      indexPage = billModel.billType == 'RECEIVEMENT' ? 0 : 1;
-      _date = DateTime.parse(billModel.payDAy);
-      _attData(indexPage);
-      if (billModel.portion == null) {
-        billModel.portion = null;
-      } else {
-        _isSwitched = billModel.everyMonth;
-      }
-      billModel.portion = billModel.portion == null ? null : billModel.portion;
-
-      if (!category.contains(currentCategory)) {
-        currentCategory = billModel.paymentCategory.description;
-      }
-    }
-    return _material();
-  }
-
   _methodPortion() {
     var portion = billModel == null ? 0 : billModel.portion;
     portion = portion == null ? 0 : portion;
@@ -301,7 +301,7 @@ class _BillFormPageState extends State<BillFormPage> {
         title: TextFormField(
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            WhitelistingTextInputFormatter.digitsOnly
+            FilteringTextInputFormatter.digitsOnly
           ],
           controller: _ctrlPortion,
           decoration: InputDecoration(
@@ -339,21 +339,10 @@ class _BillFormPageState extends State<BillFormPage> {
           } else {
             int score = await Future.delayed(
                 const Duration(milliseconds: 1000), () => 42);
-            return () async {
-              BillModel bill = BillModel();
-              bill.billDescription = _ctrlDescription.text;
-              bill.payDAy = _date.toString();
-              bill.everyMonth = _isSwitched;
-              bill.amount = _ctrlMoney.text.replaceAll(',', '.');
-              bill.paid = false;
-              bill.parentId = billModel == null ? null : billModel.parentId;
-              bill.portion = (_ctrlPortion.text.isEmpty)
-                  ? null
-                  : int.parse(_ctrlPortion.text);
-              bill.billType =
-                  (_despesaOuReceita == 'Receita') ? 'RECEIVEMENT' : 'PAYMENT';
-              _redirectPage(bill);
-            };
+            var bill = createBill();
+            int status = await BillFormPageController.handleSaveBill(bill);
+            Navigator.of(context).pushReplacementNamed('/home_page');
+            print(status);
           }
         },
         defaultWidget: Text(
@@ -374,14 +363,7 @@ class _BillFormPageState extends State<BillFormPage> {
         height: 40,
         color: Colors.blueGrey,
         onPressed: () async {
-          if (billModel == null) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage()));
-          } else {
-            Navigator.pop(context);
-          }
+          Navigator.of(context).pushReplacementNamed('/home_page');
         },
         defaultWidget: Text(
           'Cancelar',
@@ -390,70 +372,6 @@ class _BillFormPageState extends State<BillFormPage> {
         ),
       ),
     );
-  }
-
-  List<String> _returnSetPaymentOrReceivement(bool isPayment) {
-    category.removeWhere((element) => element != 'removing');
-    List<String> set = List<String>();
-
-    if (isPayment) {
-      set.add('Alimentação');
-      set.add('Banco');
-      set.add('Compras');
-      set.add('Dívidas');
-      set.add('Educação');
-      set.add('Impostos');
-      set.add('Lanchonetes');
-      set.add('Lazer');
-      set.add('Presentes');
-      set.add('Roupas');
-      set.add('Saúde');
-      set.add('Serviços');
-      set.add('Supermercado');
-      set.add('Transporte');
-      set.add('Viagem');
-      set.add('Outros');
-    } else {
-      set.add('Empréstimo');
-      set.add('Investimento');
-      set.add('Salário');
-      set.add('Outros');
-    }
-    if (billModel != null) {
-      currentCategory = billModel.paymentCategory.description;
-    } else {
-      currentCategory = set[0];
-    }
-    return set;
-  }
-
-  _attData(int index) {
-    setState(() {
-      icon = Icon(Icons.monetization_on, size: 50, color: Colors.white);
-      if (index == 0) {
-        colorBtn = Color.fromRGBO(17, 199, 111, 1);
-        color1 = Color.fromRGBO(17, 199, 111, 1);
-        color2 = Colors.greenAccent;
-        _despesaOuReceita = 'Receita';
-        category = _returnSetPaymentOrReceivement(false);
-      } else {
-        color1 = Colors.red;
-        color2 = Colors.redAccent;
-        colorBtn = Colors.redAccent;
-        _despesaOuReceita = 'Despesa';
-        category = _returnSetPaymentOrReceivement(true);
-      }
-    });
-  }
-
-  inSetState() {
-    if (billModel != null) {
-      billModel.amount = _ctrlMoney.text;
-      billModel.billDescription = _ctrlDescription.text;
-      billModel.payDAy = _date.toString();
-      billModel.everyMonth = _isSwitched;
-      _ctrlPortion.text = '';
-    }
   }
 
   Widget _material() {
@@ -476,11 +394,11 @@ class _BillFormPageState extends State<BillFormPage> {
               Icon(Icons.remove, size: 30, color: Colors.white),
             ],
             onTap: (index) {
-              if (billModel != null) {
-                billModel.billType =
-                    billModel.billType == 'PAYMENT' ? 'RECEIVEMENT' : 'PAYMENT';
-              }
-              _attData(index);
+              print(index);
+              setState(() {
+                this.indexPage = index;
+                changeCategories(index);
+              });
             },
           ),
           floatingActionButtonLocation:
@@ -503,6 +421,7 @@ class _BillFormPageState extends State<BillFormPage> {
               size: 30,
               color: Colors.white,
             );
+
       return Material(
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
@@ -513,9 +432,7 @@ class _BillFormPageState extends State<BillFormPage> {
             backgroundColor: Colors.white,
             color: color1,
             items: <Widget>[iconBottom],
-            onTap: (index) {
-              _attData(index);
-            },
+            onTap: (index) {},
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -561,7 +478,6 @@ class _BillFormPageState extends State<BillFormPage> {
                             )),
                         FlatButton(
                             onPressed: () {
-                              _attData(1);
                               Navigator.of(context).pop();
                               return;
                             },
@@ -597,24 +513,6 @@ class _BillFormPageState extends State<BillFormPage> {
     }
   }
 
-  void _redirectPage(BillModel bill) async {
-    if (billModel == null) {
-      //await BillController.insertBill(bill, currentCategory);
-      _delay();
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-    } else {
-      bill.id = billModel.id;
-      //await BillController.updateBill(bill, currentCategory);
-      _delay();
-      Navigator.pop(context);
-    }
-  }
-
-  _delay() async {
-    return await Future.delayed(Duration(milliseconds: 500), () {});
-  }
-
   Future<bool> onWillPop() async {
     DateTime currentTime = DateTime.now();
 
@@ -631,5 +529,47 @@ class _BillFormPageState extends State<BillFormPage> {
       return false;
     }
     return true;
+  }
+
+  changeCategories(int index) {
+    if (index == 0) {
+      this.currentCategory = 'Empréstimo';
+      this.categories = ['Empréstimo', 'Investimento', 'Salário', 'Outros'];
+    } else {
+      this.currentCategory = 'Alimentação';
+      this.categories = [
+        'Alimentação',
+        'Banco',
+        'Compras',
+        'Dívidas',
+        'Educação',
+        'Impostos',
+        'Lanchonetes',
+        'Lazer',
+        'Presentes',
+        'Roupas',
+        'Serviços',
+        'Supermercado',
+        'Transporte',
+        'Viagem',
+        'Outros'
+      ];
+    }
+  }
+
+  changeTheme() {}
+
+  createBill() {
+    var bill = new BillModel();
+    var paymentCategory = PaymentCategoryModel();
+    paymentCategory.description = currentCategory;
+    bill.payDAy = _date.toString();
+    bill.amount = _ctrlMoney.text;
+    bill.billDescription = _ctrlDescription.text;
+    bill.everyMonth = _isSwitched;
+    bill.paid = false;
+    bill.paymentCategory = paymentCategory;
+    bill.billType = indexPage == 0 ? 'RECEIVEMENT' : 'PAYMENT';
+    return bill;
   }
 }

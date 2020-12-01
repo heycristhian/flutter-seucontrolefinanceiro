@@ -22,8 +22,6 @@ class LoginService {
 
     var response = await http.post(url, headers: header, body: _body);
 
-    print('Response status: ${response.statusCode}');
-
     try {
       UserModel user = await UserControler.getUser();
       Map mapResponse = json.decode(response.body);

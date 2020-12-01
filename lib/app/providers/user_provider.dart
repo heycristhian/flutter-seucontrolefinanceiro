@@ -24,7 +24,6 @@ class UserProvider {
         print('Sem users!');
       }
     }
-    print(user.fullName);
     return user;
   }
 }

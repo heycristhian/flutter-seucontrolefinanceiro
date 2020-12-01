@@ -7,11 +7,10 @@ import 'package:seucontrolefinanceiro/app/components/text_components.dart';
 import 'package:seucontrolefinanceiro/app/controllers/home_controller.dart';
 import 'package:seucontrolefinanceiro/app/models/domain/panel-home.dart';
 import 'package:seucontrolefinanceiro/app/models/user-model.dart';
-import 'package:seucontrolefinanceiro/app/pages/bills_page.dart';
+import 'package:seucontrolefinanceiro/app/pages/bills/bills_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/components/time_line.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/providers/panel_provider.dart';
-import 'package:seucontrolefinanceiro/app/providers/payment_category_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override

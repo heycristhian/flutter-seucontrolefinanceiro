@@ -1,4 +1,4 @@
-import 'package:seucontrolefinanceiro/src/model/payment-category-model.dart';
+import 'package:seucontrolefinanceiro/app/models/payment-category-model.dart';
 
 class BillModel {
   String id;
@@ -7,7 +7,7 @@ class BillModel {
   bool everyMonth;
   String payDAy;
   String billType;
-  PaymentCategory paymentCategory;
+  PaymentCategoryModel paymentCategory;
   bool paid;
   String parentId;
   String userId;
@@ -38,7 +38,7 @@ class BillModel {
       payDAy = json['payDAy'];
       billType = json['billType'];
       paymentCategory = json['paymentCategory'] != null
-          ? new PaymentCategory.fromJson(json['paymentCategory'])
+          ? new PaymentCategoryModel.fromJson(json['paymentCategory'])
           : null;
       paid = json['paid'];
       parentId = json['parent'];
