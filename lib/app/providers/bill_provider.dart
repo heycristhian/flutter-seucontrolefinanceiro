@@ -31,7 +31,9 @@ class BillProvider {
   static updateBill(BillModel billModel) async {
     var header = await UtilProvider.getHeaderWithAuth();
     var url = Environment().api(endpoint: 'api/v1/bills');
-
+    var prefs = await UtilProvider.getPrefs();
+    var userId = prefs.getString('userId');
+    billModel.userId = userId;
     Map params = BillProvider.createParam(billModel);
 
     var _body = json.encode(params);
@@ -86,6 +88,14 @@ class BillProvider {
 
     var response = await http.post(url, headers: header, body: _body);
 
+    return response.statusCode;
+  }
+
+   static Future<int> deleteBill(String id) async {
+    var header = await UtilProvider.getHeaderWithAuth();
+    var url = Environment().api(endpoint: 'api/v1/bills/$id');
+
+    var response = await http.delete(url, headers: header);
     return response.statusCode;
   }
 }

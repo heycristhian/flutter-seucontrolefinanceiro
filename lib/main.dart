@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seucontrolefinanceiro/app/pages/bills/bill_form_page.dart';
+import 'package:seucontrolefinanceiro/app/pages/bills/bills_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/home_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/login/login_page.dart';
@@ -24,7 +25,7 @@ class AppWidget extends StatelessWidget {
         '/home_page': (context) => HomePage(),
         '/login_page': (context) => LoginPage(),
         '/loader_page': (context) => LoaderPage(),
-        '/bill_form': (context) => BillFormPage()
+        '/bill_form': (context) => BillFormPage(),
       },
       initialRoute: '/splash_screen_page',
     );

@@ -10,8 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:seucontrolefinanceiro/app/controllers/bill_form_page_controller.dart';
 import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 import 'package:seucontrolefinanceiro/app/models/payment-category-model.dart';
+import 'package:seucontrolefinanceiro/app/pages/bills/bills_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
 import 'package:seucontrolefinanceiro/app/providers/payment_category_provider.dart';
+import 'package:seucontrolefinanceiro/app/utils.dart';
 
 class BillFormPage extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class _BillFormPageState extends State<BillFormPage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
   BillModel billModel;
   int indexPage = 1;
+  int indexBillsPage = 0;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -85,6 +88,15 @@ class _BillFormPageState extends State<BillFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
+    if (args != null) {
+      this.billModel = args.billModel;
+      this.indexBillsPage = args.indexPage;
+      this._isSwitched = this.billModel.portion != null;
+      handleEditBill();
+    }
+
     var billType = indexPage == 1 ? 'PAYMENT' : 'RECEIVEMENT';
     var futureCategories;
     futureCategories = PaymentCategoryProvider.findAllByBillType(billType);
@@ -223,6 +235,9 @@ class _BillFormPageState extends State<BillFormPage> {
                   Switch(
                     onChanged: (bool val) {
                       setState(() {
+                        if (!val) {
+                          this.billModel.portion = null;
+                        }
                         this._isSwitched = val;
                       });
                     },
@@ -292,7 +307,7 @@ class _BillFormPageState extends State<BillFormPage> {
   _methodPortion() {
     var portion = billModel == null ? 0 : billModel.portion;
     portion = portion == null ? 0 : portion;
-    if (_isSwitched && portion < 1) {
+    if (this._isSwitched && portion < 1) {
       return ListTile(
         leading: const Icon(
           Icons.format_list_numbered,
@@ -341,8 +356,16 @@ class _BillFormPageState extends State<BillFormPage> {
                 const Duration(milliseconds: 1000), () => 42);
             var bill = createBill();
             int status = await BillFormPageController.handleSaveBill(bill);
-            Navigator.of(context).pushReplacementNamed('/home_page');
             print(status);
+            if (this.billModel != null) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          BillsPage(this.indexBillsPage)));
+            } else {
+              Navigator.of(context).pushReplacementNamed('/home_page');
+            }
           }
         },
         defaultWidget: Text(
@@ -363,7 +386,15 @@ class _BillFormPageState extends State<BillFormPage> {
         height: 40,
         color: Colors.blueGrey,
         onPressed: () async {
-          Navigator.of(context).pushReplacementNamed('/home_page');
+          if (this.billModel != null) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        BillsPage(this.indexBillsPage)));
+          } else {
+            Navigator.of(context).pushReplacementNamed('/home_page');
+          }
         },
         defaultWidget: Text(
           'Cancelar',
@@ -468,9 +499,15 @@ class _BillFormPageState extends State<BillFormPage> {
                           Text('Tem certeza que deseja apagar essa conta?'),
                       actions: <Widget>[
                         FlatButton(
-                            onPressed: () {
-                              //BillController.deleteBill(billModel.id);
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              int status = await BillFormPageController.handleDeleteBill(
+                                  this.billModel.id);
+                                  print(status);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          BillsPage(this.indexBillsPage)));
                             },
                             child: Text(
                               'Sim',
@@ -560,16 +597,26 @@ class _BillFormPageState extends State<BillFormPage> {
   changeTheme() {}
 
   createBill() {
-    var bill = new BillModel();
+    var bill = BillModel();
     var paymentCategory = PaymentCategoryModel();
     paymentCategory.description = currentCategory;
+    bill.id = this.billModel != null ? this.billModel.id : null;
     bill.payDAy = _date.toString();
     bill.amount = _ctrlMoney.text;
     bill.billDescription = _ctrlDescription.text;
-    bill.everyMonth = _isSwitched;
+    bill.everyMonth = this._isSwitched;
     bill.paid = false;
     bill.paymentCategory = paymentCategory;
     bill.billType = indexPage == 0 ? 'RECEIVEMENT' : 'PAYMENT';
+    bill.portion = _ctrlPortion.text != "" ? int.parse(_ctrlPortion.text) : null;
     return bill;
+  }
+
+  void handleEditBill() {
+    _ctrlMoney.text = this.billModel.amount;
+    _ctrlPortion.text =
+        this.billModel.portion == null ? '' : this.billModel.portion.toString();
+    _ctrlDescription.text = this.billModel.billDescription;
+    currentCategory = this.billModel.paymentCategory.description;
   }
 }

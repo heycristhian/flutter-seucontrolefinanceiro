@@ -9,6 +9,7 @@ import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 import 'package:seucontrolefinanceiro/app/models/domain/panel-home.dart';
 import 'package:seucontrolefinanceiro/app/pages/home/home_page.dart';
 import 'package:seucontrolefinanceiro/app/pages/loader/loader_page.dart';
+import 'package:seucontrolefinanceiro/app/utils.dart';
 
 // ignore: must_be_immutable
 class BillsPage extends StatefulWidget {
@@ -362,7 +363,14 @@ class _BillsPageState extends State<BillsPage> {
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w700)),
               actions: <Widget>[
-                FlatButton(onPressed: () async {}, child: Text('Sim')),
+                FlatButton(
+                    onPressed: () async {
+                      ScreenArguments args =
+                          ScreenArguments(model, this.indexPage);
+                      Navigator.pushReplacementNamed(context, '/bill_form',
+                          arguments: args);
+                    },
+                    child: Text('Sim')),
                 FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
