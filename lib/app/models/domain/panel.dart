@@ -3,7 +3,7 @@ import 'package:seucontrolefinanceiro/app/models/bill-model.dart';
 class Panel {
   String date;
   int year;
-  int amount;
+  var amount;
   String title;
   List<BillModel> bills;
 
